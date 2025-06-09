@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-card">
+    <div class="auth-card__header">
+      <a href="/">
+        <img src="/assets/logo.png" alt="logo" >
+      </a>  
+      <h1 id="title">InnoMoodle</h1>
+    </div>
+
+    <form class="auth-card__form" id="loginForm">
+      <div class="flex_module">
+        <button type="button" id="themeToggle" class="toggle-btn" title="Toggle theme">✸</button>
+        <a href="https://sso.university.innopolis.ru/adfs/oauth2/authorize?response_type=code&client_id=00eeb856-d2ef-41d1-9002-46e481d9b5a2&redirect_uri=https%3A%2F%2Fmy.innopolis.university%2Fauth%2Fcallback%2Fadfs">
+            <button type="button">Log in with SSO</button>
+          </a>          
+        <button type="button" id="langToggle" class="toggle-btn" title="Toggle language">EN</button>
+      </div>
+
+      <!-- <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required> -->
+      
+    </form>
+
+    <div class="auth-card__footer">
+      <span id="footerText">© 2025 Your Company</span>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
