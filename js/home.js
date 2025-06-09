@@ -19,7 +19,6 @@ const langData = {
         courses: "Курсы",
         schedule: "Расписание",
         messages: "Сообщения",
-        search: "Поиск...",
         logo: "Мой Университет",
         widgets: [
           { title: "Мои курсы", text: "Вы записаны на 5 курсов.", action: "Перейти" },
@@ -34,7 +33,6 @@ const langData = {
         courses: "Courses",
         schedule: "Schedule",
         messages: "Messages",
-        search: "Search...",
         logo: "My University",
         widgets: [
           { title: "My Courses", text: "You are enrolled in 5 courses.", action: "Go to" },
@@ -50,7 +48,6 @@ const langData = {
     const updateLanguage = () => {
       const lang = langData[currentLang];
       document.getElementById('main-title').innerText = lang.mainTitle;
-      document.getElementById('search-input').placeholder = lang.search;
       document.getElementById('logo-text').innerText = lang.logo;
 
       document.querySelectorAll('[data-key]').forEach(el => {
