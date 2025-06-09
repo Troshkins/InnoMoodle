@@ -1,0 +1,50 @@
+<!-- ===== HTML (структура страницы) ===== -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home</title>
+
+  <!-- ===== CSS (стилизация) ===== -->
+  <link rel="stylesheet" href="css/home.css" />
+
+</head>
+<body>
+  <div class="layout">
+    <!-- ===== ХЕДЕР ===== -->
+    <header>
+      <button id="menu-toggle" aria-label="Toggle sidebar">☰</button>
+      <div class="search-box" role="search">
+        <input type="text" placeholder="Поиск..." id="search-input" />
+        <button aria-label="Найти">🔍</button>
+      </div>
+      <div class="toolbar">
+        <button id="language-toggle">EN</button>
+        <button id="theme-toggle">☾</button>
+      </div>
+    </header>
+
+    <!-- ===== САЙДБАР ===== -->
+    <aside class="sidebar">
+      <div class="logo" id="logo-text">My.University</div>
+      <ul class="nav">
+        <li><a href="#"><svg width="16" height="16"><circle cx="8" cy="8" r="7" fill="#fff"/></svg><span data-key="home">Главная</span></a></li>
+        <li><a href="#"><svg width="16" height="16"><rect x="2" y="2" width="12" height="12" fill="#fff"/></svg><span data-key="courses">Курсы</span></a></li>
+        <li><a href="#"><svg width="16" height="16"><polygon points="8,2 14,14 2,14" fill="#fff"/></svg><span data-key="schedule">Расписание</span></a></li>
+        <li><a href="#"><svg width="16" height="16"><path d="M2 2 L14 14 M14 2 L2 14" stroke="#fff"/></svg><span data-key="messages">Сообщения</span></a></li>
+      </ul>
+      <button class="toggle-btn" id="sidebar-collapse" aria-label="Collapse sidebar">⇤</button>
+    </aside>
+
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <main>
+      <h1 id="main-title">Привет, студент!</h1>
+      <div class="card-container" id="widgets"></div>
+    </main>
+  </div>
+
+  <!-- ===== JS (функциональность) ===== -->
+  <script src = "js/home.js"></script>
+</body>
+</html>

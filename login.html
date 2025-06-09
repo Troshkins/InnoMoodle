@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/login.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -20,9 +20,7 @@
     <form class="auth-card__form" id="loginForm">
       <div class="flex_module">
         <button type="button" id="themeToggle" class="toggle-btn" title="Toggle theme">✸</button>
-        <a href="https://sso.university.innopolis.ru/adfs/oauth2/authorize?response_type=code&client_id=00eeb856-d2ef-41d1-9002-46e481d9b5a2&redirect_uri=https%3A%2F%2Fmy.innopolis.university%2Fauth%2Fcallback%2Fadfs">
-            <button type="button">Log in with SSO</button>
-          </a>          
+        <button type="button" id="submitBtn">Log in with SSO</button>      
         <button type="button" id="langToggle" class="toggle-btn" title="Toggle language">EN</button>
       </div>
 
@@ -36,6 +34,6 @@
     </div>
   </div>
 
-  <script src="js/script.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>

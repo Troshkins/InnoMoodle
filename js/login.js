@@ -33,7 +33,7 @@ const textMap = {
 };
 
 // Инициализация языка из localStorage
-let currentLang = localStorage.getItem('lang') || 'en';
+let currentLang = localStorage.getItem('lang') || 'ru';
 const applyLanguage = () => {
   const map = textMap[currentLang];
   document.getElementById('title').textContent = map.title;
@@ -92,3 +92,16 @@ document.documentElement.style.setProperty('--screen-diagonal', `${d}px`);
 updateDiagonal();
 window.addEventListener('resize', updateDiagonal);
 
+submitBtn.addEventListener('click', function () {
+  submitBtn.disabled = true;
+  submitBtn.textContent = textMap[currentLang].checking;
+
+  // Имитация проверки
+  setTimeout(() => {
+    submitBtn.disabled = false;
+    submitBtn.textContent = textMap[currentLang].submit;
+
+    // Только после успешной проверки — переход
+    window.location.href = "home.html";//'https://sso.university.innopolis.ru/adfs/oauth2/authorize?response_type=code&client_id=00eeb856-d2ef-41d1-9002-46e481d9b5a2&redirect_uri=https%3A%2F%2Fmy.innopolis.university%2Fauth%2Fcallback%2Fadfs';
+  }, 1500);
+});
