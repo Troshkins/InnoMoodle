@@ -11,7 +11,6 @@ const translations = {
       profile: 'Profile',
       logout: 'Logout'
     },
-    overview: 'Overview',
     welcome: 'Welcome!',
     welcomeDesc: 'Here you can see quick stats about your courses.',
     stats: {
@@ -37,7 +36,9 @@ const translations = {
     saveBtn: 'Save',
     notifications: 'Notifications',
     switchLanguage: 'Switch Language',
-    switchTheme: 'Switch Theme'
+    switchTheme: 'Switch Theme',
+    user: 'Teacher'
+    
   },
   en: {
     title: 'Панель преподавателя',
@@ -50,7 +51,6 @@ const translations = {
       profile: 'Профиль',
       logout: 'Выйти'
     },
-    overview: 'Обзор',
     welcome: 'Добро пожаловать!',
     welcomeDesc: 'Здесь вы можете увидеть быструю статистику по вашим курсам.',
     stats: {
@@ -76,7 +76,8 @@ const translations = {
     saveBtn: 'Сохранить',
     notifications: 'Уведомления',
     switchLanguage: 'Сменить язык',
-    switchTheme: 'Сменить тему'
+    switchTheme: 'Сменить тему',
+    user: 'Преподаватель'
   }
 };
 
@@ -124,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
         else sec.classList.remove('active');
       });
       // Меняем заголовок
-      const key = link.getAttribute('data-i18n');
-      pageTitle.textContent = translations[language].nav[key];
+    //   const key = link.getAttribute('data-i18n');
+    //   pageTitle.textContent = translations[language].nav[key];
     });
   });
 

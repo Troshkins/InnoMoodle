@@ -6,12 +6,12 @@ html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--
   --text-color: #333;
   --header-bg: #fff;
   --header-border: #e0e0e0;
-  --sidebar-bg: #0052cc;
-  --sidebar-text: #fff;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #1e1e1e;
   --card-bg: #fff;
   --card-shadow: rgba(0,0,0,0.1);
-  --btn-bg: #0052cc;
-  --btn-hover-bg: #0041a8;
+  --btn-bg: #40ba20;
+  --btn-hover-bg: #40ba20;
   --input-bg: #fff;
   --input-border: #ccc;
 }
@@ -20,12 +20,12 @@ html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--
   --text-color: #ddd;
   --header-bg: #2a2a2a;
   --header-border: #444;
-  --sidebar-bg: #003a99;
+  --sidebar-bg: #1e1e1e;
   --sidebar-text: #fff;
   --card-bg: #2a2a2a;
   --card-shadow: rgba(0,0,0,0.5);
-  --btn-bg: #0052cc;
-  --btn-hover-bg: #0041a8;
+  --btn-bg: #40ba20;
+  --btn-hover-bg: #40ba20;
   --input-bg: #3a3a3a;
   --input-border: #555;
 }
@@ -41,7 +41,7 @@ html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--
 
 /* Основная часть */
 .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-.header { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--header-bg); border-bottom: 1px solid var(--header-border); }
+.header { display: flex; justify-content: right; align-items: center; padding: 16px; background: var(--header-bg); border-bottom: 1px solid var(--header-border); }
 .header h1 { font-size: 1.5rem; color: var(--text-color); }
 .header__actions { display: flex; align-items: center; }
 .header__actions .btn-toggle { margin: 0 8px; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; background: var(--btn-bg); color: #fff; font-weight: 500; }

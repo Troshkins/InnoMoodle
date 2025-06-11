@@ -18,6 +18,7 @@
         <a href="/">
           <img src="/assets/logo.png" alt="Logo" class="sidebar__logo">
         </a>
+        <h1 id="page-title" >Innomoodle</h1>
       </div>
       <nav class="sidebar__nav">
         <ul>
@@ -36,24 +37,25 @@
     <main class="main-content">
       <!-- Верхняя строка с заголовком, переключателями и уведомлениями -->
       <header class="header">
-        <div class="header__left">
-          <h1 id="page-title" data-i18n="overview">Overview</h1>
-        </div>
+        <!-- <div class="header__left">
+          <h1 id="page-title" >Innomoodle</h1>
+        </div> -->
         <div class="header__actions">
           <!-- Переключение языка -->
           <button id="langToggle" class="btn-toggle" title="Switch Language">EN</button>
           <!-- Переключение темы -->
-          <button id="themeToggle" class="btn-toggle" title="Switch Theme">🌙</button>
+          <button id="themeToggle" class="btn-toggle" title="Switch Theme">✸</button>
           <!-- Иконка уведомлений, имя пользователя и выпадающий профиль -->
-          <div class="notifications">
-            <button id="notifBtn" title="Notifications">
-              &#128276;
-            </button>
-          </div>
-          <div class="user-menu">
-            <span id="usernameDisplay">Teacher</span>
-            <!-- можно добавить выпадающее меню профиля -->
-          </div>
+          <!-- <div class="notifications">
+            <button id="notifBtn" title="Notifications"></button>
+          </div> -->
+          <a href="https://mail.innopolis.ru/owa/auth/logon.aspx?replaceCurrent=1&reason=3&url=https%3a%2f%2fmail.innopolis.ru%2fowa%2f">
+            <button id="mail" class="btn-toggle" title="mail">mail</button>
+          </a>
+          <!-- <div class="user-menu">
+            <span data-i18n="user" id="usernameDisplay">Teacher</span>
+            можно добавить выпадающее меню профиля
+          </div> -->
         </div>
       </header>
 
