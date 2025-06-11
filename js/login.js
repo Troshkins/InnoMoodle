@@ -1,7 +1,20 @@
 // Получение элементов
 const body = document.body;
-const themeToggle = document.getElementById('themeToggle');
-const langToggle = document.getElementById('langToggle');
+// Пример из registration.js
+document.getElementById('langToggle').addEventListener('click', () => {
+  const current = localStorage.getItem('language') || 'en';
+  const next = (current === 'en') ? 'ru' : 'en';
+  localStorage.setItem('language', next);
+  // Применить перевод на странице регистрации
+  applyLanguage(next);
+});
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = localStorage.getItem('theme') || 'light';
+  const next = (current === 'light') ? 'dark' : 'light';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
+});
 const loginForm = document.getElementById('loginForm');
 const submitBtn = document.getElementById('submitBtn');
 

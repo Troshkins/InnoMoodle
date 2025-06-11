@@ -1,46 +1,141 @@
-<!-- ===== HTML (структура страницы) ===== -->
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home</title>
-
-  <!-- ===== CSS (стилизация) ===== -->
-  <link rel="stylesheet" href="css/home.css" />
-
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="title">Teacher Dashboard</title>
+  <!-- Подключаем Roboto как в login.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Стили домашней страницы -->
+  <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
   <div class="layout">
-    <!-- ===== ХЕДЕР ===== -->
-    <header>
-      <button id="menu-toggle" aria-label="Toggle sidebar">☰</button>
-      <div class="toolbar">
-        <button id="language-toggle">EN</button>
-        <button id="theme-toggle">☾</button>
-      </div>
-    </header>
-
-    <!-- ===== САЙДБАР ===== -->
+    <!-- Сайдбар навигации -->
     <aside class="sidebar">
-      <div class="logo" id="logo-text">My.University</div>
-      <ul class="nav">
-        <li><a href="#"><svg width="16" height="16"><circle cx="8" cy="8" r="7" fill="#fff"/></svg><span data-key="home">Главная</span></a></li>
-        <li><a href="#"><svg width="16" height="16"><rect x="2" y="2" width="12" height="12" fill="#fff"/></svg><span data-key="courses">Курсы</span></a></li>
-        <li><a href="#"><svg width="16" height="16"><polygon points="8,2 14,14 2,14" fill="#fff"/></svg><span data-key="schedule">Расписание</span></a></li>
-        <li><a href="#"><svg width="16" height="16"><path d="M2 2 L14 14 M14 2 L2 14" stroke="#fff"/></svg><span data-key="messages">Сообщения</span></a></li>
-      </ul>
-      <button class="toggle-btn" id="sidebar-collapse" aria-label="Collapse sidebar">⇤</button>
+      <div class="sidebar__header">
+        <a href="/">
+          <img src="/assets/logo.png" alt="Logo" class="sidebar__logo">
+        </a>
+      </div>
+      <nav class="sidebar__nav">
+        <ul>
+          <li><a href="#" data-section="dashboard" data-i18n="nav.dashboard" class="active">Overview</a></li>
+          <li><a href="#" data-section="courses" data-i18n="nav.courses">Courses</a></li>
+          <li><a href="#" data-section="create-course" data-i18n="nav.createCourse">Create Course</a></li>
+          <li><a href="#" data-section="quizzes" data-i18n="nav.quizzes">Quizzes</a></li>
+          <li><a href="#" data-section="performance" data-i18n="nav.performance">Performance</a></li>
+          <li><a href="#" data-section="profile" data-i18n="nav.profile">Profile</a></li>
+          <li><a href="/logout" data-i18n="nav.logout">Logout</a></li>
+        </ul>
+      </nav>
     </aside>
 
-    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
-    <main>
-      <h1 id="main-title">Привет, студент!</h1>
-      <div class="card-container" id="widgets"></div>
+    <!-- Основная область -->
+    <main class="main-content">
+      <!-- Верхняя строка с заголовком, переключателями и уведомлениями -->
+      <header class="header">
+        <div class="header__left">
+          <h1 id="page-title" data-i18n="overview">Overview</h1>
+        </div>
+        <div class="header__actions">
+          <!-- Переключение языка -->
+          <button id="langToggle" class="btn-toggle" title="Switch Language">EN</button>
+          <!-- Переключение темы -->
+          <button id="themeToggle" class="btn-toggle" title="Switch Theme">🌙</button>
+          <!-- Иконка уведомлений, имя пользователя и выпадающий профиль -->
+          <div class="notifications">
+            <button id="notifBtn" title="Notifications">
+              &#128276;
+            </button>
+          </div>
+          <div class="user-menu">
+            <span id="usernameDisplay">Teacher</span>
+            <!-- можно добавить выпадающее меню профиля -->
+          </div>
+        </div>
+      </header>
+
+      <!-- Секции контента, показываемые/скрываемые через JS -->
+      <section id="dashboard" class="section active">
+        <h2 data-i18n="welcome">Welcome!</h2>
+        <p data-i18n="welcomeDesc">Here you can see quick stats about your courses.</p>
+        <div class="stats-cards">
+          <!-- карточки статистики, например: число курсов, студентов, квизов -->
+          <div class="stat-card">
+            <h3 id="stat-courses-count">0</h3>
+            <p data-i18n="stats.courses">Courses</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="stat-students-count">0</h3>
+            <p data-i18n="stats.students">Total Students</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="stat-quizzes-count">0</h3>
+            <p data-i18n="stats.quizzes">Quizzes</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="courses" class="section">
+        <h2 data-i18n="myCourses">My Courses</h2>
+        <div id="courses-list" class="courses-list">
+          <!-- JS динамически добавит курс-карточки -->
+        </div>
+      </section>
+
+      <section id="create-course" class="section">
+        <h2 data-i18n="createNewCourse">Create New Course</h2>
+        <form id="createCourseForm" class="form">
+          <label for="courseTitle" data-i18n="courseTitleLabel">Course Title</label>
+          <input type="text" id="courseTitle" name="title" placeholder="" data-i18n-placeholder="courseTitlePlaceholder" required>
+
+          <label for="courseDescription" data-i18n="courseDescriptionLabel">Description</label>
+          <textarea id="courseDescription" name="description" placeholder="" data-i18n-placeholder="courseDescriptionPlaceholder" rows="4"></textarea>
+
+          <button type="submit" data-i18n="createCourseBtn">Create Course</button>
+        </form>
+      </section>
+
+      <section id="quizzes" class="section">
+        <h2 data-i18n="quizzesSection">Quizzes</h2>
+        <div id="quizzes-list" class="quizzes-list">
+          <!-- JS: список квизов -->
+        </div>
+        <button id="createQuizBtn" data-i18n="createQuizBtn">Create New Quiz</button>
+      </section>
+
+      <section id="performance" class="section">
+        <h2 data-i18n="performanceSection">Student Performance</h2>
+        <div id="performance-content">
+          <!-- JS: таблицы или графики успеваемости -->
+          <p data-i18n="selectCourseForPerf">Select a course to view details.</p>
+          <select id="courseSelectForPerf">
+            <option value="" data-i18n="selectCourseOption">-- Select Course --</option>
+          </select>
+          <div id="perf-details">
+            <!-- сюда загружать данные успеваемости -->
+          </div>
+        </div>
+      </section>
+
+      <section id="profile" class="section">
+        <h2 data-i18n="profileSection">Profile</h2>
+        <form id="profileForm" class="form">
+          <label for="displayName" data-i18n="displayNameLabel">Display Name</label>
+          <input type="text" id="displayName" name="displayName">
+
+          <label for="email" data-i18n="emailLabel">Email</label>
+          <input type="email" id="email" name="email" disabled>
+
+          <button type="submit" data-i18n="saveBtn">Save</button>
+        </form>
+      </section>
+
     </main>
   </div>
 
-  <!-- ===== JS (функциональность) ===== -->
-  <script src = "js/home.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>
