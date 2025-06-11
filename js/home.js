@@ -261,4 +261,10 @@ function applyTheme(theme) {
     themeToggle.textContent = '☾'; // переключиться на светлую
   }
   themeToggle.title = translations[localStorage.getItem('language') || 'en'].switchTheme;
+
+setTimeout(() => {
+    logout.disabled = false;
+    logout.textContent = textMap[currentLang].submit;
+    window.location.href = "login.html";
+  }, 1500);
 }
