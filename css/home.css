@@ -5,7 +5,7 @@ html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--
   /* Светлая тема по умолчанию */  --bg-color: #f5f7fa;
   --text-color: #333;
   --header-bg: #fff;
-  --header-border: #e0e0e0;
+  --header-border: #ffffff;
   --sidebar-bg: #ffffff;
   --sidebar-text: #1e1e1e;
   --card-bg: #fff;
