@@ -1,96 +1,107 @@
-/* Сброс */
+/* ——— Reset & Variables ——— */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--bg-color); color: var(--text-color); }
+html, body { height: 100%; font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); }
 :root {
-  /* Светлая тема по умолчанию */  --bg-color: #f5f7fa;
-  --text-color: #333;
-  --header-bg: #fff;
-  --header-border: #ffffff;
-  --sidebar-bg: #ffffff;
-  --sidebar-text: #1e1e1e;
-  --card-bg: #fff;
-  --card-shadow: rgba(0,0,0,0.1);
-  --btn-bg: #40ba20;
-  --btn-hover-bg: #40ba20;
-  --input-bg: #fff;
-  --input-border: #ccc;
+  --bg: #f5f7fa;
+  --text: #333;
+  --primary: #40ba20;
+  --card: #fff;
+  --shadow: rgba(0,0,0,0.1);
 }
 [data-theme="dark"] {
-  --bg-color: #1e1e1e;
-  --text-color: #ddd;
-  --header-bg: #2a2a2a;
-  --header-border: #444;
-  --sidebar-bg: #1e1e1e;
-  --sidebar-text: #fff;
-  --card-bg: #2a2a2a;
-  --card-shadow: rgba(0,0,0,0.5);
-  --btn-bg: #40ba20;
-  --btn-hover-bg: #40ba20;
-  --input-bg: #3a3a3a;
-  --input-border: #555;
+  --bg: #1e1e1e;
+  --text: #ddd;
+  --primary: #40ba20;
+  --card: #2a2a2a;
+  --shadow: rgba(0,0,0,0.5);
 }
+
+/* ——— Layout ——— */
 .layout { display: flex; height: 100vh; }
+.sidebar {
+  width: 240px; background: var(--card); display: flex; flex-direction: column;
+  border-right: 1px solid var(--shadow);
+}
+.sidebar__brand {
+  padding: 24px; text-align: center;
+  font-size: 1.25rem; font-weight: 700; color: var(--primary);
+}
+.sidebar__brand img { max-width: 100px; display: block; margin: 0 auto 8px; }
+.sidebar__nav ul { list-style: none; }
+.sidebar__nav li + li { margin-top: 4px; }
+.sidebar__nav a {
+  display: block; padding: 12px 20px;
+  color: var(--text); text-decoration: none; font-weight: 500;
+  border-radius: 6px; transition: background .2s;
+}
+.sidebar__nav a.active,
+.sidebar__nav a:hover {
+  background: var(--primary); color: #fff;
+}
 
-/* Сайдбар */
-.sidebar { width: 240px; background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; }
-.sidebar__header { padding: 16px; text-align: center; }
-.sidebar__logo { max-width: 120px; }
-.sidebar__nav ul { list-style: none; padding: 0; margin-top: 24px; }
-.sidebar__nav a { display: block; padding: 12px 16px; color: var(--sidebar-text); text-decoration: none; font-weight: 500; }
-.sidebar__nav a:hover, .sidebar__nav a.active { background: rgba(255, 255, 255, 0.2); }
+.main {
+  flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+}
+.main__header {
+  display: flex; justify-content: flex-end; align-items: center;
+  padding: 16px; background: var(--card); border-bottom: 1px solid var(--shadow);
+}
+.actions .btn-icon {
+  background: none; border: none; font-size: 1.1rem;
+  margin-left: 12px; cursor: pointer; color: var(--text);
+}
 
-/* Основная часть */
-.main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-.header { display: flex; justify-content: right; align-items: center; padding: 16px; background: var(--header-bg); border-bottom: 1px solid var(--header-border); }
-.header h1 { font-size: 1.5rem; color: var(--text-color); }
-.header__actions { display: flex; align-items: center; }
-.header__actions .btn-toggle { margin: 0 8px; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; background: var(--btn-bg); color: #fff; font-weight: 500; }
-.header__actions .btn-toggle:hover { background: var(--btn-hover-bg); }
-.header__actions button { background: none; border: none; font-size: 1.2rem; margin-right: 16px; cursor: pointer; color: var(--text-color); }
-.header__actions #usernameDisplay { font-weight: 500; color: var(--text-color); }
-
-.section { display: none; padding: 16px; }
+/* ——— Sections & Cards ——— */
+.section { display: none; padding: 24px; }
 .section.active { display: block; }
 
-/* Dashboard stats */
-.stats-cards { display: flex; gap: 16px; margin-top: 16px; }
-.stat-card { background: var(--card-bg); flex: 1; padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px var(--card-shadow); text-align: center; }
-.stat-card h3 { font-size: 2rem; color: var(--btn-bg); }
-.stat-card p { margin-top: 8px; color: var(--text-color); }
+.cards { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+.cards.grid { justify-content: start; }
+.card {
+  background: var(--card); flex: 1; min-width: 200px;
+  padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow);
+}
 
-/* Courses list */
-.courses-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
-.course-card { background: var(--card-bg); padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px var(--card-shadow); display: flex; flex-direction: column; justify-content: space-between; }
-.course-card h3 { font-size: 1.25rem; color: var(--btn-bg); }
-.course-card p { margin: 8px 0; color: var(--text-color); flex-grow: 1; }
-.course-card .btn-group { margin-top: 12px; display: flex; gap: 8px; }
-.course-card button { flex: 1; padding: 8px; border: none; border-radius: 4px; cursor: pointer; background: var(--btn-bg); color: #fff; font-weight: 500; }
-.course-card button:hover { background: var(--btn-hover-bg); }
+/* Stat cards */
+.stat-card h3 { font-size: 2rem; color: var(--primary); text-align: center; }
+.stat-card p  { text-align: center; margin-top: 8px; }
+
+/* Course & Quiz cards */
+.course-card, .quiz-card {
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.course-card h3, .quiz-card h3 { color: var(--primary); margin-bottom: 8px; }
+.btn-group { display: flex; gap: 8px; margin-top: 12px; }
+.btn-group button {
+  flex: 1; padding: 8px; border: none; border-radius: 4px;
+  background: var(--primary); color: #fff; cursor: pointer;
+}
+.btn-group button:hover { opacity: 0.9; }
 
 /* Forms */
-.form { background: var(--card-bg); padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px var(--card-shadow); max-width: 600px; }
-.form label { display: block; margin-top: 12px; color: var(--text-color); font-weight: 500; }
-.form input, .form textarea, .form select { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--input-border); border-radius: 4px; font-family: 'Roboto', sans-serif; background: var(--input-bg); color: var(--text-color); }
-.form button { margin-top: 16px; padding: 10px 16px; border: none; border-radius: 4px; background: var(--btn-bg); color: #fff; font-weight: 500; cursor: pointer; }
-.form button:hover { background: var(--btn-hover-bg); }
+.form {
+  margin-top: 16px; max-width: 600px;
+}
+.form label { display: block; margin-top: 12px; font-weight: 500; }
+.form input, .form textarea, .form select {
+  width: 100%; padding: 8px; margin-top: 6px;
+  border: 1px solid #ccc; border-radius: 4px;
+  background: var(--bg); color: var(--text);
+}
+.form button, .btn-primary {
+  margin-top: 16px; padding: 10px 16px; 
+  border: none; border-radius: 4px; background: var(--primary);
+  color: #fff; font-weight: 500; cursor: pointer;
+}
+.btn-primary { display: inline-block; }
+.form button:hover, .btn-primary:hover { opacity: 0.9; }
 
-/* Quizzes list */
-.quizzes-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; }
-.quiz-card { background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px var(--card-shadow); display: flex; flex-direction: column; }
-.quiz-card h3 { font-size: 1.1rem; color: var(--btn-bg); }
-.quiz-card .btn-group { margin-top: auto; display: flex; gap: 8px; }
-.quiz-card button { flex: 1; padding: 6px; border: none; border-radius: 4px; background: var(--btn-bg); color: #fff; cursor: pointer; }
-.quiz-card button:hover { background: var(--btn-hover-bg); }
-
-/* Performance */
-#performance-content { margin-top: 16px; }
-#courseSelectForPerf { width: 300px; }
+/* Perf details */
+.form-inline { margin-top: 16px; }
 #perf-details { margin-top: 16px; }
 
-/* Адаптив */
+/* Responsive */
 @media(max-width: 768px) {
-  .sidebar { position: fixed; left: -240px; transition: left 0.3s; z-index: 1000; }
+  .sidebar { position: fixed; left: -240px; transition: .3s; }
   .sidebar.open { left: 0; }
-  .main-content { margin-left: 0; }
-  .header .menu-toggle { display: block; cursor: pointer; margin-right: 16px; }
 }

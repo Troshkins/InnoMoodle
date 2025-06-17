@@ -1,4 +1,3 @@
-// Переключение между разделами, переключение языка и темы
 const translations = {
   ru: {
     title: 'Teacher Dashboard',
@@ -81,154 +80,117 @@ const translations = {
   }
 };
 
+// Основной код
 document.addEventListener('DOMContentLoaded', () => {
-  // Элементы переключения
-  const langToggle = document.getElementById('langToggle');
+  const langToggle  = document.getElementById('langToggle');
   const themeToggle = document.getElementById('themeToggle');
+  const navLinks    = document.querySelectorAll('.sidebar__nav a[data-section]');
+  const sections    = document.querySelectorAll('.section');
 
-  // Загрузка сохранённых настроек или по умолчанию
+  // Загрузка настроек
   let language = localStorage.getItem('language') || 'en';
-  let theme = localStorage.getItem('theme') || 'light';
-
-  // Применяем язык и тему
+  let theme    = localStorage.getItem('theme')    || 'light';
   applyLanguage(language);
   applyTheme(theme);
 
-  // Обработчики переключателей
   langToggle.addEventListener('click', () => {
-    language = (language === 'en') ? 'ru' : 'en';
+    language = (language === 'en' ? 'ru' : 'en');
     localStorage.setItem('language', language);
     applyLanguage(language);
   });
 
   themeToggle.addEventListener('click', () => {
-    theme = (theme === 'light') ? 'dark' : 'light';
+    theme = (theme === 'light' ? 'dark' : 'light');
     localStorage.setItem('theme', theme);
     applyTheme(theme);
   });
 
-  // Переключение между разделами
-  const navLinks = document.querySelectorAll('.sidebar__nav a[data-section]');
-  const sections = document.querySelectorAll('.section');
-  const pageTitle = document.getElementById('page-title');
-
+  // Навигация между секциями
   navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
+    link.addEventListener('click', e => {
       e.preventDefault();
-      const target = link.getAttribute('data-section');
-      // Убираем active у ссылок
       navLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
-      // Показываем нужную секцию
       sections.forEach(sec => {
-        if (sec.id === target) sec.classList.add('active');
-        else sec.classList.remove('active');
+        sec.id === link.dataset.section
+          ? sec.classList.add('active')
+          : sec.classList.remove('active');
       });
-      // Меняем заголовок
-    //   const key = link.getAttribute('data-i18n');
-    //   pageTitle.textContent = translations[language].nav[key];
     });
   });
 
-  // Здесь можно прописать загрузку данных через fetch к вашему API
-  function loadDashboardStats() {
-    // TODO: fetch('/api/teacher/stats')...
-    // Заглушки:
-    document.getElementById('stat-courses-count').textContent = '3';
-    document.getElementById('stat-students-count').textContent = '120';
-    document.getElementById('stat-quizzes-count').textContent = '15';
-  }
+  // Загрузка данных (заглушки)
+  document.getElementById('stat-courses-count').textContent  = '3';
+  document.getElementById('stat-students-count').textContent = '120';
+  document.getElementById('stat-quizzes-count').textContent  = '15';
 
-  function loadCourses() {
-    const container = document.getElementById('courses-list');
-    container.innerHTML = '';
-    // TODO: fetch ваших курсов
-    const courses = [
-      { id: 1, title: 'Программирование на Python', description: 'Введение в Python' },
-      { id: 2, title: 'Алгоритмы и структуры данных', description: 'Основы алгоритмов' },
-      { id: 3, title: 'Базы данных', description: 'SQL и NoSQL' }
+  renderCourses();
+  renderQuizzes();
+  renderPerfCourses();
+
+  // Рендер курсов
+  function renderCourses() {
+    const cont = document.getElementById('courses-list');
+    cont.innerHTML = '';
+    const data = [
+      { id:1, title:'Python', description:'Intro to Python' },
+      { id:2, title:'Алгоритмы', description:'Basics' },
+      { id:3, title:'БД', description:'SQL & NoSQL' }
     ];
-    courses.forEach(course => {
+    data.forEach(c => {
       const card = document.createElement('div');
-      card.className = 'course-card';
-      // При необходимости перевести статический текст
-      const title = course.title; // Предполагается, что backend возвращает в нужном языке или на одном языке
-      const description = course.description;
-      const btnOpen = translations[language].nav.courses === 'Courses' ? 'Open' : (language === 'ru' ? 'Открыть' : 'Open');
-      const btnEdit = translations[language].nav.courses === 'Courses' ? 'Edit' : (language === 'ru' ? 'Редактировать' : 'Edit');
+      card.className = 'card course-card';
       card.innerHTML = `
-        <h3>${title}</h3>
-        <p>${description}</p>
+        <h3>${c.title}</h3>
+        <p>${c.description}</p>
         <div class="btn-group">
-          <button data-action="view" data-id="${course.id}">${language === 'ru' ? 'Открыть' : 'Open'}</button>
-          <button data-action="edit" data-id="${course.id}">${language === 'ru' ? 'Редактировать' : 'Edit'}</button>
-        </div>
-      `;
-      container.appendChild(card);
+          <button data-action="view" data-id="${c.id}">${language==='ru'?'Открыть':'Open'}</button>
+          <button data-action="edit" data-id="${c.id}">${language==='ru'?'Редактировать':'Edit'}</button>
+        </div>`;
+      cont.append(card);
     });
   }
 
-  function loadQuizzes() {
-    const container = document.getElementById('quizzes-list');
-    container.innerHTML = '';
-    // TODO: fetch ваших квизов
-    const quizzes = [
-      { id: 1, title: 'Quiz 1' },
-      { id: 2, title: 'Quiz 2' }
-    ];
-    quizzes.forEach(q => {
+  // Рендер квизов
+  function renderQuizzes() {
+    const cont = document.getElementById('quizzes-list');
+    cont.innerHTML = '';
+    const data = [{id:1,title:'Quiz 1'},{id:2,title:'Quiz 2'}];
+    data.forEach(q => {
       const card = document.createElement('div');
-      card.className = 'quiz-card';
+      card.className = 'card quiz-card';
       card.innerHTML = `
         <h3>${q.title}</h3>
         <div class="btn-group">
-          <button data-action="view" data-id="${q.id}">${language === 'ru' ? 'Открыть' : 'Open'}</button>
-          <button data-action="edit" data-id="${q.id}">${language === 'ru' ? 'Редактировать' : 'Edit'}</button>
-        </div>
-      `;
-      container.appendChild(card);
+          <button data-action="view" data-id="${q.id}">${language==='ru'?'Открыть':'Open'}</button>
+          <button data-action="edit" data-id="${q.id}">${language==='ru'?'Редактировать':'Edit'}</button>
+        </div>`;
+      cont.append(card);
     });
   }
 
-  function loadPerformanceCourses() {
-    const select = document.getElementById('courseSelectForPerf');
-    select.innerHTML = '';
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = translations[language].selectCourseOption;
-    select.appendChild(defaultOption);
-    // TODO: fetch курсы для успеваемости
-    const courses = [
-      { id: 1, title: 'Программирование на Python' },
-      { id: 2, title: 'Алгоритмы и структуры данных' }
-    ];
-    courses.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = c.title;
-      select.appendChild(opt);
+  // Список курсов для успеваемости
+  function renderPerfCourses() {
+    const sel = document.getElementById('courseSelectForPerf');
+    sel.innerHTML = `<option value="">${translations[language].selectCourseOption}</option>`;
+    [{id:1,title:'Python'},{id:2,title:'Алгоритмы'}]
+      .forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.title;
+        sel.append(opt);
+      });
+    sel.addEventListener('change', e => {
+      const d = document.getElementById('perf-details');
+      d.innerHTML = e.target.value
+        ? `<p>${language==='ru'
+            ?`Успеваемость для курса ID ${e.target.value}`
+            :`Performance for course ID ${e.target.value}`}</p>`
+        : '';
     });
   }
-
-  document.getElementById('courseSelectForPerf').addEventListener('change', (e) => {
-    const courseId = e.target.value;
-    const details = document.getElementById('perf-details');
-    details.innerHTML = '';
-    if (courseId) {
-      // TODO: fetch('/api/course/' + courseId + '/performance')...
-      details.innerHTML = `<p>${language === 'ru' ? 'Успеваемость для курса ID' : 'Performance for course ID'} ${courseId} ${language === 'ru' ? 'будет здесь.' : 'will be displayed here.'}</p>`;
-    }
-  });
-
-  // Инициализация данных
-  loadDashboardStats();
-  loadCourses();
-  loadQuizzes();
-  loadPerformanceCourses();
-
-  // TODO: форма создания курса, квиза, обновление профиля и т.д.
 });
 
+// Функции applyLanguage/applyTheme оставляем без изменений из твоего кода
 function applyLanguage(lang) {
   // Устанавливаем атрибут lang на html
   document.documentElement.lang = lang;
@@ -263,7 +225,7 @@ function applyTheme(theme) {
   }
   themeToggle.title = translations[localStorage.getItem('language') || 'en'].switchTheme;
 
-setTimeout(() => {
+  setTimeout(() => {
     logout.disabled = false;
     logout.textContent = textMap[currentLang].submit;
     window.location.href = "login.html";
