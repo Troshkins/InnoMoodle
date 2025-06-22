@@ -1,0 +1,80 @@
+<div class="header">
+    <h1 class="welcome-title" id="course-editing-title">Редактирование курса</h1>
+  </div>
+  
+  <div class="editor">
+    <form id="edit-course-form">
+      <div class="form-group">
+        <label for="edit-course-title">Название курса</label>
+        <input type="text" id="edit-course-title" required class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="edit-course-shortname">Сокращенное название</label>
+        <input type="text" id="edit-course-shortname" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="edit-course-telegram">Ссылка на Telegram-чат</label>
+        <input type="url" id="edit-course-telegram" class="form-input">
+      </div>
+      
+      <!-- Секция для админа: группы и преподаватели -->
+      <div id="course-groups-section">
+        <div class="form-group">
+          <label>Группы курса</label>
+          <div class="checkbox-list" id="course-groups-list"></div>
+        </div>
+        
+        <div class="form-group" id="course-teachers-section">
+          <label>Преподаватели курса</label>
+          <div class="checkbox-list" id="course-emails-list"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Видимость курса</label>
+        <div class="checkbox-item">
+          <input type="checkbox" id="edit-course-visible" checked>
+          <label for="edit-course-visible">Курс виден студентам</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="edit-course-autovisible">Дата автоматического включения видимости</label>
+        <input type="datetime-local" id="edit-course-autovisible" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Разрешение на скачивание ресурсов</label>
+        <div class="checkbox-item">
+          <input type="checkbox" id="edit-course-download" checked>
+          <label for="edit-course-download">Разрешить скачивание</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Идентификационный номер курса</label>
+        <input type="text" id="edit-course-id" class="form-input" disabled>
+      </div>
+      
+      <div class="form-group">
+        <label>Ресурсы курса</label>
+        <div class="file-upload">
+          <input type="file" id="course-resources" multiple>
+          <button type="button" class="btn btn-secondary" id="add-resource-btn">Добавить</button>
+        </div>
+        <div id="resources-preview"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Прикрепленные ресурсы</label>
+        <div id="attached-resources" class="resources-list"></div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-edit-course">Отмена</button>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+      </div>
+    </form>
+  </div>

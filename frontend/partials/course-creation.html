@@ -1,0 +1,29 @@
+<div class="header">
+    <h1 class="welcome-title">Создание нового курса</h1>
+  </div>
+  
+  <div class="editor">
+    <form id="course-form">
+      <div class="form-group">
+        <label for="course-title">Название курса</label>
+        <input type="text" id="course-title" required class="form-input">
+      </div>
+      
+      <div class="two-columns">
+        <div class="form-group">
+          <label for="course-groups">Добавить группы</label>
+          <div class="checkbox-list" id="groups-list"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="course-emails">Добавить почты</label>
+          <div class="checkbox-list" id="emails-list"></div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-course">Отмена</button>
+        <button type="submit" class="btn btn-primary">Сохранить курс</button>
+      </div>
+    </form>
+  </div>

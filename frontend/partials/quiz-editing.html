@@ -1,0 +1,51 @@
+<div class="header">
+    <h1 class="welcome-title" id="quiz-editing-title">Редактирование теста/задания</h1>
+  </div>
+  
+  <div class="editor">
+    <form id="edit-quiz-form">
+      <div class="form-group">
+        <label for="edit-quiz-title">Название</label>
+        <input type="text" id="edit-quiz-title" required class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label for="edit-quiz-description">Описание</label>
+        <textarea id="edit-quiz-description" rows="3" class="form-input"></textarea>
+      </div>
+      
+      <div class="two-columns">
+        <div class="form-group">
+          <label for="edit-quiz-type">Тип</label>
+          <select id="edit-quiz-type" required class="form-input" disabled>
+            <option value="test">Тест</option>
+            <option value="assignment">Задание</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-quiz-course">Курс</label>
+          <select id="edit-quiz-course" required class="form-input" disabled></select>
+        </div>
+      </div>
+      
+      <div class="two-columns">
+        <div class="form-group">
+          <label for="edit-quiz-start">Дата начала</label>
+          <input type="datetime-local" id="edit-quiz-start" required class="form-input">
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-quiz-end">Дедлайн</label>
+          <input type="datetime-local" id="edit-quiz-end" required class="form-input">
+        </div>
+      </div>
+      
+      <div id="quiz-content"></div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-danger" id="delete-quiz">Удалить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
