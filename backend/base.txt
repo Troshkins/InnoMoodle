@@ -1,0 +1,5 @@
+// go.mod
+module example.com/moodle
+require (
+    github.com/lib/pq v1.10.11
+)
