@@ -1,0 +1,67 @@
+Plan for the sprint: Develop the creation of course, user interface in managing the platform
+
+– Build “Create Course” form in frontend
+Create a responsive form on the frontend allowing teachers to enter course details (name, description, schedule, etc.). The form should validate inputs and submit data via API.
+
+– Implement “Create Course” backend endpoint
+Develop a backend API endpoint that accepts POST requests to create new courses. It should handle input validation, authorization, and store the course in the database.
+
+– Define and publish UI style guide
+Create a centralized UI style guide including fonts, colors, button styles, form controls, and layout principles to ensure a consistent user experience across the platform.
+
+– Write end‑to‑end tests for dynamic updates
+Develop automated E2E tests (e.g., using Cypress or Playwright) to verify that dynamic content updates (like adding/removing elements) work without full page reloads.
+
+– Integrate bcrypt hashing into user registration
+Implement bcrypt password hashing in the user registration process to securely store user credentials and prevent plaintext password storage.
+
+– Develop design of course creation
+Work on wireframes or UI prototypes for the course creation page, defining layout, form fields, and visual structure. Now completed.
+
+– Current platform analysis 
+Research and document how the existing platform works (if any), identifying gaps, performance issues, and feature limitations to inform future development.
+
+– As a user, I want to reset my password via email
+Users should be able to request a password reset link via email, enabling them to regain access securely if they forget their credentials.
+
+– As a teacher, I want to delete files
+Allow teachers to remove files (e.g., outdated materials or mistaken uploads) from a course or personal storage space.
+
+– As a student, I want to see my predicted grade
+Implement a feature that calculates and displays predicted final grades for students based on assignments, tests, and weights.
+
+– As a teacher, I want to edit a course
+Enable teachers to update course details such as name, description, schedule, or attached files after creation.
+
+– As a teacher, I want to create a course
+Provide an interface and backend support for teachers to create new courses with necessary metadata and optionally attach files.
+
+– As a student, I want to view the list of available courses
+Students should be able to browse or search a list of courses open for registration or access, with relevant filters (e.g., subject, instructor).
+
+– As a user, I want the information to be hashed so that new data is stored securely
+All sensitive data (e.g., passwords) should be hashed before storage using secure algorithms like bcrypt to enhance system security.
+
+– As a teacher, I want to attach files to a course
+Allow uploading of files (e.g., PDFs, documents, videos) to a course that students can access as part of their learning materials.
+
+– As a teacher, I want to modify grades
+Teachers should be able to edit grades they have previously assigned to students, with proper authorization and tracking.
+
+– As a teacher, I want to assign grades
+Enable teachers to assign numeric or letter grades to students for their performance in assessments or participation.
+
+– As a student/teacher, I want to log in using my university email
+Support single sign-on (SSO) or email-based login using verified university domains to streamline authentication.
+
+– As an admin, I want to register new users
+Admins should be able to manually create accounts for new users (students, teachers, or other admins), optionally assigning roles and permissions.
+
+– As a student, I want to view course materials
+Provide students access to all materials (files, links, embedded content) associated with a course they are enrolled in.
+
+– As a user, I want the system to dynamically update content without full page reloads
+Implement frontend frameworks (e.g., React, Vue) or AJAX functionality to update UI components without reloading the entire page, improving UX.
+
+– As a user, I want to use a clear interface
+Ensure the overall UI/UX is intuitive, accessible, and visually appealing for all users (students, teachers, and admins).
