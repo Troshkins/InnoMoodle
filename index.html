@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting…</title>
+
+  <!-- Мгновенный редирект на frontend/index.html -->
+  <meta http-equiv="refresh" content="0; url=frontend/index.html">
+
+  <!-- На случай, если meta-refresh не сработает, дублируем через JS -->
+  <script>
+    window.location.replace('frontend/login.html');
+  </script>
+</head>
+<body>
+  <p>Redirecting to <a href="frontend/login.html">Home page</a>…</p>
+</body>
+</html>

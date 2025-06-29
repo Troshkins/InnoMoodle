@@ -441,14 +441,14 @@
       font-weight: 600;
       margin-bottom: 15px;
     }
-    
+
     .loading {
       text-align: center;
       padding: 50px;
       font-size: 1.2rem;
       color: var(--text-secondary);
     }
-    
+
     .error {
       color: var(--notify-danger-primary);
       padding: 30px;
@@ -598,19 +598,19 @@
       border-color: var(--main-primary);
       background-color: rgba(61, 127, 255, 0.1);
     }
-    
+
     /* Цвет текста кнопок ролей в темной теме */
     [data-theme="dark"] .role-btn {
       color: white;
     }
-    
+
     /* Улучшение внешнего вида групп */
     .groups-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
-    
+
     .group-card {
       background: var(--background-tertiary);
       border-radius: var(--border-radius-medium);
@@ -618,23 +618,23 @@
       border: 1px solid var(--element-primary);
       transition: all 0.2s;
     }
-    
+
     .group-card:hover {
       border-color: var(--main-primary);
     }
-    
+
     .group-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
     }
-    
+
     .group-title {
       font-weight: 600;
       font-size: 1.1rem;
     }
-    
+
     .group-emails {
       max-height: 200px;
       overflow-y: auto;
@@ -642,19 +642,19 @@
       background: var(--background-secondary);
       border-radius: var(--border-radius-small);
     }
-    
+
     .group-email-item {
       padding: 8px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .email-actions {
       display: flex;
       gap: 5px;
     }
-    
+
     .email-actions button {
       padding: 3px 8px;
       font-size: 0.8rem;
@@ -664,14 +664,14 @@
     .hidden {
       display: none !important;
     }
-    
+
     /* Иконки действий */
     .action-icon {
       width: 16px;
       height: 16px;
       cursor: pointer;
     }
-    
+
     /* Поле для правильных ответов */
     .correct-answers {
       margin-top: 10px;
@@ -679,13 +679,13 @@
       background: var(--background-secondary);
       border-radius: var(--border-radius-small);
     }
-    
+
     .correct-answer-item {
       display: flex;
       align-items: center;
       margin-bottom: 5px;
     }
-    
+
     /* Ресурсы курса */
     .resource-item {
       display: flex;
@@ -695,7 +695,7 @@
       border-radius: var(--border-radius-small);
       margin-bottom: 10px;
     }
-    
+
     .resource-icon {
       width: 24px;
       height: 24px;
@@ -709,7 +709,7 @@
       padding: 20px;
       background: var(--background-tertiary);
     }
-    
+
     .quiz-info {
       display: flex;
       justify-content: space-between;
@@ -717,35 +717,35 @@
       padding-bottom: 10px;
       border-bottom: 1px solid var(--element-primary);
     }
-    
+
     .question {
       margin-bottom: 30px;
       padding: 15px;
       background: var(--background-secondary);
       border-radius: var(--border-radius-small);
     }
-    
+
     .question-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
     }
-    
+
     .question-options {
       margin-top: 10px;
     }
-    
+
     .option {
       margin: 10px 0;
       display: flex;
       align-items: center;
     }
-    
+
     .option input {
       margin-right: 10px;
     }
-    
+
     .navigation-buttons {
       display: flex;
       justify-content: space-between;
@@ -756,7 +756,7 @@
 <body>
   <div class="top-toolbar">
     <div class="toolbar-left">
-      <img src="/assets/logo.png" alt="Logo" class="toolbar-logo">
+      <img src="./assets/logo.png" alt="Logo" class="toolbar-logo">
       <h1 class="toolbar-title">Innomoodle</h1>
     </div>
 
@@ -784,7 +784,7 @@
   <div class="layout">
     <aside class="sidebar">
       <div class="sidebar-header" id="menu-header">Меню</div>
-      
+
       <nav class="sidebar__nav">
         <ul>
           <li class="back-link" id="back-link">
@@ -795,7 +795,7 @@
               <span>Назад</span>
             </a>
           </li>
-          
+
           <!-- Админ -->
           <li class="admin-only"><a href="#" data-section="courses">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -803,21 +803,21 @@
             </svg>
             <span>Курсы</span>
           </a></li>
-          
+
           <li class="admin-only"><a href="#" data-section="groups">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M16 11H13V14H11V11H8V9H11V6H13V9H16V11ZM18 4V20C18 21.1 17.1 22 16 22H4C2.9 22 2 21.1 2 20V4C2 2.9 2.9 2 4 2H16C17.1 2 18 2.9 18 4ZM16 4H4V20H16V4Z"/>
             </svg>
             <span>Группы</span>
           </a></li>
-          
+
           <li class="admin-only"><a href="#" data-section="database">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M20 6H12L10 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6ZM20 18H4V8H20V18Z"/>
             </svg>
             <span>База Данных</span>
           </a></li>
-          
+
           <!-- Преподаватель и Студент -->
           <li class="teacher-student-only"><a href="#" data-section="quizzes">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -825,14 +825,14 @@
             </svg>
             <span>Тесты и задания</span>
           </a></li>
-          
+
           <li class="teacher-student-only"><a href="#" data-section="performance">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fill="currentColor" d="M16 11V5H14V11H10V5H8V11H5V13H8V19H10V13H14V19H16V13H19V11H16Z"/>
             </svg>
             <span>Успеваемость</span>
           </a></li>
-          
+
           <!-- Общий -->
           <li><a href="#" data-section="profile">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -842,7 +842,7 @@
           </a></li>
         </ul>
       </nav>
-      
+
       <div class="logout-link">
         <a href="#" id="logout-link">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -912,7 +912,7 @@
           <button class="view-btn" data-view="list">Список</button>
         </div>
       </div>
-      
+
       <div class="search">
         <select class="btn-toggle">
           <option>Все курсы</option>
@@ -922,7 +922,7 @@
         <input type="text" placeholder="Поиск курсов" class="btn-toggle">
       </div>
     </div>
-    
+
     <div class="card-container">
       <div class="card" id="create-course-btn">
         <div class="card__body" style="text-align: center; padding: 40px;">
@@ -945,19 +945,19 @@
           <label for="course-title">Название курса</label>
           <input type="text" id="course-title" required class="form-input">
         </div>
-        
+
         <div class="two-columns">
           <div class="form-group">
             <label for="course-groups">Добавить группы</label>
             <div class="checkbox-list" id="groups-list"></div>
           </div>
-          
+
           <div class="form-group">
             <label for="course-emails">Добавить почты</label>
             <div class="checkbox-list" id="emails-list"></div>
           </div>
         </div>
-        
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="cancel-course">Отмена</button>
           <button type="submit" class="btn btn-primary">Сохранить курс</button>
@@ -977,17 +977,17 @@
           <label for="edit-course-title">Название курса</label>
           <input type="text" id="edit-course-title" required class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label for="edit-course-shortname">Сокращенное название</label>
           <input type="text" id="edit-course-shortname" class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label for="edit-course-telegram">Ссылка на Telegram-чат</label>
           <input type="url" id="edit-course-telegram" class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label>Видимость курса</label>
           <div class="checkbox-item">
@@ -995,12 +995,12 @@
             <label for="edit-course-visible">Курс виден студентам</label>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="edit-course-autovisible">Дата автоматического включения видимости</label>
           <input type="datetime-local" id="edit-course-autovisible" class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label>Разрешение на скачивание ресурсов</label>
           <div class="checkbox-item">
@@ -1008,23 +1008,23 @@
             <label for="edit-course-download">Разрешить скачивание</label>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label>Добавить ресурсы</label>
           <input type="file" id="course-resources" multiple class="form-input">
           <div id="resources-preview"></div>
         </div>
-        
+
         <div class="form-group">
           <label>Прикрепленные ресурсы</label>
           <div id="attached-resources"></div>
         </div>
-        
+
         <div class="form-group">
           <label>Группы курса</label>
           <div class="groups-list" id="course-groups-list"></div>
         </div>
-        
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="cancel-edit-course">Отмена</button>
           <button type="submit" class="btn btn-primary">Сохранить изменения</button>
@@ -1038,12 +1038,12 @@
       <div>
         <h1 class="welcome-title">Группы</h1>
       </div>
-      
+
       <div>
         <button class="btn btn-primary" id="create-group-btn">Создать группу</button>
       </div>
     </div>
-    
+
     <div class="groups-container" id="groups-container"></div>
   </template>
 
@@ -1058,12 +1058,12 @@
           <label for="group-name">Название группы</label>
           <input type="text" id="group-name" required class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label for="group-emails">Выберите почты</label>
           <div class="checkbox-list" id="group-emails-list"></div>
         </div>
-        
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="cancel-group">Отмена</button>
           <button type="submit" class="btn btn-primary">Сохранить группу</button>
@@ -1085,9 +1085,9 @@
           <button class="btn btn-primary" id="add-email-btn">Добавить</button>
         </div>
       </div>
-      
+
       <div class="list-container" id="group-emails-container"></div>
-      
+
       <div class="form-actions">
         <button type="button" class="btn btn-danger" id="delete-group">Удалить группу</button>
       </div>
@@ -1099,13 +1099,13 @@
       <div>
         <h1 class="welcome-title">База Данных</h1>
       </div>
-      
+
       <div class="search">
         <input type="text" placeholder="Поиск по почте" class="btn-toggle">
         <button class="btn btn-primary" id="add-email-db">Добавить почту</button>
       </div>
     </div>
-    
+
     <div class="list-container" id="database-container"></div>
   </template>
 
@@ -1120,7 +1120,7 @@
           <label for="email-address">Email адрес</label>
           <input type="email" id="email-address" required class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label for="email-role">Роль</label>
           <select id="email-role" required class="form-input">
@@ -1128,7 +1128,7 @@
             <option value="teacher">Преподаватель</option>
           </select>
         </div>
-        
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="cancel-email">Отмена</button>
           <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -1146,7 +1146,7 @@
             <button class="view-btn" data-view="list">Список</button>
         </div>
       </div>
-      
+
       <div class="search">
         <select class="btn-toggle">
           <option>Все тесты</option>
@@ -1156,7 +1156,7 @@
         <input type="text" placeholder="Поиск тестов" class="btn-toggle">
       </div>
     </div>
-    
+
     <div class="card-container">
       <div class="card" id="create-quiz-btn">
         <div class="card__body" style="text-align: center; padding: 40px;">
@@ -1179,12 +1179,12 @@
           <label for="quiz-title">Название</label>
           <input type="text" id="quiz-title" required class="form-input">
         </div>
-        
+
         <div class="form-group">
           <label for="quiz-description">Описание (опционально)</label>
           <textarea id="quiz-description" rows="3" class="form-input"></textarea>
         </div>
-        
+
         <div class="two-columns">
           <div class="form-group">
             <label for="quiz-type">Тип</label>
@@ -1193,27 +1193,27 @@
               <option value="assignment">Задание</option>
             </select>
           </div>
-          
+
           <div class="form-group">
             <label for="quiz-course">Курс</label>
             <select id="quiz-course" required class="form-input"></select>
           </div>
         </div>
-        
+
         <div class="two-columns">
           <div class="form-group">
             <label for="quiz-start">Дата начала</label>
             <input type="datetime-local" id="quiz-start" required class="form-input">
           </div>
-          
+
           <div class="form-group">
             <label for="quiz-end">Дедлайн</label>
             <input type="datetime-local" id="quiz-end" required class="form-input">
           </div>
         </div>
-        
+
         <div id="quiz-content"></div>
-        
+
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="cancel-quiz">Отмена</button>
           <button type="submit" class="btn btn-primary">Сохранить</button>
@@ -1243,7 +1243,7 @@
         <label>Вопрос</label>
         <input type="text" class="question-text form-input" placeholder="Текст вопроса">
       </div>
-      
+
       <div class="form-group">
         <label>Тип вопроса</label>
         <select class="question-type form-input">
@@ -1251,7 +1251,7 @@
           <option value="open">Открытый вопрос</option>
         </select>
       </div>
-      
+
       <div class="question-options">
         <div class="form-group">
           <label>Варианты ответов</label>
@@ -1259,7 +1259,7 @@
           <button type="button" class="btn btn-secondary add-option">Добавить вариант</button>
         </div>
       </div>
-      
+
       <div class="form-group">
         <button type="button" class="btn btn-danger delete-question">Удалить вопрос</button>
       </div>
@@ -1270,7 +1270,7 @@
     <div class="header">
       <h1 class="welcome-title">Успеваемость</h1>
     </div>
-    
+
     <div class="two-columns">
       <div>
         <h2>Общая статистика</h2>
@@ -1281,7 +1281,7 @@
           </div>
         </div>
       </div>
-      
+
       <div>
         <h2>По курсам</h2>
         <div class="list-container" id="courses-performance"></div>
@@ -1293,18 +1293,18 @@
     <div class="header">
       <h1 class="welcome-title">Профиль</h1>
     </div>
-    
+
     <div class="profile-form">
       <div class="form-group">
         <label>Имя</label>
         <input type="text" value="Иван Иванов" class="form-input" disabled>
       </div>
-      
+
       <div class="form-group">
         <label>Email</label>
         <input type="email" value="i.ivanov@innopolis.ru" class="form-input" disabled>
       </div>
-      
+
       <h2>Сменить роль</h2>
       <div class="role-selector">
         <button type="button" class="role-btn" data-role="admin">Админ</button>
@@ -1322,14 +1322,14 @@
         <div>Дедлайн: <span id="quiz-deadline">30.06.2025, 23:59</span></div>
       </div>
     </div>
-    
+
     <div class="quiz-container">
       <div id="quiz-instructions">
         <h3>Инструкции</h3>
         <p>Ответьте на все вопросы. После завершения нажмите "Отправить ответы".</p>
         <p>Вы можете возвращаться к предыдущим вопросам для изменения ответов.</p>
       </div>
-      
+
       <form id="quiz-form">
         <div class="question" id="question-1">
           <div class="question-header">
@@ -1354,7 +1354,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="question" id="question-2">
           <div class="question-header">
             <h3>Вопрос 2</h3>
@@ -1382,7 +1382,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="question" id="question-3">
           <div class="question-header">
             <h3>Вопрос 3</h3>
@@ -1395,12 +1395,12 @@
             <textarea class="form-input" rows="4" placeholder="Введите ваш ответ..."></textarea>
           </div>
         </div>
-        
+
         <div class="navigation-buttons">
           <button type="button" class="btn btn-secondary" id="prev-question">Предыдущий</button>
           <button type="button" class="btn btn-secondary" id="next-question">Следующий</button>
         </div>
-        
+
         <div class="form-actions">
           <button type="submit" class="btn btn-primary" id="submit-quiz">Отправить ответы</button>
         </div>
@@ -1414,7 +1414,7 @@
       if (!localStorage.getItem('role')) {
         localStorage.setItem('role', 'admin');
       }
-      
+
       if (!localStorage.getItem('emails')) {
         const emails = [
           { id: 1, email: 'student1@innopolis.ru', role: 'student' },
@@ -1424,19 +1424,19 @@
         ];
         localStorage.setItem('emails', JSON.stringify(emails));
       }
-      
+
       if (!localStorage.getItem('groups')) {
         localStorage.setItem('groups', JSON.stringify([]));
       }
-      
+
       if (!localStorage.getItem('courses')) {
         localStorage.setItem('courses', JSON.stringify([]));
       }
-      
+
       if (!localStorage.getItem('quizzes')) {
         localStorage.setItem('quizzes', JSON.stringify([]));
       }
-      
+
       // Сохраняем текущий раздел
       if (!localStorage.getItem('currentSection')) {
         localStorage.setItem('currentSection', 'dashboard');
@@ -1451,16 +1451,16 @@
     // Обновление видимости элементов в зависимости от роли
     const updateRoleVisibility = () => {
       const role = getCurrentRole();
-      
+
       // Скрываем/показываем элементы в сайдбаре
       document.querySelectorAll('.admin-only').forEach(el => {
         el.style.display = role === 'admin' ? 'block' : 'none';
       });
-      
+
       document.querySelectorAll('.teacher-student-only').forEach(el => {
         el.style.display = role === 'admin' ? 'none' : 'block';
       });
-      
+
       // Обновляем активную кнопку роли в профиле
       document.querySelectorAll('.role-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -1474,7 +1474,7 @@
     const initTheme = () => {
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
-      
+
       const themeIcon = document.getElementById('themeIcon');
       if (savedTheme === 'dark') {
         themeIcon.innerHTML = '<path fill="currentColor" d="M12.8956 3.55332C12.705 3.53848 12.5145 3.5357 12.3244 3.545C12.2186 3.54997 12.1127 3.558 12.007 3.56908C7.91503 3.96808 5 7.36458 5 11.5C5 15.9208 8.57925 19.5 13 19.5C16.1354 19.5 18.7827 17.7148 20 15.1563C20.0627 15.0324 20.0311 14.8841 19.9233 14.7946C19.8154 14.705 19.6562 14.6966 19.5381 14.7747C19.0995 15.061 18.6081 15.2648 18.0916 15.375C17.5751 15.4853 17.0429 15.5002 16.5214 15.4188C16 15.3374 15.4998 15.1611 15.0462 14.8993C14.5926 14.6375 14.1943 14.2953 13.8732 13.891C13.5521 13.4866 13.3145 13.0279 13.173 12.5402C13.0315 12.0525 12.9889 11.545 13.0475 11.0443C13.1061 10.5435 13.2648 10.0593 13.5151 9.6184C13.7655 9.17748 14.1024 8.78877 14.507 8.47422C14.9116 8.15968 15.3761 7.9258 15.8748 7.786C16.3734 7.6462 16.8964 7.60344 17.4127 7.66025C17.929 7.71706 18.4283 7.87231 18.881 8.11672C19.0048 8.18504 19.1569 8.17129 19.2669 8.08259C19.3769 7.99389 19.4247 7.84715 19.3881 7.70847C18.9966 6.12034 18.0004 4.71715 16.5705 3.76408C15.1405 2.81101 13.3685 2.37142 11.6097 2.52847C10.9989 2.5896 10.3958 2.72057 9.81276 2.91878C9.68142 2.96322 9.53306 2.92888 9.439 2.8328C9.34495 2.73673 9.32351 2.59824 9.38438 2.48437C9.79788 1.69938 10.4231 1.04187 11.1932 0.581793C11.9633 0.121717 12.8497 -0.122577 13.7494 0.0462515C14.6491 0.21508 15.529 0.660079 16.2958 1.34136C17.0627 2.02264 17.689 2.91806 18.1131 3.94416C18.5371 4.97026 18.7439 6.09311 18.7141 7.22457C18.6842 8.35603 18.4187 9.45971 17.9423 10.447C17.4659 11.4343 16.7946 12.2754 15.9866 12.8995C15.1787 13.5236 14.2592 13.9124 13.3094 14.032C12.3596 14.1515 11.4103 13.9982 10.5415 13.5875C9.67266 13.1767 8.91263 12.5224 8.33441 11.6846C7.75619 10.8469 7.37996 9.85389 7.24418 8.80338C7.1084 7.75287 7.21825 6.6812 7.56208 5.68922C7.90591 4.69724 8.47186 3.81929 9.205 3.14359C9.93814 2.46789 10.812 2.01786 11.7397 1.839"/>';
@@ -1500,10 +1500,10 @@
         if (e.target.classList.contains('view-btn')) {
           document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
           e.target.classList.add('active');
-          
+
           const viewType = e.target.dataset.view;
           const container = document.querySelector('.card-container');
-          
+
           if (container) {
             if (viewType === 'list') {
               container.classList.add('list-view');
@@ -1520,7 +1520,7 @@
       const isDashboard = section === 'dashboard';
       document.getElementById('menu-header').style.display = isDashboard ? 'block' : 'none';
       document.getElementById('back-link').style.display = isDashboard ? 'none' : 'block';
-      
+
       document.querySelectorAll('.sidebar__nav a').forEach(a => {
         a.classList.remove('active');
         if (a.dataset.section === section) {
@@ -1542,7 +1542,7 @@
     const loadContent = (section) => {
       try {
         let templateId = '';
-        
+
         switch(section) {
           case 'dashboard':
             templateId = 'dashboard-template';
@@ -1589,13 +1589,13 @@
           default:
             templateId = 'dashboard-template';
         }
-        
+
         renderPage(templateId);
         updateSidebar(section);
-        
+
         // Сохраняем текущий раздел
         localStorage.setItem('currentSection', section);
-        
+
         // Инициализация компонентов страницы
         setupViewToggle();
         initPageSpecificLogic(section);
@@ -1658,11 +1658,11 @@
       document.getElementById('create-course-btn')?.addEventListener('click', () => {
         loadContent('course_creation');
       });
-      
+
       // Отображение существующих курсов
       const courses = JSON.parse(localStorage.getItem('courses')) || [];
       const container = document.querySelector('.card-container');
-      
+
       courses.forEach(course => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -1685,7 +1685,7 @@
       // Заполняем список групп
       const groupsList = document.getElementById('groups-list');
       const groups = JSON.parse(localStorage.getItem('groups')) || [];
-      
+
       groups.forEach(group => {
         const div = document.createElement('div');
         div.className = 'checkbox-item';
@@ -1695,11 +1695,11 @@
         `;
         groupsList?.appendChild(div);
       });
-      
+
       // Заполняем список почт
       const emailsList = document.getElementById('emails-list');
       const emails = JSON.parse(localStorage.getItem('emails')) || [];
-      
+
       emails.forEach(email => {
         const div = document.createElement('div');
         div.className = 'checkbox-item';
@@ -1709,13 +1709,13 @@
         `;
         emailsList?.appendChild(div);
       });
-      
+
       // Если это редактирование - заполняем данные
       if (mode === 'course_editing') {
         const courseId = localStorage.getItem('currentCourse');
         const courses = JSON.parse(localStorage.getItem('courses')) || [];
         const course = courses.find(c => c.id == courseId);
-        
+
         if (course) {
           document.getElementById('course-editing-title').textContent = `Редактирование курса: ${course.title}`;
           document.getElementById('edit-course-title').value = course.title;
@@ -1726,7 +1726,7 @@
           document.getElementById('edit-course-download').checked = course.allowDownload !== false;
         }
       }
-      
+
       // Отмена создания/редактирования
       document.getElementById('cancel-course')?.addEventListener('click', () => {
         loadContent('courses');
@@ -1734,14 +1734,14 @@
       document.getElementById('cancel-edit-course')?.addEventListener('click', () => {
         loadContent('courses');
       });
-      
+
       // Сохранение курса
       document.getElementById('course-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const title = document.getElementById('course-title').value;
         const courses = JSON.parse(localStorage.getItem('courses')) || [];
-        
+
         // Сохраняем новый курс
         courses.push({
           id: Date.now(),
@@ -1749,19 +1749,19 @@
           groups: [],
           emails: []
         });
-        
+
         localStorage.setItem('courses', JSON.stringify(courses));
         loadContent('courses');
       });
-      
+
       // Сохранение изменений курса
       document.getElementById('edit-course-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const courseId = localStorage.getItem('currentCourse');
         const courses = JSON.parse(localStorage.getItem('courses')) || [];
         const courseIndex = courses.findIndex(c => c.id == courseId);
-        
+
         if (courseIndex !== -1) {
           courses[courseIndex].title = document.getElementById('edit-course-title').value;
           courses[courseIndex].shortName = document.getElementById('edit-course-shortname').value;
@@ -1769,7 +1769,7 @@
           courses[courseIndex].visible = document.getElementById('edit-course-visible').checked;
           courses[courseIndex].autoVisible = document.getElementById('edit-course-autovisible').value;
           courses[courseIndex].allowDownload = document.getElementById('edit-course-download').checked;
-          
+
           localStorage.setItem('courses', JSON.stringify(courses));
           loadContent('courses');
         }
@@ -1782,22 +1782,22 @@
       document.getElementById('create-group-btn')?.addEventListener('click', () => {
         loadContent('group_creation');
       });
-      
+
       // Заполняем список групп
       const groupsContainer = document.getElementById('groups-container');
       const groups = JSON.parse(localStorage.getItem('groups')) || [];
-      
+
       groups.forEach(group => {
         const groupCard = document.createElement('div');
         groupCard.className = 'group-card';
-        
+
         // Получаем список email для группы
         const emails = JSON.parse(localStorage.getItem('emails')) || [];
         const groupEmails = group.emails.map(emailId => {
           const email = emails.find(e => e.id == emailId);
           return email ? email.email : '';
         }).filter(email => email);
-        
+
         groupCard.innerHTML = `
           <div class="group-header">
             <div class="group-title">${group.name}</div>
@@ -1814,14 +1814,14 @@
             `).join('')}
           </div>
         `;
-        
+
         // Обработчик редактирования группы
         groupCard.querySelector('.edit-group').addEventListener('click', () => {
           const groupId = groupCard.querySelector('.edit-group').dataset.id;
           localStorage.setItem('currentGroup', groupId);
           loadContent('group_details');
         });
-        
+
         groupsContainer.appendChild(groupCard);
       });
     };
@@ -1831,7 +1831,7 @@
       // Заполняем список почт
       const emailsList = document.getElementById('group-emails-list');
       const emails = JSON.parse(localStorage.getItem('emails')) || [];
-      
+
       emails.forEach(email => {
         const div = document.createElement('div');
         div.className = 'checkbox-item';
@@ -1841,26 +1841,26 @@
         `;
         emailsList.appendChild(div);
       });
-      
+
       // Отмена создания
       document.getElementById('cancel-group')?.addEventListener('click', () => {
         loadContent('groups');
       });
-      
+
       // Сохранение группы
       document.getElementById('group-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const name = document.getElementById('group-name').value;
         const groups = JSON.parse(localStorage.getItem('groups')) || [];
-        
+
         // Сохраняем новую группу
         groups.push({
           id: Date.now(),
           name,
           emails: []
         });
-        
+
         localStorage.setItem('groups', JSON.stringify(groups));
         loadContent('groups');
       });
@@ -1871,23 +1871,23 @@
       const groupId = localStorage.getItem('currentGroup');
       const groups = JSON.parse(localStorage.getItem('groups')) || [];
       const group = groups.find(g => g.id == groupId);
-      
+
       if (!group) {
         loadContent('groups');
         return;
       }
-      
+
       // Устанавливаем название группы
       document.getElementById('group-title').textContent = `Группа: ${group.name}`;
-      
+
       // Заполняем список почт группы
       const emailsContainer = document.getElementById('group-emails-container');
       emailsContainer.innerHTML = '';
-      
+
       group.emails.forEach(emailId => {
         const emails = JSON.parse(localStorage.getItem('emails')) || [];
         const email = emails.find(e => e.id == emailId);
-        
+
         if (email) {
           const div = document.createElement('div');
           div.className = 'list-item';
@@ -1900,15 +1900,15 @@
           emailsContainer.appendChild(div);
         }
       });
-      
+
       // Обработчик добавления почты
       document.getElementById('add-email-btn')?.addEventListener('click', () => {
         const email = document.getElementById('add-email').value.trim();
         if (!email) return;
-        
+
         const emails = JSON.parse(localStorage.getItem('emails')) || [];
         const emailExists = emails.some(e => e.email === email);
-        
+
         if (!emailExists) {
           // Добавляем новую почту
           const newEmail = {
@@ -1916,21 +1916,21 @@
             email,
             role: 'student'
           };
-          
+
           emails.push(newEmail);
           localStorage.setItem('emails', JSON.stringify(emails));
-          
+
           // Добавляем почту в группу
           group.emails.push(newEmail.id);
           localStorage.setItem('groups', JSON.stringify(groups));
-          
+
           // Обновляем список
           initGroupDetailsPage();
         } else {
           alert('Этот email уже существует в базе');
         }
       });
-      
+
       // Обработчики удаления почты
       document.querySelectorAll('.remove-email').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1940,7 +1940,7 @@
           initGroupDetailsPage();
         });
       });
-      
+
       // Обработчик удаления группы
       document.getElementById('delete-group')?.addEventListener('click', () => {
         const updatedGroups = groups.filter(g => g.id != groupId);
@@ -1955,11 +1955,11 @@
       document.getElementById('add-email-db')?.addEventListener('click', () => {
         loadContent('email_add');
       });
-      
+
       // Заполняем список почт
       const dbContainer = document.getElementById('database-container');
       const emails = JSON.parse(localStorage.getItem('emails')) || [];
-      
+
       emails.forEach(email => {
         const div = document.createElement('div');
         div.className = 'list-item';
@@ -1974,7 +1974,7 @@
         `;
         dbContainer.appendChild(div);
       });
-      
+
       // Обработчики удаления почты
       document.querySelectorAll('.delete-email').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1993,21 +1993,21 @@
       document.getElementById('cancel-email')?.addEventListener('click', () => {
         loadContent('database');
       });
-      
+
       // Сохранение почты
       document.getElementById('email-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const email = document.getElementById('email-address').value;
         const role = document.getElementById('email-role').value;
-        
+
         const emails = JSON.parse(localStorage.getItem('emails')) || [];
         emails.push({
           id: Date.now(),
           email,
           role
         });
-        
+
         localStorage.setItem('emails', JSON.stringify(emails));
         loadContent('database');
       });
@@ -2016,7 +2016,7 @@
     // Инициализация страницы тестов и заданий
     const initQuizzesPage = () => {
       const role = getCurrentRole();
-      
+
       // Для преподавателя и админа показываем кнопку создания
       if (role !== 'student') {
         document.getElementById('create-quiz-btn').style.display = 'block';
@@ -2026,11 +2026,11 @@
       } else {
         document.getElementById('create-quiz-btn').style.display = 'none';
       }
-      
+
       // Отображение существующих тестов и заданий
       const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
       const container = document.querySelector('.card-container');
-      
+
       quizzes.forEach(quiz => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -2040,7 +2040,7 @@
             <p class="card__progress">${quiz.type === 'test' ? 'Тест' : 'Задание'}</p>
           </div>
         `;
-        
+
         if (role === 'student') {
           // Для студента - возможность пройти тест
           card.addEventListener('click', () => {
@@ -2054,7 +2054,7 @@
             loadContent('quiz_creation');
           });
         }
-        
+
         container.appendChild(card);
       });
     };
@@ -2064,25 +2064,25 @@
       // Заполняем список курсов
       const courseSelect = document.getElementById('quiz-course');
       const courses = JSON.parse(localStorage.getItem('courses')) || [];
-      
+
       courses.forEach(course => {
         const option = document.createElement('option');
         option.value = course.id;
         option.textContent = course.title;
         courseSelect.appendChild(option);
       });
-      
+
       // Обработчик изменения типа
       const quizType = document.getElementById('quiz-type');
       const quizContent = document.getElementById('quiz-content');
-      
+
       const updateContent = () => {
         quizContent.innerHTML = '';
-        
+
         if (quizType.value === 'test') {
           const template = document.getElementById('test-content-template');
           quizContent.appendChild(template.content.cloneNode(true));
-          
+
           // Добавление первого вопроса
           document.getElementById('add-question')?.click();
         } else {
@@ -2090,10 +2090,10 @@
           quizContent.appendChild(template.content.cloneNode(true));
         }
       };
-      
+
       quizType.addEventListener('change', updateContent);
       updateContent();
-      
+
       // Обработчик добавления вопроса
       document.addEventListener('click', (e) => {
         if (e.target.id === 'add-question') {
@@ -2102,20 +2102,20 @@
           questionContainer.appendChild(template.content.cloneNode(true));
         }
       });
-      
+
       // Обработчик удаления вопроса
       document.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-question')) {
           e.target.closest('.question-editor').remove();
         }
       });
-      
+
       // Обработчик добавления варианта ответа
       document.addEventListener('click', (e) => {
         if (e.target.classList.contains('add-option')) {
           const optionsList = e.target.previousElementSibling;
           const optionCount = optionsList.children.length + 1;
-          
+
           const div = document.createElement('div');
           div.className = 'checkbox-item';
           div.innerHTML = `
@@ -2126,20 +2126,20 @@
           optionsList.appendChild(div);
         }
       });
-      
+
       // Обработчик удаления варианта ответа
       document.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-option')) {
           e.target.parentElement.remove();
         }
       });
-      
+
       // Обработчик изменения типа вопроса
       document.addEventListener('change', (e) => {
         if (e.target.classList.contains('question-type')) {
           const questionEditor = e.target.closest('.question-editor');
           const optionsContainer = questionEditor.querySelector('.question-options');
-          
+
           if (e.target.value === 'open') {
             // Для открытого вопроса
             optionsContainer.innerHTML = `
@@ -2149,7 +2149,7 @@
                 <button type="button" class="btn btn-secondary add-correct-answer">Добавить ответ</button>
               </div>
             `;
-            
+
             // Добавляем обработчик для добавления ответа
             questionEditor.querySelector('.add-correct-answer').addEventListener('click', () => {
               const answersContainer = questionEditor.querySelector('.correct-answers');
@@ -2173,19 +2173,19 @@
           }
         }
       });
-      
+
       // Отмена создания
       document.getElementById('cancel-quiz')?.addEventListener('click', () => {
         loadContent('quizzes');
       });
-      
+
       // Сохранение теста/задания
       document.getElementById('quiz-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         const title = document.getElementById('quiz-title').value;
         const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-        
+
         // Сохраняем новый тест/задание
         quizzes.push({
           id: Date.now(),
@@ -2195,7 +2195,7 @@
           startDate: document.getElementById('quiz-start').value,
           endDate: document.getElementById('quiz-end').value
         });
-        
+
         localStorage.setItem('quizzes', JSON.stringify(quizzes));
         loadContent('quizzes');
       });
@@ -2206,7 +2206,7 @@
       // Заполняем список курсов
       const container = document.getElementById('courses-performance');
       const courses = JSON.parse(localStorage.getItem('courses')) || [];
-      
+
       courses.forEach(course => {
         const div = document.createElement('div');
         div.className = 'list-item';
@@ -2235,22 +2235,22 @@
       const quizId = localStorage.getItem('currentQuiz');
       const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
       const quiz = quizzes.find(q => q.id == quizId);
-      
+
       if (quiz) {
         document.getElementById('student-quiz-title').textContent = quiz.title;
-        
+
         // Здесь будет отображение вопросов теста
       }
-      
+
       // Таймер обратного отсчета
       let timeLeft = 60 * 60; // 60 минут
       const timerElement = document.getElementById('quiz-timer');
-      
+
       const updateTimer = () => {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
+
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           document.getElementById('submit-quiz').click();
@@ -2258,7 +2258,7 @@
           timeLeft--;
         }
       };
-      
+
       const timerInterval = setInterval(updateTimer, 1000);
       updateTimer();
     };
@@ -2287,11 +2287,11 @@
       setupThemeToggle();
       updateRoleVisibility();
       setupNavigation();
-      
+
       // Загружаем последний открытый раздел
       const currentSection = localStorage.getItem('currentSection') || 'dashboard';
       loadContent(currentSection);
-      
+
       // Обработчик выхода
       document.getElementById('logout-link')?.addEventListener('click', (e) => {
         e.preventDefault();

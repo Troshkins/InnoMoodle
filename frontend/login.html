@@ -12,8 +12,8 @@
   <div class="auth-card">
     <div class="auth-card__header">
       <a href="/">
-        <img src="/assets/logo.png" alt="logo" >
-      </a>  
+        <img src="./assets/logo.png" alt="logo" >
+      </a>
       <h1 id="title">InnoMoodle</h1>
     </div>
 
@@ -62,7 +62,7 @@
 
       // Инициализация языка из localStorage
       let currentLang = localStorage.getItem('lang') || 'ru';
-      
+
       // Применить текущий язык
       const applyLanguage = () => {
         const map = textMap[currentLang];
@@ -93,7 +93,7 @@
       submitBtn.addEventListener('click', function() {
         // Сохраняем исходный текст кнопки
         const originalText = submitBtn.textContent;
-        
+
         // Блокируем кнопку и меняем текст
         submitBtn.disabled = true;
         submitBtn.textContent = textMap[currentLang].checking;
@@ -102,10 +102,10 @@
         setTimeout(() => {
           // Устанавливаем флаг авторизации
           localStorage.setItem('isLoggedIn', 'true');
-          
+
           // Перенаправляем на главную страницу
-          window.location.href = "index.html";
-          
+          window.location.href = "home.html";
+
           // Восстанавливаем кнопку (на случай, если перенаправление не сработает)
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
