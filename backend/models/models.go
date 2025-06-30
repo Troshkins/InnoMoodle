@@ -56,6 +56,7 @@ type Filling struct {
 
 // PDF = PDF-документ к наполнению
 type PDF struct {
+	ID        int64
 	FillingID int64
 }
 

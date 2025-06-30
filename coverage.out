@@ -1,0 +1,6 @@
+mode: set
+github.com/Troshkins/InnoMoodle/backend/db/db.go:21.40,27.16 3 0
+github.com/Troshkins/InnoMoodle/backend/db/db.go:27.16,29.3 1 0
+github.com/Troshkins/InnoMoodle/backend/db/db.go:31.2,31.34 1 0
+github.com/Troshkins/InnoMoodle/backend/db/db.go:31.34,33.3 1 0
+github.com/Troshkins/InnoMoodle/backend/db/db.go:34.2,34.16 1 0
