@@ -1,1 +1,28 @@
+name: User Story
+description: Describe a feature from the user's perspective with acceptance criteria.
+title: "[User Story] "
+labels: ["user story"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **As a** [type of user],  
+        **I want** [an action]  
+        **so that** [a benefit/value].  
 
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria (GIVEN/WHEN/THEN)
+      description: Provide clear acceptance criteria in the specified format.
+      placeholder: |
+        GIVEN [context/precondition]  
+        WHEN [action/event]  
+        THEN [expected outcome]  
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Add any other relevant context, screenshots, or references.
+      required: false
