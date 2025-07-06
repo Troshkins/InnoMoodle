@@ -10,8 +10,8 @@ html, body {
   background-image: url("../assets/innopolis-photo.jpg");
   margin: 0;
   padding: 0;
-
   background-size: cover;
+  
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -27,7 +27,7 @@ body.dark {
   background-blend-mode: overlay;
   color: #eee;
 }
-
+/*  */
 /* Карточка формы */
 .auth-card {
   background: var(--card-bg);
@@ -56,9 +56,10 @@ body.dark .auth-card { --card-bg: #1e1e1e; }
 .auth-card__form { display: flex; flex-direction: column; }
 
 .auth-card__form button {
-  padding: 12px;
+  
   background: #40ba20;
   color: #fff;
+  padding: 12px;
   border: none;
   border-radius: 10px;
   font-size: 15px;
