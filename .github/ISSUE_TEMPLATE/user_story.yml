@@ -25,4 +25,3 @@ body:
     attributes:
       label: Additional Context
       description: Add any other relevant context, screenshots, or references.
-      required: false
