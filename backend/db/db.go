@@ -1,12 +1,11 @@
 package db
 
 import (
-	//	"context"
 	"database/sql"
 	"fmt"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	//	"time"
 )
 
 type Config struct {
@@ -27,8 +26,15 @@ func Open(cfg Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	// опция: проверить подключение
 	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func Connect(dsn string) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("postgres", dsn)
+	if err != nil {
 		return nil, err
 	}
 	return db, nil

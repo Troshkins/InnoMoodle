@@ -5,97 +5,86 @@ import (
 	"time"
 )
 
-// User = пользователь (студент или преподаватель)
 type User struct {
-	ID       int64
-	Name     string
-	Password string
-	Email    string
+	ID       int64  `db:"id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	Password string `db:"password" json:"-"`
+	Email    string `db:"email" json:"email"`
 }
 
-// Admin = администратор
 type Admin struct {
-	ID       int64
-	Email    string
-	Password string
+	ID       int64  `db:"id" json:"id"`
+	Email    string `db:"email" json:"email"`
+	Password string `db:"password" json:"-"`
 }
 
-// Course = курс
 type Course struct {
-	ID           int64
-	Name         string
-	Completeness bool
+	ID           int64  `db:"id" json:"id"`
+	Name         string `db:"name" json:"name"`
+	Completeness bool   `db:"completeness" json:"completeness"`
 }
 
-// StudyGroup = учебная группа
 type StudyGroup struct {
-	ID   int64
-	Name string
+	ID   int64  `db:"id" json:"id"`
+	Name string `db:"name" json:"name"`
 }
 
-// CourseBlock = блок содержимого курса
 type CourseBlock struct {
-	ID       int64
-	Name     string
-	CourseID int64
+	ID       int64  `db:"id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	CourseID int64  `db:"course_id" json:"course_id"`
 }
 
-// Announcement = объявление к блоку
 type Announcement struct {
-	ID      int64
-	Name    string
-	Info    sql.NullString
-	BlockID int64
+	ID      int64          `db:"id" json:"id"`
+	Name    string         `db:"name" json:"name"`
+	Info    sql.NullString `db:"info" json:"info"`
+	BlockID int64          `db:"block_id" json:"block_id"`
 }
 
-// Filling = наполнение блока
 type Filling struct {
-	ID      int64
-	BlockID int64
+	ID      int64 `db:"id" json:"id"`
+	BlockID int64 `db:"block_id" json:"block_id"`
 }
 
-// PDF = PDF-документ к наполнению
 type PDF struct {
-	ID        int64
-	FillingID int64
+	ID        int64 `db:"id" json:"id"`
+	FillingID int64 `db:"filling_id" json:"filling_id"`
 }
 
-// Quiz = тест/викторина
 type Quiz struct {
-	ID           int64
-	Name         string
-	Start        time.Time
-	End          time.Time
-	Returnable   bool
-	Random       bool
-	TimeLimit    int
-	ResultsShown bool
-	TryCount     int
-	FillingID    int64
+	ID           int64     `db:"id" json:"id"`
+	Name         string    `db:"name" json:"name"`
+	Start        time.Time `db:"start" json:"start"`
+	End          time.Time `db:"end" json:"end"`
+	Returnable   bool      `db:"returnable" json:"returnable"`
+	Random       bool      `db:"random" json:"random"`
+	TimeLimit    int       `db:"time" json:"time_limit"`
+	ResultsShown bool      `db:"results_shown" json:"results_shown"`
+	TryCount     int       `db:"try_count" json:"try_count"`
+	FillingID    int64     `db:"filling_id" json:"filling_id"`
 }
 
-// Task = задание
 type Task struct {
-	ID     int64
-	Type   int
-	QuizID int64
+	ID     int64 `db:"id" json:"id"`
+	Type   int   `db:"type" json:"type"`
+	QuizID int64 `db:"quiz_id" json:"quiz_id"`
 }
 
-// OneAnsTask, MultipleAnsTask, OpenAnsTask
 type OneAnsTask struct {
-	ID       int64
-	TaskID   int64
-	Question string
+	ID       int64  `db:"id" json:"id"`
+	TaskID   int64  `db:"task_id" json:"task_id"`
+	Question string `db:"question" json:"question"`
 }
 
 type MultipleAnsTask struct {
-	ID       int64
-	TaskID   int64
-	Question sql.NullString
+	ID       int64          `db:"id" json:"id"`
+	TaskID   int64          `db:"task_id" json:"task_id"`
+	Question sql.NullString `db:"question" json:"question"`
 }
 
 type OpenAnsTask struct {
-	ID       int64
-	TaskID   int64
-	Question sql.NullString
+	ID       int64          `db:"id" json:"id"`
+	TaskID   int64          `db:"task_id" json:"task_id"`
+	Question sql.NullString `db:"question" json:"question"`
 }

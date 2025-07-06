@@ -1,0 +1,49 @@
+#version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    # считываем учётные данные из .env
+    env_file: .env
+    environment:
+      # эти переменные нужны именно для инициализации официального образа PostgreSQL
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      # том для хранения данных между перезапусками
+      - db_data:/var/lib/postgresql/data
+      # папка с вашими .sql‑скриптами и/или .sh для инициализации БД:
+      #              └─> создайте в корне проекта db/init/*.sql
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      # если в .env DB_PORT=5432, то внешняя 5432 → внутренняя 5432
+      - "${DB_PORT}:5432"
+
+  app:
+    build:
+      context: .            # корень репозитория
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      # здесь DB_HOST указываем имя сервиса в compose
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      SERVER_PORT: ${SERVER_PORT}
+    volumes:
+      # монтируем исходники для “горячей” разработки
+      - ./backend:/usr/src/app
+      - ./frontend:/usr/src/app/frontend
+      - ./static:/usr/src/app/static
+    ports:
+      # пробрасываем порт Go‑сервера наружу
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
+volumes:
+  db_data:
