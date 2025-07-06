@@ -1,0 +1,29 @@
+name: Technical Task
+description: A technical implementation task with subtasks.
+title: "[Task] "
+labels: ["task"]
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: Explain the technical task in detail.
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Subtasks
+      description: List all subtasks required to complete this task.
+      options:
+        - label: Subtask 1
+        - label: Subtask 2
+        - label: Subtask 3
+
+  - type: textarea
+    attributes:
+      label: Blockers/Dependencies
+      description: List any blocking issues or dependencies (link to other issues if possible).
+
+  - type: textarea
+    attributes:
+      label: Additional Notes
