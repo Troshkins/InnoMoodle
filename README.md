@@ -1,5 +1,8 @@
 # InnoMoodle
 
+![logo](frontend/assets/logo.png)
+Moodle but he's stronger, he's smarter.
+
 # Project README
 
 ## Usage
