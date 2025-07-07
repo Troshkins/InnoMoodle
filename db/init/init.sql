@@ -12,7 +12,7 @@ CREATE TABLE "Moodle".admins (
     email     text   NOT NULL,
     password  text   NOT NULL
 );
-
+                           
 ALTER TABLE "Moodle".admins
   ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME "Moodle".admins_id_seq

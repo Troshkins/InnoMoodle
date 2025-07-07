@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/Troshkins/InnoMoodle/backend/db"
-	"github.com/Troshkins/InnoMoodle/backend/repository"
+	//"github.com/Troshkins/InnoMoodle/backend/repository"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -29,10 +29,13 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	repo := repository.New(dbConn)
+	// userRepo := repository.NewUserRepository(dbConn)
+	// courseRepo := repository.NewCourseRepository(dbConn)
+	// quizRepo := repository.NewQuizRepository(dbConn)
+	// groupRepo := repository.NewGroupRepository(dbConn)
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/hello", repo.HelloHandler).Methods("GET")
+	// r.HandleFunc("/api/hello", repo.HelloHandler).Methods("GET")
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("frontend")))
