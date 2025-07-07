@@ -28,7 +28,6 @@ COPY --from=build /usr/src/app/myapp .
 #    (они НЕ внутри build‑этапа!)
 COPY static ./static
 COPY frontend ./frontend
-COPY index.html ./index.html
 
 # 3. Копируем .env (если вы используете godotenv)
 COPY .env ./
