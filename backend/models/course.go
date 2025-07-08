@@ -3,7 +3,7 @@ package models
 type Course struct {
 	ID           int64  `db:"id" json:"id"`
 	Name         string `db:"name" json:"name"`
-	Completeness bool   `db:"completeness" json:"completeness"`
+	Completeness int    `db:"completeness" json:"completeness"`
 }
 
 type CourseStudent struct {
