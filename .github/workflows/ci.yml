@@ -8,12 +8,11 @@ jobs:
       postgres:
         image: postgres:15-alpine
         env:
-          POSTGRES_DB: testdb
+          POSTGRES_DB: testdb # Создаем базу testdb
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
         ports:
           - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code with submodules
@@ -54,8 +53,8 @@ jobs:
       - name: Run integration tests
         run: go test -v -tags=integration ./tests/integration/...
         env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USER: testuser
-          DB_PASSWORD: testpass
-          DB_NAME: testdb
+            DB_HOST: localhost
+            DB_PORT: 5432
+            DB_USER: testuser
+            DB_PASSWORD: testpass
+            DB_NAME: testdb
