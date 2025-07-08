@@ -1,5 +1,8 @@
 # InnoMoodle
 
+![logo](frontend/assets/logo.png)
+Moodle but he's stronger, he's smarter.
+
 # Project README
 
 ## Usage
@@ -81,7 +84,7 @@ docs/architecture/
 └── deployment-view/
     └── deployment-diagram.png
 
-!!!
+
 ### Static View
 
 ![Component Diagram](docs/architecture/static-view/component-diagram.png)
@@ -138,19 +141,21 @@ Link: https://trello.com/invite/b/686a86496d61b6f1130e317f/ATTIaae09c137b6b95d20
 
 | Column          | Entry Criteria                                             |
 | --------------- | ---------------------------------------------------------- |
-| To Do           | Issue created with User Story template, estimated, labeled |
+| To Do           | discussed with customer or with team and planned for sprint|
 | In Progress     | Branch created, assignee assigned                          |
-| In Review       | Pull Request opened, reviewer(s) assigned                  |
-| Ready to Deploy | All tests pass, static analysis green                      |
-| Done            | PR merged, issue closed, documentation updated             |
+| Testing         | task completed, reviewer assigned                          |
+| Done            | tests passed, reviewer agreed,                             |
+|                 | issue closed, documentation updated                        |
 
 ### Git Workflow
+
+![git graph](docs/architecture/Mermaid.png)
 
 We follow GitHub Flow:
 
 1. Issue Creation: use templates from .github/ISSUE_TEMPLATE
 2. Branch Naming: feature/XYZ-description or bugfix/XYZ-description
-3. Commits: use Conventional Commits: type(scope): description
+3. Commits: use Base Commits: description
 4. Pull Requests: reference issue, use .github/PULL_REQUEST_TEMPLATE.md
 5. Review & Merge: require 2 approvals and successful CI; merge with squash
 
