@@ -1,2304 +1,862 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html data-theme="light" lang="ru">
+
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Innomoodle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4CAF50;
-      --background-primary: #f7f9fc;
-      --background-secondary: #ffffff;
-      --background-tertiary: #f0f2f5;
-      --text-primary: #1a1a1a;
-      --text-secondary: #666666;
-      --text-tertiary: #999999;
-      --element-primary: #d9d9d9;
-      --notify-danger-primary: #ff4d4f;
-      --main-primary: #3D7FFF;
-      --border-radius-large: 24px;
-      --border-radius-medium: 16px;
-      --border-radius-small: 8px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    [data-theme="dark"] {
-      --background-primary: #121212;
-      --background-secondary: #1e1e1e;
-      --background-tertiary: #2a2a2a;
-      --text-primary: #f0f0f0;
-      --text-secondary: #b0b0b0;
-      --text-tertiary: #808080;
-      --element-primary: #333333;
-      --main-primary: #5a9cff;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--background-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      margin: 0;
-      padding-top: 120px;
-    }
-
-    .layout {
-      display: flex;
-      gap: 20px;
-      padding: 0 20px 20px;
-      align-items: stretch;
-      min-height: calc(100vh - 140px);
-    }
-
-    .top-toolbar {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      height: 85px;
-      background-color: var(--background-secondary);
-      border-radius: var(--border-radius-large);
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 30px;
-      z-index: 100;
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .toolbar-logo {
-      height: 50px;
-    }
-
-    .toolbar-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      height: 100%;
-      padding: 5px 0;
-      line-height: 1;
-      margin: 0;
-    }
-
-    .sidebar {
-      width: 250px;
-      flex: 0 0 250px;
-      background-color: var(--background-secondary);
-      border-radius: var(--border-radius-large);
-      box-shadow: var(--shadow);
-      padding: 20px 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar-header {
-      padding: 0 20px 15px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-bottom: 1px solid var(--element-primary);
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    .sidebar__nav {
-      flex-grow: 1;
-    }
-
-    .sidebar__nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar__nav li {
-      margin: 5px 0;
-    }
-
-    .sidebar__nav a {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      text-decoration: none;
-      color: var(--text-primary);
-      font-weight: 500;
-      transition: all 0.2s;
-      border-radius: var(--border-radius-small);
-      margin: 0 10px;
-      gap: 15px;
-    }
-
-    .sidebar__nav a:hover,
-    .sidebar__nav a.active {
-      background-color: rgba(61, 127, 255, 0.1);
-    }
-
-    .back-link {
-      display: none;
-    }
-
-    .logout-link {
-      margin-top: auto;
-      background-color: rgba(255, 77, 79, 0.1);
-      border-radius: var(--border-radius-small);
-      height: 5%;
-      padding-top: 2.5%;
-      padding-left: 10px;
-      margin-top: auto;
-      margin-left: 20px;
-      margin-right: 20px;
-    }
-
-    .logout-link a {
-      color: var(--notify-danger-primary);
-    }
-
-    .logout-link a:hover {
-      color: rgba(255, 77, 79, 0.15) !important;
-    }
-
-    .nav-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .main-content {
-      flex: 1;
-      background-color: var(--background-secondary);
-      border-radius: var(--border-radius-large);
-      box-shadow: var(--shadow);
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .welcome-title {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-
-    .btn-toggle {
-      background: var(--background-tertiary);
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      padding: 10px 15px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-primary);
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-toggle:hover {
-      background-color: var(--element-primary);
-    }
-
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-      margin-top: 20px;
-    }
-
-    .card {
-      background-color: var(--background-tertiary);
-      border-radius: var(--border-radius-large);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: all 0.3s;
-      cursor: pointer;
-      padding: 25px;
-      border: 1px solid var(--element-primary);
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--main-primary);
-    }
-
-    .card__body {
-      padding: 0;
-    }
-
-    .card__title {
-      font-weight: 700;
-      margin: 0 0 15px;
-      font-size: 1.2rem;
-      color: var(--text-primary);
-    }
-
-    .card__progress {
-      margin: 0;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 15px;
-    }
-
-    .progress-container {
-      height: 8px;
-      background-color: var(--element-primary);
-      border-radius: 4px;
-      margin-top: 15px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background-color: var(--primary);
-      border-radius: 4px;
-    }
-
-    .view-toggle {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .view-btn {
-      background: var(--background-tertiary);
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      cursor: pointer;
-      padding: 10px 20px;
-      transition: all 0.2s;
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .view-btn.active {
-      background-color: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    .search {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .search select,
-    .search input {
-      background: var(--background-tertiary);
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      padding: 10px 15px;
-      color: var(--text-primary);
-      transition: all 0.2s;
-      min-width: 150px;
-    }
-
-    .search input:focus {
-      border-color: var(--main-primary);
-      outline: none;
-    }
-
-    .list-view {
-      display: flex !important;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .list-view .card {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 25px;
-    }
-
-    .list-view .card__body {
-      flex: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .list-view .card__title {
-      margin-bottom: 0;
-    }
-
-    .list-view .card__progress {
-      margin-bottom: 0;
-      margin-right: 20px;
-    }
-
-    .list-view .progress-container {
-      width: 150px;
-      margin-top: 0;
-    }
-
-    @media (max-width: 992px) {
-      .layout {
-        flex-direction: column;
-        padding: 10px;
-        height: auto;
-      }
-
-      .top-toolbar {
-        position: relative;
-        top: 0;
-        left: 0;
-        right: 0;
-        margin: 10px;
-      }
-
-      .sidebar {
-        width: 100%;
-        flex: 0 0 auto;
-        margin-top: 10px;
-      }
-
-      .main-content {
-        margin-top: 10px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .top-toolbar {
-        height: auto;
-        padding: 15px;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .toolbar-left, .toolbar-right {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .toolbar-right {
-        flex-wrap: wrap;
-
-      }
-
-      .card-container {
-        grid-template-columns: 1fr;
-      }
-
-      .header {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-      }
-
-      .search {
-        width: 100%;
-        flex-direction: column;
-      }
-    }
-
-    .icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 50px;
-      font-size: 1.2rem;
-      color: var(--text-secondary);
-    }
-
-    .error {
-      color: var(--notify-danger-primary);
-      padding: 30px;
-      text-align: center;
-    }
-
-    /* Редакторы */
-    .editor {
-      background-color: var(--background-tertiary);
-      border-radius: var(--border-radius-large);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .editor-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      background-color: var(--background-secondary);
-      color: var(--text-primary);
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border-radius: var(--border-radius-small);
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background-color: var(--main-primary);
-      color: white;
-    }
-
-    .btn-danger {
-      background-color: var(--notify-danger-primary);
-      color: white;
-    }
-
-    .btn-secondary {
-      background-color: var(--element-primary);
-      color: var(--text-primary);
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Списки */
-    .list-container {
-      margin-top: 20px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .list-item {
-      padding: 15px;
-      border-bottom: 1px solid var(--element-primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .list-item:last-child {
-      border-bottom: none;
-    }
-
-    .list-item-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    /* Двойные колонки */
-    .two-columns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    /* Чекбоксы */
-    .checkbox-list {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      padding: 10px;
-    }
-
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      padding: 8px 0;
-    }
-
-    .checkbox-item input {
-      margin-right: 10px;
-    }
-
-    /* Вкладка профиля */
-    .profile-form {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .role-selector {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .role-btn {
-      flex: 1;
-      padding: 15px;
-      border: 2px solid var(--element-primary);
-      border-radius: var(--border-radius-small);
-      background: none;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .role-btn.active {
-      border-color: var(--main-primary);
-      background-color: rgba(61, 127, 255, 0.1);
-    }
-
-    /* Цвет текста кнопок ролей в темной теме */
-    [data-theme="dark"] .role-btn {
-      color: white;
-    }
-
-    /* Улучшение внешнего вида групп */
-    .groups-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .group-card {
-      background: var(--background-tertiary);
-      border-radius: var(--border-radius-medium);
-      padding: 20px;
-      border: 1px solid var(--element-primary);
-      transition: all 0.2s;
-    }
-
-    .group-card:hover {
-      border-color: var(--main-primary);
-    }
-
-    .group-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .group-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
-/*  */
-    .group-emails {
-      max-height: 200px;
-      overflow-y: auto;
-      padding: 10px;
-      background: var(--background-secondary);
-      border-radius: var(--border-radius-small);
-    }
-
-    .group-email-item {
-      padding: 8px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .email-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .email-actions button {
-      padding: 3px 8px;
-      font-size: 0.8rem;
-    }
-
-    /* Видимость */
-    .hidden {
-      display: none !important;
-    }
-
-    /* Иконки действий */
-    .action-icon {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    /* Поле для правильных ответов */
-    .correct-answers {
-      margin-top: 10px;
-      padding: 10px;
-      background: var(--background-secondary);
-      border-radius: var(--border-radius-small);
-    }
-
-    .correct-answer-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    /* Ресурсы курса */
-    .resource-item {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      background: var(--background-secondary);
-      border-radius: var(--border-radius-small);
-      margin-bottom: 10px;
-    }
-
-    .resource-icon {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
-    }
-
-    /* Студенческий интерфейс теста */
-    .quiz-container {
-      border: 1px solid var(--element-primary);
-      border-radius: var(--border-radius-medium);
-      padding: 20px;
-      background: var(--background-tertiary);
-    }
-
-    .quiz-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--element-primary);
-    }
-
-    .question {
-      margin-bottom: 30px;
-      padding: 15px;
-      background: var(--background-secondary);
-      border-radius: var(--border-radius-small);
-    }
-
-    .question-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .question-options {
-      margin-top: 10px;
-    }
-
-    .option {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .option input {
-      margin-right: 10px;
-    }
-
-    .navigation-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin: 20px 0;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Innomoodle</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="home.css">
 </head>
+
 <body>
-  <div class="top-toolbar">
+<div class="top-toolbar">
     <div class="toolbar-left">
-      <img src="./assets/logo.png" alt="Logo" class="toolbar-logo">
-      <h1 class="toolbar-title">Innomoodle</h1>
+        <img alt="Logo" class="toolbar-logo" style="margin-left: 30px;" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTUxIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDU1MSAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik00My42NzU0IDBIMFY0My42NzU0SDQzLjY3NTRWMFoiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTE2MC4wNzQgMEgxMTYuNDEzVjExNi4zMzlIMTAxLjg2VjBINTguMTk5MlYxNTkuOTg1SDk0LjU2ODJWMTYwSDEzOC4yNDRWMTU5Ljk4NUgxNjAuMDc0VjBaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00My42NzU0IDU4LjE1NDhIMFYxNTkuOTg1SDQzLjY3NTRWNTguMTU0OFoiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTIxNy44NiAyOC4zNTgxSDIyNi41MDFWNjUuNjk5M0gyMTcuODZWMjguMzU4MVoiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTI2OS42MTEgMjguMzU4MVY2NS42OTkzSDI2Mi41MTZMMjQzLjg5OCA0My4wMjc5VjY1LjY5OTNIMjM1LjM2M1YyOC4zNTgxSDI0Mi41MTFMMjYxLjA3NSA1MS4wMjk2VjI4LjM1ODFIMjY5LjYxMVoiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTMxMi42OTMgMjguMzU4MVY2NS42OTkzSDMwNS41OThMMjg2Ljk4IDQzLjAyNzlWNjUuNjk5M0gyNzguNDQ1VjI4LjM1ODFIMjg1LjU5M0wzMDQuMTU3IDUxLjAyOTZWMjguMzU4MUgzMTIuNjkzWiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNMzM5LjYxMSA2Ni4zMzk1QzMzNS43MzUgNjYuMzM5NSAzMzIuMjMyIDY1LjUwMzcgMzI5LjEwMiA2My44MzIzQzMyNi4wMDggNjIuMTYwOCAzMjMuNTcyIDU5Ljg2NyAzMjEuNzk0IDU2Ljk1MDhDMzIwLjA1MSA1My45OTkxIDMxOS4xOCA1MC42OTE3IDMxOS4xOCA0Ny4wMjg3QzMxOS4xOCA0My4zNjU3IDMyMC4wNTEgNDAuMDc2MSAzMjEuNzk0IDM3LjE2QzMyMy41NzIgMzQuMjA4MiAzMjYuMDA4IDMxLjg5NjYgMzI5LjEwMiAzMC4yMjUyQzMzMi4yMzIgMjguNTUzNyAzMzUuNzM1IDI3LjcxOCAzMzkuNjExIDI3LjcxOEMzNDMuNDg4IDI3LjcxOCAzNDYuOTczIDI4LjU1MzcgMzUwLjA2NyAzMC4yMjUyQzM1My4xNjEgMzEuODk2NiAzNTUuNTk3IDM0LjIwODIgMzU3LjM3NSAzNy4xNkMzNTkuMTUzIDQwLjA3NjEgMzYwLjA0MiA0My4zNjU3IDM2MC4wNDIgNDcuMDI4N0MzNjAuMDQyIDUwLjY5MTcgMzU5LjE1MyA1My45OTkxIDM1Ny4zNzUgNTYuOTUwOEMzNTUuNTk3IDU5Ljg2NyAzNTMuMTYxIDYyLjE2MDggMzUwLjA2NyA2My44MzIzQzM0Ni45NzMgNjUuNTAzNyAzNDMuNDg4IDY2LjMzOTUgMzM5LjYxMSA2Ni4zMzk1Wk0zMzkuNjExIDU4Ljk3NzlDMzQxLjgxNiA1OC45Nzc5IDM0My44MDggNTguNDggMzQ1LjU4NiA1Ny40ODQzQzM0Ny4zNjQgNTYuNDUyOSAzNDguNzUxIDU1LjAzMDQgMzQ5Ljc0NyA1My4yMTY3QzM1MC43NzggNTEuNDAzIDM1MS4yOTQgNDkuMzQwMyAzNTEuMjk0IDQ3LjAyODdDMzUxLjI5NCA0NC43MTcxIDM1MC43NzggNDIuNjU0NSAzNDkuNzQ3IDQwLjg0MDdDMzQ4Ljc1MSAzOS4wMjcgMzQ3LjM2NCAzNy42MjIzIDM0NS41ODYgMzYuNjI2NUMzNDMuODA4IDM1LjU5NTIgMzQxLjgxNiAzNS4wNzk1IDMzOS42MTEgMzUuMDc5NUMzMzcuNDA2IDM1LjA3OTUgMzM1LjQxNSAzNS41OTUyIDMzMy42MzcgMzYuNjI2NUMzMzEuODU4IDM3LjYyMjMgMzMwLjQ1NCAzOS4wMjcgMzI5LjQyMiA0MC44NDA3QzMyOC40MjcgNDIuNjU0NSAzMjcuOTI5IDQ0LjcxNzEgMzI3LjkyOSA0Ny4wMjg3QzMyNy45MjkgNDkuMzQwMyAzMjguNDI3IDUxLjQwMyAzMjkuNDIyIDUzLjIxNjdDMzMwLjQ1NCA1NS4wMzA0IDMzMS44NTggNTYuNDUyOSAzMzMuNjM3IDU3LjQ4NDNDMzM1LjQxNSA1OC40OCAzMzcuNDA2IDU4Ljk3NzkgMzM5LjYxMSA1OC45Nzc5WiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNMzgyLjcgMjguMzU4MUMzODYuMDA4IDI4LjM1ODEgMzg4Ljg3IDI4LjkwOTMgMzkxLjI4OSAzMC4wMTE4QzM5My43NDMgMzEuMTE0MiAzOTUuNjI3IDMyLjY3OSAzOTYuOTQzIDM0LjcwNjFDMzk4LjI1OSAzNi43MzMyIDM5OC45MTcgMzkuMTMzNyAzOTguOTE3IDQxLjkwNzZDMzk4LjkxNyA0NC42NDYgMzk4LjI1OSA0Ny4wNDY1IDM5Ni45NDMgNDkuMTA5MkMzOTUuNjI3IDUxLjEzNjIgMzkzLjc0MyA1Mi43MDEgMzkxLjI4OSA1My44MDM1QzM4OC44NyA1NC44NzA0IDM4Ni4wMDggNTUuNDAzOCAzODIuNyA1NS40MDM4SDM3NS4xNzlWNjUuNjk5M0gzNjYuNTM3VjI4LjM1ODFIMzgyLjdaTTM4Mi4yMiA0OC4zNjIzQzM4NC44MTYgNDguMzYyMyAzODYuNzkgNDcuODExMSAzODguMTQxIDQ2LjcwODZDMzg5LjQ5MyA0NS41NzA2IDM5MC4xNjggNDMuOTcwMyAzOTAuMTY4IDQxLjkwNzZDMzkwLjE2OCAzOS44MDk0IDM4OS40OTMgMzguMjA5MSAzODguMTQxIDM3LjEwNjZDMzg2Ljc5IDM1Ljk2ODYgMzg0LjgxNiAzNS4zOTk2IDM4Mi4yMiAzNS4zOTk2SDM3NS4xNzlWNDguMzYyM0gzODIuMjJaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00MjMuNjkxIDY2LjMzOTVDNDE5LjgxNSA2Ni4zMzk1IDQxNi4zMTIgNjUuNTAzNyA0MTMuMTgyIDYzLjgzMjNDNDEwLjA4OSA2Mi4xNjA4IDQwNy42NTIgNTkuODY3IDQwNS44NzQgNTYuOTUwOEM0MDQuMTMyIDUzLjk5OTEgNDAzLjI2IDUwLjY5MTcgNDAzLjI2IDQ3LjAyODdDNDAzLjI2IDQzLjM2NTcgNDA0LjEzMiA0MC4wNzYxIDQwNS44NzQgMzcuMTZDNDA3LjY1MiAzNC4yMDgyIDQxMC4wODkgMzEuODk2NiA0MTMuMTgyIDMwLjIyNTJDNDE2LjMxMiAyOC41NTM3IDQxOS44MTUgMjcuNzE4IDQyMy42OTEgMjcuNzE4QzQyNy41NjggMjcuNzE4IDQzMS4wNTMgMjguNTUzNyA0MzQuMTQ3IDMwLjIyNTJDNDM3LjI0MSAzMS44OTY2IDQzOS42NzcgMzQuMjA4MiA0NDEuNDU1IDM3LjE2QzQ0My4yMzMgNDAuMDc2MSA0NDQuMTIyIDQzLjM2NTcgNDQ0LjEyMiA0Ny4wMjg3QzQ0NC4xMjIgNTAuNjkxNyA0NDMuMjMzIDUzLjk5OTEgNDQxLjQ1NSA1Ni45NTA4QzQzOS42NzcgNTkuODY3IDQzNy4yNDEgNjIuMTYwOCA0MzQuMTQ3IDYzLjgzMjNDNDMxLjA1MyA2NS41MDM3IDQyNy41NjggNjYuMzM5NSA0MjMuNjkxIDY2LjMzOTVaTTQyMy42OTEgNTguOTc3OUM0MjUuODk2IDU4Ljk3NzkgNDI3Ljg4OCA1OC40OCA0MjkuNjY2IDU3LjQ4NDNDNDMxLjQ0NCA1Ni40NTI5IDQzMi44MzEgNTUuMDMwNCA0MzMuODI3IDUzLjIxNjdDNDM0Ljg1OCA1MS40MDMgNDM1LjM3NCA0OS4zNDAzIDQzNS4zNzQgNDcuMDI4N0M0MzUuMzc0IDQ0LjcxNzEgNDM0Ljg1OCA0Mi42NTQ1IDQzMy44MjcgNDAuODQwN0M0MzIuODMxIDM5LjAyNyA0MzEuNDQ0IDM3LjYyMjMgNDI5LjY2NiAzNi42MjY1QzQyNy44ODggMzUuNTk1MiA0MjUuODk2IDM1LjA3OTUgNDIzLjY5MSAzNS4wNzk1QzQyMS40ODYgMzUuMDc5NSA0MTkuNDk1IDM1LjU5NTIgNDE3LjcxNyAzNi42MjY1QzQxNS45MzkgMzcuNjIyMyA0MTQuNTM0IDM5LjAyNyA0MTMuNTAzIDQwLjg0MDdDNDEyLjUwNyA0Mi42NTQ1IDQxMi4wMDkgNDQuNzE3MSA0MTIuMDA5IDQ3LjAyODdDNDEyLjAwOSA0OS4zNDAzIDQxMi41MDcgNTEuNDAzIDQxMy41MDMgNTMuMjE2N0M0MTQuNTM0IDU1LjAzMDQgNDE1LjkzOSA1Ni40NTI5IDQxNy43MTcgNTcuNDg0M0M0MTkuNDk1IDU4LjQ4IDQyMS40ODYgNTguOTc3OSA0MjMuNjkxIDU4Ljk3NzlaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00NTAuNjE3IDI4LjM1ODFINDU5LjI1OVY1OC42NTc4SDQ3Ny45ODNWNjUuNjk5M0g0NTAuNjE3VjI4LjM1ODFaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00ODIuODExIDI4LjM1ODFINDA5MS40NTNWNjUuNjk5M0g0ODIuODExVjI4LjM1ODFaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik01MTIuNTg0IDY2LjMzOTVDNTA5LjYzMyA2Ni4zMzk1IDUwNi43NyA2NS45NDgzIDUwMy45OTYgNjUuMTY1OUM1MDEuMjU3IDY0LjM0NzkgNDk5LjA1MyA2My4yOTg4IDQ5Ny4zODEgNjIuMDE4NUw1MDAuMzE1IDU1LjUxMDVDNTAxLjkxNSA1Ni42ODQxIDUwMy44MTggNTcuNjI2NSA1MDYuMDIzIDU4LjMzNzhDNTA4LjIyOCA1OS4wNDkgNTEwLjQzMyA1OS40MDQ3IDUxMi42MzggNTkuNDA0N0M1MTUuMDkxIDU5LjQwNDcgNTE2LjkwNSA1OS4wNDkgNTE4LjA3OSA1OC4zMzc4QzUxOS4yNTIgNTcuNTkwOSA1MTkuODM5IDU2LjYxMyA1MTkuODM5IDU1LjQwMzhDNTE5LjgzOSA1NC41MTQ3IDUxOS40ODQgNTMuNzg1NyA1MTguNzcyIDUzLjIxNjdDNTE4LjA5NyA1Mi42MTIxIDUxNy4yMDcgNTIuMTMyIDUxNi4xMDUgNTEuNzc2NEM1MTUuMDM4IDUxLjQyMDcgNTEzLjU4IDUxLjAyOTYgNTExLjczMSA1MC42MDI4QzUwOC44ODYgNDkuOTI3MSA1MDYuNTU2IDQ5LjI1MTQgNTA0Ljc0MyA0OC41NzU3QzUwMi45MjkgNDcuOSA1MDEuMzY0IDQ2LjgxNTMgNTAwLjA0OCA0NS4zMjE3QzQ5OC43NjggNDMuODI4IDQ5OC4xMjggNDEuODM2NSA0OTguMTI4IDM5LjM0NzFDNDk4LjEyOCAzNy4xNzc3IDQ5OC43MTUgMzUuMjIxOCA0OTkuODg4IDMzLjQ3OTJDNTAxLjA2MiAzMS43MDEgNTAyLjgyMiAzMC4yOTYzIDUwNS4xNjkgMjkuMjY1QzUwNy41NTIgMjguMjMzNiA1MTAuNDUxIDI3LjcxOCA1MTMuODY1IDI3LjcxOEM1MTYuMjQ3IDI3LjcxOCA1MTguNTc3IDI4LjAwMjUgNTIwLjg1MyAyOC41NzE1QzUyMy4xMjkgMjkuMTQwNSA1MjUuMTIgMjkuOTU4NCA1MjYuODI3IDMxLjAyNTNMNTI0LjE2IDM3LjU4NjdDNTEyMC43MSAzNS42MzA4IDUxNy4yNjEgMzQuNjUyOCA1MTMuODExIDM0LjY1MjhDNTEwLjM5MyAzNC42NTI4IDUwOC41OTcgMzUuMDQ0IDUwNy40MjMgMzUuODI2M0M1MDYuMjg1IDM2LjYwODcgNTA1LjcxNiAzNy42NDAxIDUwNS43MTYgMzguOTIwM0M1MDUuNzE2IDQwLjIwMDYgNTA2LjM3NCA0MS4xNjA4IDUwNy42OSA0MS44MDA5QzUwOS4wNDIgNDIuNDA1NSA1MTEuMDg2IDQzLjAxMDEgNTEzLjgyNSA0My42MTQ3QzUxNi42NyA0NC4yOTA0IDUxOC45OTkgNDQuOTY2MSA1MjAuODEzIDQ1LjY0MThDNTIyLjYyNyA0Ni4zMTc1IDUyNC4xNzQgNDcuMzg0MyA1MjUuNDU0IDQ4Ljg0MjRDNTI2Ljc3IDUwLjMwMDUgNTI3LjQyOCA1Mi4yNzQzIDUyNy40MjggNTQuNzYzN0M1MjcuNDI4IDU2Ljg5NzUgNTI2LjgyMyA1OC44NTM0IDUyNS42MTQgNjAuNjMxNkM1MjQuNDQgNjIuMzc0MiA1MjIuNjYyIDYzLjc2MTEgNTIwLjI3OSA2NC43OTI1QzUxNy44OTcgNjUuODIzOCA1MTQuOTk4IDY2LjMzOTUgNTExLjU4NCA2Ni4zMzk1WiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNMjM0LjQ1IDEzMS4zMTNDMjI5LjExNSAxMzEuMzEzIDIyNC45NTQgMTI5LjgzNyAyMjEuOTY3IDEyNi44ODVDMjE5LjAxNSAxMjMuOTM0IDIxNy41NCAxMTkuNzE5IDIxNy41NCAxMTQuMjQzVjkzLjMzMTVIMjI2LjE4MVYxMTMuOTIzQzIyNi4xODEgMTIwLjYwOCAyMjguOTU1IDEyMy45NTEgMjM0LjUwMyAxMjMuOTUxQzIzNy4yMDYgMTIzLjk1MSAyMzkuMjY5IDEyMy4xNTEgMjQwLjY5MSAxMjEuNTUxQzI0Mi4xMTQgMTE5LjkxNSAyNDIuODI1IDExNy4zNzIgMjQyLjgyNSAxMTMuOTIzVjkzLjMzMTVIMjUxLjM2VjExNC4yNDNDMjUxLjM2IDExOS43MTkgMjQ5Ljg2NiAxMjMuOTM0IDI0Ni44NzkgMTI2Ljg4NUMyNDMuOTI3IDEyOS44MzcgMjM5Ljc4NCAxMzEuMzEzIDIzNC40NSAxMzEuMzEzWiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNMjk0LjE0NyA5My4zMzE1VjEzMC42NzNIMjg3LjA1MkwyNjguNDM1IDEwOC4wMDFWMzEzMC42NzNIMjU5LjlWOTMuMzMxNUgyNjcuMDQ4TDI4NS42MTIgMTE2LjAwM1Y5My4zMzE1SDI5NC4xNDdaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik0zMDIuOTgyIDkzLjMzMTVIMzExLjYyNFYxMzAuNjczSDMwMi45ODJWOTMuMzMxNVoiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTM1Ni4xNzggOTMuMzMxNUwzNDAuMDE1IDEzMC42NzNIMzMxLjQ3OUwzMTUuMzY5IDkzLjMzMTVIMzI0LjcwNUwzMzYuMDY3IDEyMC4wMDRMMzQ3LjU4OSA5My4zMzE1SDM1Ni4xNzhaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik0zODguMjA4IDEyMy43MzhWMTMwLjY3M0gzNTkuMjk2VjkzLjMzMTVIMzg3LjUxNVYxMDAuMjY2SDM2Ny44ODRWMTA4LjM3NUgzODUuMjIxVjExNS4wOTZIMzY3Ljg4NFYxMjMuNzM4SDM4OC4yMDhaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00MTguODc2IDEzMC42NzNMNDExLjY3NSAxMjAuMjcxSDQxMS4yNDhINDAzLjcyNlYxMzAuNjczSDM5NS4wODVWOTMuMzMxNUg0MTEuMjQ4QzQxNC41NTUgOTMuMzMxNSA0MTcuNDE4IDkzLjg4MjcgNDE5LjgzNiA5NC45ODUyQzQyMi4yOSA5Ni4wODc2IDQyNC4xNzUgOTcuNjUyNCA0MjUuNDkxIDk5LjY3OTVDNDI2LjgwNyAxMDEuNzA3IDQyNy40NjUgMTA0LjEwNyA0MjcuNDY1IDEwNi44ODFDNDI3LjQ2NSAxMDkuNjU1IDQyNi43ODkgMTEyLjA1NSA0MjUuNDM4IDExNC4wODNDNDI0LjEyMiAxMTYuMDc0IDQyMi4yMzcgMTE3LjYwMyA0MTkuNzgzIDExOC42N0w0MjguMTU4IDEzMC42NzNINDE4Ljg3NlpNNDE4LjcxNiAxMDYuODgxQzQxOC43MTYgMTA0Ljc4MyA0MTguMDQgMTAzLjE4MiA0MTYuNjg5IDEwMi4wOEM0MTUuMzM4IDEwMC45NDIgNDEzLjM2NCAxMDAuMzczIDQxMC43NjggMTAwLjM3M0g0MDMuNzI2VjExMy4zODlINDEwLjc2OEM0MTMuMzY0IDExMy4zODkgNDE1LjMzOCAxMTIuODIgNDE2LjY4OSAxMTEuNjgyQzQxOC4wNCAxMTAuNTQ0IDQxOC43MTYgMTA4Ljk0NCA0MTguNzE2IDEwNi44ODFaIiBmaWxsPSIjNDBCQTIxIi8+CjxwYXRoIGQ9Ik00NDYuNTgxIDEzMS4zMTNDNDQzLjYyOSAxMzEuMzEzIDQ0MC43NjYgMTMwLjkyMiA0MzcuOTkyIDEzMC4xMzlDNDM1LjI1NCAxMjkuMzIxIDQzMy4wNDkgMTI4LjI3MiA0MzEuMzc4IDEyNi45OTJMNDM0LjMxMiAxMjAuNDg0QzQzNS45MTIgMTIxLjY1NyA0MzcuODE0IDEyMi42IDQ0MC4wMTkgMTIzLjMxMUM0NDIuMjI0IDEyNC4wMjIgNDQ0LjQyOSAxMjQuMzc4IDQ0Ni42MzQgMTI0LjM3OEM0NDkuMDg4IDEyNC4zNzggNDUwLjkwMiAxMjQuMDIyIDQ1Mi4wNzUgMTIzLjMxMUM0NTMuMjQ5IDEyMi41NjQgNDUzLjgzNiAxMjEuNTg2IDQ1My44MzYgMTIwLjM3N0M0NTMuODM2IDExOS40ODggNDUzLjQ4IDExOC43NTkgNDUyLjc2OSAxMTguMTlDNDUyLjA5MyAxMTcuNTg1IDQ1MS4yMDQgMTE3LjEwNSA0NTAuMTAyIDExNi43NUM0NDkuMDM1IDExNi4zOTQgNDQ3LjU3NyAxMTYuMDAzIDQ0NS43MjcgMTE1LjU3NkM0NDIuODgyIDExNC45IDQ0MC41NTMgMTE0LjIyNSA0MzguNzM5IDExMy41NDlDNDM2LjkyNSAxMTIuODczIDQzNS4zNjEgMTExLjc4OSA0MzQuMDQ1IDExMC4yOTVDNDMyLjc2NSAxMDguODAxIDQzMi4xMjQgMTA2LjgxIDQzMi4xMjQgMTA0LjMyQzQzMi4xMjQgMTAyLjE1MSA0MzIuNzExIDEwMC4xOTUgNDMzLjg4NSA5OC40NTI2QzQzNS4wNTggOTYuNjc0NCA0MzYuODE5IDk1LjI2OTcgNDM5LjE2NiA5NC4yMzgzQzQ0MS41NDkgOTMuMjA3IDQ0NC40NDcgOTIuNjkxNCA0NDcuODYxIDkyLjY5MTRDNDUwLjI0NCA5Mi42OTE0IDQ1Mi41NzMgOTIuOTc1OSA0NTQuODQ5IDkzLjU0NDlDNDU3LjEyNSA5NC4xMTM5IDQ1OS4xMTcgOTQuOTMxOCA0NjAuODI0IDk1Ljk5ODdMNDU4LjE1NyAxMDIuNTZDNDU0LjcwNyAxMDAuNjA0IDQ1MS4yNTcgOTkuNjI2MiA0NDcuODA4IDk5LjYyNjJDNDQ1LjM4OSA5OS42MjYyIDQ0My41OTMgMTAwLjAxNyA0NDIuNDIgMTAwLjhDNDQxLjI4MiAxMDEuNTgyIDQ0MC43MTMgMTAyLjYxMyA0NDAuNzEzIDEwMy44OTRDNDQwLjcxMyAxMDUuMTc0IDQ0MS4zNzEgMTA2LjEzNCA0NDIuNjg3IDEwNi43NzRDNDQ0LjAzOCAxMDcuMzc5IDQ0Ni4wODMgMTA3Ljk4MyA0NDguODIxIDEwOC41ODhDNDUxLjY2NiAxMDkuMjY0IDQ1My45OTYgMTA5LjkzOSA0NTUuODA5IDExMC42MTVDNDU3LjYyMyAxMTEuMjkxIDQ1OS4xNyAxMTIuMzU4IDQ2MC40NSAxMTMuODE2QzQ2MS43NjYgMTE1LjI3NCA0NjIuNDI0IDExNy4yNDggNDYyLjQyNCAxMTkuNzM3QzQ2Mi40MjQgMTIxLjg3MSA0NjEuODIgMTIzLjgyNyA0NjAuNjEgMTI1LjYwNUM0NTkuNDM3IDEyNy4zNDggNDU3LjY1OSAxMjguNzM1IDQ1NS4yNzYgMTI5Ljc2NkM0NTIuODkzIDEzMC43OTcgNDQ5Ljk5NSAxMzEuMzEzIDQ0Ni41ODEgMTMxLjMxM1oiIGZpbGw9IiM0MEJBMjEiLz4KPHBhdGggZD0iTTQ2OC4zMjkgOTMuMzMxNUg0NzYuOTcxVjEzMC42NzNINDY4LjMyOVY5My4zMzE1WiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNNDkzLjU2OCAxMDAuMzczSDQ4MS42MTlWOTMuMzMxNUg1MTQuMTU5VjEwMC4zNzNINTAyLjIxVjEzMC42NzNINDkzLjU2OFYxMDAuMzczWiIgZmlsbD0iIzQwQkEyMSIvPgo8cGF0aCBkPSJNNTM2LjA1NSAxMTcuNDQzVjEzMC42NzNINTI3LjQxM1YxMTcuMzM3TDUxMi45NTcgOTMuMzMxNUg1MjIuMTMyTDUzMi4xMDggMTA5LjkyMkw1NDIuMDgzIDkzLjMzMTVINTUwLjU2NUw1MzYuMDU1IDExNy40NDNaIiBmaWxsPSIjNDBCQTIxIi8+Cjwvc3ZnPgo="/>
+        <h1 class="toolbar-title">Innomoodle</h1>
     </div>
-
     <div class="toolbar-right">
-      <button id="langToggle" class="btn-toggle" title="Switch Language">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="currentColor" d="M12 22C10.6333 22 9.34167 21.7373 8.125 21.212C6.90833 20.6867 5.84567 19.97 4.937 19.062C4.029 18.154 3.31233 17.0917 2.787 15.875C2.26167 14.6583 1.99933 13.3667 2 12C2 10.6167 2.26267 9.32067 2.788 8.112C3.31333 6.90333 4.03 5.84533 4.938 4.938C5.846 4.02933 6.908 3.31267 8.124 2.788C9.34 2.26333 10.632 2.00067 12 2C13.3833 2 14.6793 2.26267 15.888 2.788C17.0967 3.31333 18.1547 4.03 19.062 4.938C19.9707 5.846 20.6873 6.90433 21.212 8.113C21.7367 9.32167 21.9993 10.6173 22 12C22 13.3667 21.7373 14.6583 21.212 15.875C20.6867 17.0917 19.97 18.1543 19.062 19.063C18.154 19.971 17.0957 20.6877 15.887 21.213C14.6783 21.7383 13.3827 22.0007 12 22ZM12 19.95C12.4333 19.35 12.8083 18.725 13.125 18.075C13.4417 17.425 13.7 16.7333 13.9 16H10.1C10.3 16.7333 10.5583 17.425 10.875 18.075C11.1917 18.725 11.5667 19.35 12 19.95ZM9.4 19.55C9.1 19 8.83734 18.429 8.612 17.837C8.38667 17.245 8.19934 16.6327 8.05 16H5.1C5.58333 16.8333 6.18767 17.5583 6.913 18.175C7.63833 18.7917 8.46733 19.25 9.4 19.55ZM14.6 19.55C15.5333 19.25 16.3627 18.7917 17.088 18.175C17.8133 17.5583 18.4173 16.8333 18.9 16H15.95C15.8 16.6333 15.6127 17.246 15.388 17.838C15.1633 18.43 14.9007 19.0007 14.6 19.55ZM4.25 14H7.65C7.6 13.6667 7.56234 13.3373 7.537 13.012C7.51167 12.6867 7.49933 12.3493 7.5 12C7.5 11.65 7.51267 11.3127 7.538 10.988C7.56333 10.6633 7.60067 10.334 7.65 10H4.25C4.16667 10.3333 4.104 10.6627 4.062 10.988C4.02 11.3133 3.99933 11.6507 4 12C4 12.35 4.021 12.6873 4.063 13.012C4.105 13.3367 4.16733 13.666 4.25 14ZM9.65 14H14.35C14.4 13.6667 14.4377 13.3373 14.463 13.012C14.4883 12.6867 14.5007 12.3493 14.5 12C14.5 11.65 14.4873 11.3127 14.462 10.988C14.4367 10.6633 14.3993 10.334 14.35 10H9.65C9.6 10.3333 9.56233 10.6627 9.537 10.988C9.51167 11.3133 9.49933 11.6507 9.5 12C9.5 12.35 9.51267 12.6873 9.538 13.012C9.56333 13.3367 9.60067 13.666 9.65 14ZM16.35 14H19.75C19.8333 13.6667 19.896 13.3373 19.938 13.012C19.98 12.6867 20.0007 12.3493 20 12C20 11.65 19.979 11.3127 19.937 10.988C19.895 10.6633 19.8327 10.334 19.75 10H16.35C16.4 10.3333 16.4377 10.6627 16.463 10.988C16.4883 11.3133 16.5007 11.6507 16.5 12C16.5 12.35 16.4873 12.6873 16.462 13.012C16.4367 13.3367 16.3993 13.666 16.35 14ZM15.95 8H18.9C18.4167 7.16667 17.8127 6.44167 17.088 5.825C16.3633 5.20833 15.534 4.75 14.6 4.45C14.9 5 15.1627 5.571 15.388 6.163C15.6133 6.755 15.8007 7.36733 15.95 8ZM10.1 8H13.9C13.7 7.26667 13.4417 6.575 13.125 5.925C12.8083 5.275 12.4333 4.65 12 4.05C11.5667 4.65 11.1917 5.275 10.875 5.925C10.5583 6.575 10.3 7.26667 10.1 8ZM5.1 8H8.05C8.2 7.36667 8.38767 6.754 8.613 6.162C8.83833 5.57 9.10067 4.99933 9.4 4.45C8.46667 4.75 7.63733 5.20833 6.912 5.825C6.18667 6.44167 5.58267 7.16667 5.1 8Z"/>
-        </svg>
-      </button>
-      <button id="themeToggle" class="btn-toggle" title="Switch Theme">
-        <svg id="themeIcon" class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="currentColor" d="M12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9ZM12 4.5L14.03 8.5H9.97L12 4.5ZM12 19.5L9.97 15.5H14.03L12 19.5ZM4.5 12L8.5 9.97V14.03L4.5 12ZM19.5 12L15.5 14.03V9.97L19.5 12ZM14.83 14.83L18.36 18.36L16.95 19.77L13.42 16.24L14.83 14.83ZM9.17 14.83L7.76 16.24L4.23 19.77L2.82 18.36L6.35 14.83L9.17 14.83ZM9.17 9.17L6.35 9.17L2.82 5.64L4.23 4.23L7.76 7.76L9.17 9.17ZM14.83 9.17L16.24 7.76L19.77 4.23L18.36 2.82L14.83 6.35L14.83 9.17Z"/>
-        </svg>
-      </button>
-      <a href="https://mail.innopolis.ru">
-        <button class="btn-toggle" title="Mail">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM19 18H5C4.45 18 4 17.55 4 17V8L10.94 12.34C11.59 12.75 12.41 12.75 13.06 12.34L20 8V17C20 17.55 19.55 18 19 18ZM12 11L4 6H20L12 11Z"/>
-          </svg>
+        <button class="btn-toggle" id="langToggle" title="Switch Language">
+            <svg class="icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C10.6333 22 9.34167 21.7373 8.125 21.212C6.90833 20.6867 5.84567 19.97 4.937 19.062C4.029 18.154 3.31233 17.0917 2.787 15.875C2.26167 14.6583 1.99933 13.3667 2 12C2 10.6167 2.26267 9.32067 2.788 8.112C3.31333 6.90333 4.03 5.84533 4.938 4.938C5.846 4.02933 6.908 3.31267 8.124 2.788C9.34 2.26333 10.632 2.00067 12 2C13.3833 2 14.6793 2.26267 15.888 2.788C17.0967 3.31333 18.1547 4.03 19.062 4.938C19.9707 5.846 20.6873 6.90433 21.212 8.113C21.7367 9.32167 21.9993 10.6173 22 12C22 13.3667 21.7373 14.6583 21.212 15.875C20.6867 17.0917 19.97 18.1543 19.062 19.063C18.154 19.971 17.0957 20.6877 15.887 21.213C14.6783 21.7383 13.3827 22.0007 12 22ZM12 19.95C12.4333 19.35 12.8083 18.725 13.125 18.075C13.4417 17.425 13.7 16.7333 13.9 16H10.1C10.3 16.7333 10.5583 17.425 10.875 18.075C11.1917 18.725 11.5667 19.35 12 19.95ZM9.4 19.55C9.1 19 8.83734 18.429 8.612 17.837C8.38667 17.245 8.19934 16.6327 8.05 16H5.1C5.58333 16.8333 6.18767 17.5583 6.913 18.175C7.63833 18.7917 8.46733 19.25 9.4 19.55ZM14.6 19.55C15.5333 19.25 16.3627 18.7917 17.088 18.175C17.8133 17.5583 18.4173 16.8333 18.9 16H15.95C15.8 16.6333 15.6127 17.246 15.388 17.838C15.1633 18.43 14.9007 19.0007 14.6 19.55ZM4.25 14H7.65C7.6 13.6667 7.56234 13.3373 7.537 13.012C7.51167 12.6867 7.49933 12.3493 7.5 12C7.5 11.65 7.51267 11.3127 7.538 10.988C7.56333 10.6633 7.60067 10.334 7.65 10H4.25C4.16667 10.3333 4.104 10.6627 4.062 10.988C4.02 11.3133 3.99933 11.6507 4 12C4 12.35 4.021 12.6873 4.063 13.012C4.105 13.3367 4.16733 13.666 4.25 14ZM9.65 14H14.35C14.4 13.6667 14.4377 13.3373 14.463 13.012C14.4883 12.6867 14.5007 12.3493 14.5 12C14.5 11.65 14.4873 11.3127 14.462 10.988C14.4367 10.6633 14.3993 10.334 14.35 10H9.65C9.6 10.3333 9.56233 10.6627 9.537 10.988C9.51167 11.3133 9.49933 11.6507 9.5 12C9.5 12.35 9.51267 12.6873 9.538 13.012C9.56333 13.3367 9.60067 13.666 9.65 14ZM16.35 14H19.75C19.8333 13.6667 19.896 13.3373 19.938 13.012C19.98 12.6867 20.0007 12.3493 20 12C20 11.65 19.979 11.3127 19.937 10.988C19.895 10.6633 19.8327 10.334 19.75 10H16.35C16.4 10.3333 16.4377 10.6627 16.463 10.988C16.4883 11.3133 16.5007 11.6507 16.5 12C16.5 12.35 16.4873 12.6873 16.462 13.012C16.4367 13.3367 16.3993 13.666 16.35 14ZM15.95 8H18.9C18.4167 7.16667 17.8127 6.44167 17.088 5.825C16.3633 5.20833 15.534 4.75 14.6 4.45C14.9 5 15.1627 5.571 15.388 6.163C15.6133 6.755 15.8007 7.36733 15.95 8ZM10.1 8H13.9C13.7 7.26667 13.4417 6.575 13.125 5.925C12.8083 5.275 12.4333 4.65 12 4.05C11.5667 4.65 11.1917 5.275 10.875 5.925C10.5583 6.575 10.3 7.26667 10.1 8ZM5.1 8H8.05C8.2 7.36667 8.38767 6.754 8.613 6.162C8.83833 5.57 9.10067 4.99933 9.4 4.45C8.46667 4.75 7.63733 5.20833 6.912 5.825C6.18667 6.44167 5.58267 7.16667 5.1 8Z" fill="currentColor"></path>
+            </svg>
         </button>
-      </a>
-    </div>
-  </div>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-header" id="menu-header">Меню</div>
-
-      <nav class="sidebar__nav">
-        <ul>
-          <li class="back-link" id="back-link">
-            <a href="#" data-section="dashboard">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-              </svg>
-              <span>Назад</span>
-            </a>
-          </li>
-
-          <!-- Админ -->
-          <li class="admin-only"><a href="#" data-section="courses">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3ZM5 13.11V17.5L12 21L19 17.5V13.11L12 17L5 13.11Z"/>
+        <button class="btn-toggle" id="themeToggle" title="Switch Theme">
+            <svg class="icon" fill="none" id="themeIcon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9ZM12 4.5L14.03 8.5H9.97L12 4.5ZM12 19.5L9.97 15.5H14.03L12 19.5ZM4.5 12L8.5 9.97V14.03L4.5 12ZM19.5 12L15.5 14.03V9.97L19.5 12ZM14.83 14.83L18.36 18.36L16.95 19.77L13.42 16.24L14.83 14.83ZM9.17 14.83L7.76 16.24L4.23 19.77L2.82 18.36L6.35 14.83L9.17 14.83ZM9.17 9.17L6.35 9.17L2.82 5.64L4.23 4.23L7.76 7.76L9.17 9.17ZM14.83 9.17L16.24 7.76L19.77 4.23L18.36 2.82L14.83 6.35L14.83 9.17Z" fill="currentColor"></path>
             </svg>
-            <span>Курсы</span>
-          </a></li>
-
-          <li class="admin-only"><a href="#" data-section="groups">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M16 11H13V14H11V11H8V9H11V6H13V9H16V11ZM18 4V20C18 21.1 17.1 22 16 22H4C2.9 22 2 21.1 2 20V4C2 2.9 2.9 2 4 2H16C17.1 2 18 2.9 18 4ZM16 4H4V20H16V4Z"/>
-            </svg>
-            <span>Группы</span>
-          </a></li>
-
-          <li class="admin-only"><a href="#" data-section="database">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M20 6H12L10 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6ZM20 18H4V8H20V18Z"/>
-            </svg>
-            <span>База Данных</span>
-          </a></li>
-
-          <!-- Преподаватель и Студент -->
-          <li class="teacher-student-only"><a href="#" data-section="quizzes">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M17 13H13V17H11V13H7V11H13V7H17V13ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
-            </svg>
-            <span>Тесты и задания</span>
-          </a></li>
-
-          <li class="teacher-student-only"><a href="#" data-section="performance">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M16 11V5H14V11H10V5H8V11H5V13H8V19H10V13H14V19H16V13H19V11H16Z"/>
-            </svg>
-            <span>Успеваемость</span>
-          </a></li>
-
-          <!-- Общий -->
-          <li><a href="#" data-section="profile">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/>
-            </svg>
-            <span>Профиль</span>
-          </a></li>
-        </ul>
-      </nav>
-
-      <div class="logout-link">
-        <a href="#" id="logout-link">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
-          </svg>
-          <span>Выйти</span>
+        </button>
+        <a href="https://mail.innopolis.ru">
+            <button class="btn-toggle" title="Mail">
+                <svg class="icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM19 18H5C4.45 18 4 17.55 4 17V8L10.94 12.34C11.59 12.75 12.41 12.75 13.06 12.34L20 8V17C20 17.55 19.55 18 19 18ZM12 11L4 6H20L12 11Z" fill="currentColor"></path>
+                </svg>
+            </button>
         </a>
-      </div>
+    </div>
+</div>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header" id="menu-header">Меню</div>
+        <nav class="sidebar__nav">
+            <ul>
+                <li class="back-link" id="back-link">
+                    <a data-section="dashboard" href="#">
+                        <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"></path>
+                        </svg>
+                        <span>Назад</span>
+                    </a>
+                </li>
+                
+                <!-- Админ -->
+                <li class="admin-only"><a data-section="courses" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3ZM5 13.11V17.5L12 21L19 17.5V13.11L12 17L5 13.11Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Курсы</span>
+                </a></li>
+                
+                <!-- В секции групп -->
+                <li class="admin-only"><a data-section="groups" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 11H13V14H11V11H8V9H11V6H13V9H16V11ZM18 4V20C18 21.1 17.1 22 16 22H4C2.9 22 2 21.1 2 20V4C2 2.9 2.9 2 4 2H16C17.1 2 18 2.9 18 4ZM16 4H4V20H16V4Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Группы</span>
+                </a></li>
+                
+                <li class="admin-only"><a data-section="database" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6H12L10 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6ZM20 18H4V8H20V18Z" fill="currentColor"></path>
+                    </svg>
+                    <span>База Данных</span>
+                </a></li>
+                
+                <!-- Пользователь -->
+                <li class="user-only"><a data-section="user_courses" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3ZM5 13.11V17.5L12 21L19 17.5V13.11L12 17L5 13.11Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Курсы</span>
+                </a></li>
+                
+                <li class="user-only"><a data-section="quizzes" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 13H13V17H11V13H7V11H13V7H17V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Тесты и задания</span>
+                </a></li>
+                
+                <li class="user-only"><a data-section="performance" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 11V5H14V11H10V5H8V11H5V13H8V19H10V13H14V19H16V13H19V11H16Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Успеваемость</span>
+                </a></li>
+                
+                <!-- Общий -->
+                <li><a data-section="profile" href="#">
+                    <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"></path>
+                    </svg>
+                    <span>Профиль</span>
+                </a></li>
+            </ul>
+        </nav>
+        <div class="logout-link">
+            <a href="#" id="logout-link">
+                <svg class="nav-icon" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"></path>
+                </svg>
+                <span>Выйти</span>
+            </a>
+        </div>
     </aside>
-
+    
     <main class="main-content" id="main-content">
-      <div class="loading">Загрузка...</div>
+        <div class="loading">Загрузка...</div>
     </main>
-  </div>
+</div>
 
-  <!-- Шаблоны для контента -->
-  <template id="dashboard-template">
+<!-- Шаблоны для контента -->
+<template id="dashboard-template">
     <div class="header">
-      <div>
-        <h1 class="welcome-title">Добро пожаловать!</h1>
-      </div>
-      <div class="view-toggle">
-        <button class="view-btn active" data-view="cards">Карточки</button>
-        <button class="view-btn" data-view="list">Список</button>
-      </div>
+        <div>
+            <h1 class="welcome-title">Добро пожаловать!</h1>
+        </div>
     </div>
+</template>
 
-    <section>
-      <div class="card-container">
-        <div class="card">
-          <div class="card__body">
-            <h2 class="card__title">Курсы</h2>
-            <p class="card__progress">Управление учебными курсами</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card__body">
-            <h2 class="card__title">Тесты</h2>
-            <p class="card__progress">Создание и управление тестами</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card__body">
-            <h2 class="card__title">Успеваемость</h2>
-            <p class="card__progress">Просмотр статистики успеваемости</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card__body">
-            <h2 class="card__title">Профиль</h2>
-            <p class="card__progress">Управление профилем пользователя</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </template>
-
-  <template id="courses-template">
+<template id="courses-template">
     <div class="header">
-      <div>
-        <h1 class="welcome-title">Все курсы</h1>
-        <div class="view-toggle">
-          <button class="view-btn active" data-view="cards">Карточки</button>
-          <button class="view-btn" data-view="list">Список</button>
+        <div>
+            <h1 class="welcome-title">Курсы</h1>
         </div>
-      </div>
-
-      <div class="search">
-        <select class="btn-toggle">
-          <option>Все курсы</option>
-          <option>Активные</option>
-          <option>Завершенные</option>
-        </select>
-        <input type="text" placeholder="Поиск курсов" class="btn-toggle">
-      </div>
+        <div>
+            <button class="btn btn-primary" id="create-course-btn">Создать курс</button>
+        </div>
     </div>
-
     <div class="card-container">
-      <div class="card" id="create-course-btn">
-        <div class="card__body" style="text-align: center; padding: 40px;">
-          <h3 class="card__title">Создать новый курс</h3>
-          <div style="font-size: 3rem; margin-top: 20px;">+</div>
-        </div>
-      </div>
-      <!-- Сюда будут добавляться карточки курсов -->
+        <!-- Сюда будут добавляться карточки курсов -->
     </div>
-  </template>
+</template>
 
-  <template id="course-creation-template">
+<template id="course-creation-template">
     <div class="header">
-      <h1 class="welcome-title">Создание нового курса</h1>
+        <h1 class="welcome-title">Создание нового курса</h1>
     </div>
-
     <div class="editor">
-      <form id="course-form">
+        <form id="course-form">
+            <div class="form-group">
+                <label for="course-title">Название курса</label>
+                <input class="form-input" id="course-title" required="" type="text"/>
+            </div>
+            
+            <div class="form-group">
+                <label>Добавить преподавателей</label>
+                <div class="checkbox-list" id="teachers-list"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Добавить группы студентов</label>
+                <div class="checkbox-list" id="student-groups-list"></div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="cancel-course" type="button">Отмена</button>
+                <button class="btn btn-primary" type="submit">Сохранить курс</button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="course-editing-template">
+    <div class="header">
+        <h1 class="welcome-title" id="course-editing-title">Редактирование курса</h1>
+    </div>
+    <div class="editor">
+        <form id="edit-course-form">
+            <div class="form-group">
+                <label for="edit-course-title">Название курса</label>
+                <input class="form-input" id="edit-course-title" required="" type="text"/>
+            </div>
+            
+            <div class="form-group">
+                <label>Преподаватели курса</label>
+                <div class="list-container" id="teachers-container"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Группы студентов</label>
+                <div class="list-container" id="student-groups-container"></div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-danger" id="delete-course" type="button">Удалить курс</button>
+                <button class="btn btn-primary" type="submit">Сохранить изменения</button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="groups-template">
+    <div class="header">
+        <div>
+            <h1 class="welcome-title">Группы</h1>
+        </div>
+        <div>
+            <button class="btn btn-primary" id="create-group-btn">Создать группу</button>
+        </div>
+    </div>
+    <div class="groups-container" id="groups-container">
+        <!-- Преподаватели (системная группа) -->
+        <div class="group-card">
+            <div class="group-header">
+                <div class="group-title">Преподаватели</div>
+                <!-- <button class="btn btn-primary edit-group" data-id="teachers">Редактировать</button> -->
+            </div>
+            <div class="group-emails" id="teachers-emails"></div>
+        </div>
+        <!-- Сюда будут добавляться созданные группы -->
+    </div>
+</template>
+
+<template id="group-creation-template">
+    <div class="header">
+        <h1 class="welcome-title">Создание группы</h1>
+    </div>
+    <div class="editor">
+        <form id="group-form">
+            <div class="form-group">
+                <label for="group-name">Название группы</label>
+                <input class="form-input" id="group-name" required="" type="text"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="group-emails">Поиск пользователей</label>
+                <input class="form-input" id="email-search" placeholder="Введите email" type="text"/>
+            </div>
+            
+            <div class="form-group">
+                <label>Выберите почты</label>
+                <div class="checkbox-list" id="group-emails-list"></div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="cancel-group" type="button">Отмена</button>
+                <button class="btn btn-primary" type="submit">Сохранить группу</button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="group-details-template">
+    <div class="header">
+        <h1 class="welcome-title" id="group-title">Группа: </h1>
+    </div>
+    <div class="editor">
         <div class="form-group">
-          <label for="course-title">Название курса</label>
-          <input type="text" id="course-title" required class="form-input">
+            <label for="add-email">Добавить почту</label>
+            <div class="search">
+                <input class="form-input" id="add-email" placeholder="Введите email" type="email"/>
+                <button class="btn btn-primary" id="add-email-btn">Добавить</button>
+            </div>
         </div>
-
-        <div class="two-columns">
-          <div class="form-group">
-            <label for="course-groups">Добавить группы</label>
-            <div class="checkbox-list" id="groups-list"></div>
-          </div>
-
-          <div class="form-group">
-            <label for="course-emails">Добавить почты</label>
-            <div class="checkbox-list" id="emails-list"></div>
-          </div>
-        </div>
-
+        
+        <div class="list-container" id="group-emails-container"></div>
+        
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-course">Отмена</button>
+            <button class="btn btn-danger" id="delete-group" type="button">Удалить группу</button>
+        </div>
+    </div>
+</template>
+
+<template id="database-template">
+    <div class="header">
+        <div>
+            <h1 class="welcome-title">База Данных</h1>
+        </div>
+        <div class="search">
+            <input class="btn-toggle" placeholder="Поиск по почте" type="text"/>
+            <button class="btn btn-primary" id="add-email-db">Добавить почту</button>
+        </div>
+    </div>
+    <div class="list-container" id="database-container"></div>
+</template>
+
+<template id="email-add-template">
+    <div class="header">
+        <h1 class="welcome-title">Добавление почты</h1>
+    </div>
+    <div class="editor">
+        <form id="email-form">
+            <div class="form-group">
+                <label for="email-address">Email адрес</label>
+                <input class="form-input" id="email-address" required="" type="email"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="email-role">Роль</label>
+                <select class="form-input" id="email-role" required="">
+                    <option value="student">Студент</option>
+                    <option value="teacher">Преподаватель</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="cancel-email" type="button">Отмена</button>
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template id="user_courses-template">
+    <div class="header">
+        <h1 class="welcome-title">Мои курсы</h1>
+    </div>
+    <div class="card-container" id="user-courses-container">
+        <!-- Сюда будут добавляться курсы пользователя -->
+    </div>
+</template>
+
+<template id="course_detail-template">
+    <div class="header">
+        <div class="course-bar" id="course-bar">
+            <!-- Кнопки будут добавлены динамически -->
+        </div>
+    </div>
+    
+    <div class="course-layout">
+        <div class="course-sidebar" id="course-sidebar">
+            <!-- Навигация по курсу будет добавлена динамически -->
+        </div>
+        
+        <div class="course-content" id="course-content">
+            <!-- Контент курса будет добавлен динамически -->
+        </div>
+    </div>
+</template>
+
+<template id="course_settings-template">
+    <div class="settings-section">
+        <h2>О курсе</h2>
+        <div class="form-group">
+            <label>Полное название курса</label>
+            <input class="form-input" type="text" id="course-full-name">
+        </div>
+        <div class="form-group">
+            <label>Краткое название курса</label>
+            <input class="form-input" type="text" id="course-short-name">
+        </div>
+        <div class="form-group">
+            <label>Ссылка на чат курса</label>
+            <input class="form-input" type="url" id="course-chat-link">
+        </div>
+        <div class="form-group">
+            <label>Ссылка на материалы курса</label>
+            <input class="form-input" type="url" id="course-materials-link">
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Описание</h2>
+        <div class="rich-editor">
+            <div class="toolbar">
+                <button type="button" title="Жирный"><b>B</b></button>
+                <button type="button" title="Курсив"><i>I</i></button>
+                <button type="button" title="Подчеркнутый"><u>U</u></button>
+                <!-- Другие кнопки редактора -->
+            </div>
+            <div class="editor-content" contenteditable="true" id="course-description"></div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Изображение курса</h2>
+        <div class="course-preview">
+            <div class="course-image-preview" id="course-image-upload">
+                <span>+ Загрузить изображение</span>
+            </div>
+            <div class="course-info-preview">
+                <h3 id="preview-course-name">Название курса</h3>
+                <p id="preview-course-description">Описание курса</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Часы работы</h2>
+        <div class="form-group">
+            <button class="btn btn-secondary" id="add-curator">Добавить куратора курса</button>
+        </div>
+        <div id="curators-list"></div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Формат курса</h2>
+        <div class="form-group">
+            <label>Видимость курса</label>
+            <select class="form-input" id="course-visibility">
+                <option value="show">Показать</option>
+                <option value="hide">Скрыть</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Разрешить скачивание содержимого курса</label>
+            <select class="form-input" id="course-download">
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Дата начала курса</label>
+            <input class="form-input" type="datetime-local" id="course-start-date">
+        </div>
+        <div class="form-group">
+            <label>Идентификационный номер курса</label>
+            <input class="form-input" type="text" id="course-id" readonly>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Внешний вид</h2>
+        <div class="form-group">
+            <label>Отображение скрытых секций</label>
+            <select class="form-input" id="hidden-sections">
+                <option value="invisible">Полностью невидимы</option>
+                <option value="unavailable">Отображаются как недоступные</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Показывать журнал оценок студентам</label>
+            <select class="form-input" id="show-grades">
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Показывать отчеты о деятельности</label>
+            <select class="form-input" id="show-reports">
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Показывать даты активных элементов</label>
+            <select class="form-input" id="show-dates">
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Группы</h2>
+        <div class="form-group">
+            <label>Групповой режим</label>
+            <select class="form-input" id="group-mode">
+                <option value="visible">Видимые группы</option>
+                <option value="none">Нет групп</option>
+                <option value="isolated">Изолированные группы</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Показывать журнал оценок студентам</label>
+            <select class="form-input" id="group-grades">
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+    </div>
+</template>
+
+<template id="course_content-template">
+    <div class="settings-section">
+        <h2>Общее</h2>
+        <div class="course-preview">
+            <div class="course-image-preview">
+                <img id="course-main-image" src="" alt="Изображение курса">
+            </div>
+            <div class="course-info-preview">
+                <h3 id="course-main-name">Название курса</h3>
+                <p id="course-main-description">Описание курса</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Темы</h2>
+        <button class="btn btn-primary" id="create-theme">Создать тему</button>
+        <div id="themes-container"></div>
+    </div>
+</template>
+
+<template id="theme-template">
+    <div class="theme-card">
+        <div class="theme-header">
+            <h3 class="theme-title">Новая тема</h3>
+            <button class="btn btn-danger delete-theme">Удалить</button>
+        </div>
+        <div class="form-group">
+            <label>Название темы</label>
+            <input class="form-input theme-name" type="text">
+        </div>
+        <div class="form-group">
+            <label>Описание темы</label>
+            <textarea class="form-input theme-description" rows="3"></textarea>
+        </div>
+        <div class="theme-content">
+            <h4>Задания и темы</h4>
+            <button class="btn btn-secondary add-assignment">Добавить задание/тест</button>
+            <div class="assignments-container"></div>
+        </div>
+    </div>
+</template>
+
+<template id="assignment-item-template">
+    <div class="assignment-item">
+        <div class="assignment-header">
+            <div class="assignment-title">Новое задание</div>
+            <button class="btn btn-danger delete-assignment">Удалить</button>
+        </div>
+        <div class="form-group">
+            <label>Тип</label>
+            <div class="assignment-type">
+                <button class="type-btn" data-type="assignment">Задание</button>
+                <button class="type-btn" data-type="quiz">Тест</button>
+            </div>
+        </div>
+        <div class="assignment-content">
+            <!-- Контент будет добавляться динамически -->
+        </div>
+    </div>
+</template>
+
+<template id="quizzes-template">
+    <div class="header">
+        <div>
+            <h1 class="welcome-title">Тесты и задания</h1>
+        </div>
+        <div>
+            <button class="btn btn-primary" id="create-quiz-btn">Создать тест или задание</button>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Созданные мной</h2>
+        <div class="card-container" id="my-quizzes-container">
+            <!-- Сюда будут добавляться созданные тесты/задания -->
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h2>Дедлайны</h2>
+        <div class="deadline-list" id="deadline-container">
+            <!-- Сюда будут добавляться задания с дедлайнами -->
+        </div>
+    </div>
+</template>
+
+<template id="quiz-creation-template">
+    <div class="modal" style="display: block;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="quiz-modal-title">Создание теста/задания</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <form id="quiz-form">
+                <div class="form-group">
+                    <label for="quiz-title">Название</label>
+                    <input class="form-input" id="quiz-title" required type="text">
+                </div>
+                
+                <div class="form-group">
+                    <label for="quiz-description">Описание (опционально)</label>
+                    <textarea class="form-input" id="quiz-description" rows="3"></textarea>
+                </div>
+                
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label for="quiz-type">Тип</label>
+                        <select class="form-input" id="quiz-type" required>
+                            <option value="test">Тест</option>
+                            <option value="assignment">Задание</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quiz-course">Курс</label>
+                        <select class="form-input" id="quiz-course" required></select>
+                    </div>
+                </div>
+                
+                <div class="two-columns">
+                    <div class="form-group">
+                        <label for="quiz-start">Дата открытия</label>
+                        <input class="form-input" id="quiz-start" required type="datetime-local">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quiz-end">Дедлайн</label>
+                        <input class="form-input" id="quiz-end" required type="datetime-local">
+                    </div>
+                </div>
+                
+                <div id="quiz-content"></div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancel-quiz" type="button">Отмена</button>
+                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+
+<template id="test-content-template">
+    <div class="form-group">
+        <h3>Вопросы</h3>
+        <div id="questions-container"></div>
+        <button class="btn btn-secondary" id="add-question" type="button">Добавить вопрос</button>
+    </div>
+</template>
+
+<template id="assignment-content-template">
+    <div class="form-group">
+        <label for="assignment-files">Прикрепленные файлы</label>
+        <div class="file-upload" id="file-upload-area">
+            Перетащите файлы сюда или кликните для загрузки
+        </div>
+        <input type="file" id="assignment-files" multiple style="display: none;">
+        <div class="file-list" id="file-list"></div>
+    </div>
+</template>
+
+<template id="question-template">
+    <div class="question-editor">
+        <div class="form-group">
+            <label>Вопрос</label>
+            <input class="question-text form-input" placeholder="Текст вопроса" type="text">
+        </div>
+        
+        <div class="form-group">
+            <label>Тип вопроса</label>
+            <select class="question-type form-input">
+                <option value="choice">Множественный выбор</option>
+                <option value="open">Открытый вопрос</option>
+            </select>
+        </div>
+        
+        <div class="question-options">
+            <div class="form-group">
+                <label>Варианты ответов</label>
+                <div class="options-list"></div>
+                <button class="btn btn-secondary add-option" type="button">Добавить вариант</button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button class="btn btn-danger delete-question" type="button">Удалить вопрос</button>
+        </div>
+    </div>
+</template>
+
+<template id="performance-template">
+    <div class="header">
+        <h1 class="welcome-title">Успеваемость</h1>
+    </div>
+    <table class="performance-table">
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Отметка</th>
+            </tr>
+        </thead>
+        <tbody id="performance-table-body">
+            <!-- Данные будут добавлены динамически -->
+        </tbody>
+    </table>
+</template>
+
+<template id="profile-template">
+    <div class="header">
+        <h1 class="welcome-title">Профиль</h1>
+    </div>
+    <div class="profile-form">
+        <div class="form-group">
+            <label>Имя</label>
+            <input class="form-input" type="text" id="profile-name" value="Иван Иванов">
+        </div>
+        
+        <div class="form-group">
+            <label>Email</label>
+            <input class="form-input" type="email" id="profile-email" value="i.ivanov@innopolis.ru">
+        </div>
+        
+        <h2>Сменить роль</h2>
+        <div class="role-selector">
+            <button class="role-btn" data-role="admin" type="button">Админ</button>
+            <button class="role-btn" data-role="user" type="button">Пользователь</button>
+        </div>
+    </div>
+</template>
+
+<template id="student_quiz_start-template">
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="quiz-modal-title">Тест/Задание</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="quiz-instructions">
+                <h3>Инструкции</h3>
+                <p id="quiz-description-text"></p>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" id="cancel-quiz-start">Отмена</button>
+                <button class="btn btn-primary" id="start-quiz">Приступить</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="student_quiz_view-template">
+    <div class="header">
+        <h1 class="welcome-title" id="student-quiz-title">Тест</h1>
+        <div class="quiz-info">
+            <div>Осталось времени: <span id="quiz-timer">59:59</span></div>
+            <div>Дедлайн: <span id="quiz-deadline">30.06.2025, 23:59</span></div>
+        </div>
+    </div>
+    <div class="quiz-container">
+        <div id="quiz-instructions">
+            <h3>Инструкции</h3>
+            <p>Ответьте на все вопросы. После завершения нажмите "Отправить ответы".</p>
+            <p>Вы можете возвращаться к предыдущим вопросам для изменения ответов.</p>
+        </div>
+        <form id="quiz-form">
+            <!-- Вопросы будут добавляться динамически -->
+        </form>
+        <div class="navigation-buttons">
+            <button class="btn btn-secondary" id="prev-question" type="button">Предыдущий</button>
+            <button class="btn btn-secondary" id="next-question" type="button">Следующий</button>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" id="submit-quiz" type="submit">Отправить ответы</button>
+        </div>
+    </div>
+</template>
+
+<script src="home.js"></script>
+<!-- ====== ДОБАВЛЕНО: Шаблоны ====== -->
+
+<template id="group-creation-template">
+  <div class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Создать группу</h2>
+        <button class="modal-close" onclick="document.querySelector('.modal').remove()">&times;</button>
+      </div>
+      <form id="group-creation-form">
+        <div class="form-group">
+          <label>Название группы</label>
+          <input type="text" id="new-group-name" class="form-input" placeholder="CSE-05" required>
+        </div>
+        <div class="form-group">
+          <label>Поиск пользователей</label>
+          <input type="text" id="group-user-search" class="form-input" placeholder="Введите email">
+        </div>
+        <div class="form-group">
+          <label>Участники</label>
+          <div id="group-user-list" class="options-list"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-group" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<template id="database-template">
+  <div class="page database">
+    <h2>База данных пользователей</h2>
+    <form id="add-email-form">
+      <input type="email" id="new-email" placeholder="example@site.com" required />
+      <select id="new-role">
+        <option value="student">Студент</option>
+        <option value="teacher">Преподаватель</option>
+      </select>
+      <button type="submit">Добавить</button>
+    </form>
+    <ul id="email-list"></ul>
+  </div>
+</template>
+
+<template id="course-creation-template">
+  <div class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Создать курс</h2>
+        <button class="modal-close" onclick="document.querySelector('.modal').remove()">&times;</button>
+      </div>
+      <form id="course-creation-form">
+        <div class="form-group">
+          <label>Название курса</label>
+          <input type="text" id="new-course-name" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label>Добавить участников из</label>
+          <select id="course-group-select" class="form-input">
+            <option value="teachers">Преподаватели</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Участники</label>
+          <div id="course-user-list" class="options-list"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-course" class="btn btn-secondary">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<template id="course-editing-template">
+  <div class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Редактировать курс</h2>
+        <button class="modal-close" onclick="document.querySelector('.modal').remove()">&times;</button>
+      </div>
+      <form id="course-editing-form">
+        <div class="form-group">
+          <label>Название курса</label>
+          <input type="text" id="edit-course-name" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label>Преподаватели курса</label>
+          <div id="teachersList" class="options-list"></div>
+        </div>
+        <div class="form-group">
+          <label>Группы в курсе</label>
+          <div id="courseGroupsList" class="options-list"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="delete-course" class="btn btn-danger">Удалить курс</button>
           <button type="submit" class="btn btn-primary">Сохранить курс</button>
         </div>
       </form>
     </div>
-  </template>
-
-  <template id="course-editing-template">
-    <div class="header">
-      <h1 class="welcome-title" id="course-editing-title">Редактирование курса</h1>
-    </div>
-
-    <div class="editor">
-      <form id="edit-course-form">
-        <div class="form-group">
-          <label for="edit-course-title">Название курса</label>
-          <input type="text" id="edit-course-title" required class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label for="edit-course-shortname">Сокращенное название</label>
-          <input type="text" id="edit-course-shortname" class="form-input">
-        </div>
-<!--  -->
-        <div class="form-group">
-          <label for="edit-course-telegram">Ссылка на Telegram-чат</label>
-          <input type="url" id="edit-course-telegram" class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label>Видимость курса</label>
-          <div class="checkbox-item">
-            <input type="checkbox" id="edit-course-visible" checked>
-            <label for="edit-course-visible">Курс виден студентам</label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="edit-course-autovisible">Дата автоматического включения видимости</label>
-          <input type="datetime-local" id="edit-course-autovisible" class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label>Разрешение на скачивание ресурсов</label>
-          <div class="checkbox-item">
-            <input type="checkbox" id="edit-course-download" checked>
-            <label for="edit-course-download">Разрешить скачивание</label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Добавить ресурсы</label>
-          <input type="file" id="course-resources" multiple class="form-input">
-          <div id="resources-preview"></div>
-        </div>
-
-        <div class="form-group">
-          <label>Прикрепленные ресурсы</label>
-          <div id="attached-resources"></div>
-        </div>
-
-        <div class="form-group">
-          <label>Группы курса</label>
-          <div class="groups-list" id="course-groups-list"></div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-edit-course">Отмена</button>
-          <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-        </div>
-      </form>
-    </div>
-  </template>
-
-  <template id="groups-template">
-    <div class="header">
-      <div>
-        <h1 class="welcome-title">Группы</h1>
-      </div>
-
-      <div>
-        <button class="btn btn-primary" id="create-group-btn">Создать группу</button>
-      </div>
-    </div>
-
-    <div class="groups-container" id="groups-container"></div>
-  </template>
-
-  <template id="group-creation-template">
-    <div class="header">
-      <h1 class="welcome-title">Создание группы</h1>
-    </div>
-
-    <div class="editor">
-      <form id="group-form">
-        <div class="form-group">
-          <label for="group-name">Название группы</label>
-          <input type="text" id="group-name" required class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label for="group-emails">Выберите почты</label>
-          <div class="checkbox-list" id="group-emails-list"></div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-group">Отмена</button>
-          <button type="submit" class="btn btn-primary">Сохранить группу</button>
-        </div>
-      </form>
-    </div>
-  </template>
-
-  <template id="group-details-template">
-    <div class="header">
-      <h1 class="welcome-title" id="group-title">Группа: </h1>
-    </div>
-
-    <div class="editor">
-      <div class="form-group">
-        <label for="add-email">Добавить почту</label>
-        <div class="search">
-          <input type="email" id="add-email" placeholder="Введите email" class="form-input">
-          <button class="btn btn-primary" id="add-email-btn">Добавить</button>
-        </div>
-      </div>
-
-      <div class="list-container" id="group-emails-container"></div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-danger" id="delete-group">Удалить группу</button>
-      </div>
-    </div>
-  </template>
-
-  <template id="database-template">
-    <div class="header">
-      <div>
-        <h1 class="welcome-title">База Данных</h1>
-      </div>
-
-      <div class="search">
-        <input type="text" placeholder="Поиск по почте" class="btn-toggle">
-        <button class="btn btn-primary" id="add-email-db">Добавить почту</button>
-      </div>
-    </div>
-
-    <div class="list-container" id="database-container"></div>
-  </template>
-
-  <template id="email-add-template">
-    <div class="header">
-      <h1 class="welcome-title">Добавление почты</h1>
-    </div>
-
-    <div class="editor">
-      <form id="email-form">
-        <div class="form-group">
-          <label for="email-address">Email адрес</label>
-          <input type="email" id="email-address" required class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label for="email-role">Роль</label>
-          <select id="email-role" required class="form-input">
-            <option value="student">Студент</option>
-            <option value="teacher">Преподаватель</option>
-          </select>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-email">Отмена</button>
-          <button type="submit" class="btn btn-primary">Сохранить</button>
-        </div>
-      </form>
-    </div>
-  </template>
-
-  <template id="quizzes-template">
-    <div class="header">
-      <div>
-        <h1 class="welcome-title">Тесты и задания</h1>
-        <div class="view-toggle">
-            <button class="view-btn active" data-view="cards">Карточки</button>
-            <button class="view-btn" data-view="list">Список</button>
-        </div>
-      </div>
-
-      <div class="search">
-        <select class="btn-toggle">
-          <option>Все тесты</option>
-          <option>Активные</option>
-          <option>Завершенные</option>
-        </select>
-        <input type="text" placeholder="Поиск тестов" class="btn-toggle">
-      </div>
-    </div>
-
-    <div class="card-container">
-      <div class="card" id="create-quiz-btn">
-        <div class="card__body" style="text-align: center; padding: 40px;">
-          <h3 class="card__title">Создать новый тест/задание</h3>
-          <div style="font-size: 3rem; margin-top: 20px;">+</div>
-        </div>
-      </div>
-      <!-- Сюда будут добавляться созданные тесты и задания -->
-    </div>
-  </template>
-
-  <template id="quiz-creation-template">
-    <div class="header">
-      <h1 class="welcome-title">Создание теста/задания</h1>
-    </div>
-
-    <div class="editor">
-      <form id="quiz-form">
-        <div class="form-group">
-          <label for="quiz-title">Название</label>
-          <input type="text" id="quiz-title" required class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label for="quiz-description">Описание (опционально)</label>
-          <textarea id="quiz-description" rows="3" class="form-input"></textarea>
-        </div>
-
-        <div class="two-columns">
-          <div class="form-group">
-            <label for="quiz-type">Тип</label>
-            <select id="quiz-type" required class="form-input">
-              <option value="test">Тест</option>
-              <option value="assignment">Задание</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="quiz-course">Курс</label>
-            <select id="quiz-course" required class="form-input"></select>
-          </div>
-        </div>
-
-        <div class="two-columns">
-          <div class="form-group">
-            <label for="quiz-start">Дата начала</label>
-            <input type="datetime-local" id="quiz-start" required class="form-input">
-          </div>
-
-          <div class="form-group">
-            <label for="quiz-end">Дедлайн</label>
-            <input type="datetime-local" id="quiz-end" required class="form-input">
-          </div>
-        </div>
-
-        <div id="quiz-content"></div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-quiz">Отмена</button>
-          <button type="submit" class="btn btn-primary">Сохранить</button>
-        </div>
-      </form>
-    </div>
-  </template>
-
-  <template id="test-content-template">
-    <div class="form-group">
-      <h3>Вопросы</h3>
-      <div id="questions-container"></div>
-      <button type="button" class="btn btn-secondary" id="add-question">Добавить вопрос</button>
-    </div>
-  </template>
-
-  <template id="assignment-content-template">
-    <div class="form-group">
-      <label for="assignment-files">Прикрепленные файлы</label>
-      <input type="file" id="assignment-files" multiple class="form-input">
-    </div>
-  </template>
-
-  <template id="question-template">
-    <div class="question-editor">
-      <div class="form-group">
-        <label>Вопрос</label>
-        <input type="text" class="question-text form-input" placeholder="Текст вопроса">
-      </div>
-
-      <div class="form-group">
-        <label>Тип вопроса</label>
-        <select class="question-type form-input">
-          <option value="choice">Множественный выбор</option>
-          <option value="open">Открытый вопрос</option>
-        </select>
-      </div>
-
-      <div class="question-options">
-        <div class="form-group">
-          <label>Варианты ответов</label>
-          <div class="options-list"></div>
-          <button type="button" class="btn btn-secondary add-option">Добавить вариант</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <button type="button" class="btn btn-danger delete-question">Удалить вопрос</button>
-      </div>
-    </div>
-  </template>
-
-  <template id="performance-template">
-    <div class="header">
-      <h1 class="welcome-title">Успеваемость</h1>
-    </div>
-
-    <div class="two-columns">
-      <div>
-        <h2>Общая статистика</h2>
-        <div class="card">
-          <div class="card__body">
-            <h3 class="card__title">Средний балл</h3>
-            <p class="card__progress">85%</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2>По курсам</h2>
-        <div class="list-container" id="courses-performance"></div>
-      </div>
-    </div>
-  </template>
-
-  <template id="profile-template">
-    <div class="header">
-      <h1 class="welcome-title">Профиль</h1>
-    </div>
-
-    <div class="profile-form">
-      <div class="form-group">
-        <label>Имя</label>
-        <input type="text" value="Иван Иванов" class="form-input" disabled>
-      </div>
-
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" value="i.ivanov@innopolis.ru" class="form-input" disabled>
-      </div>
-
-      <h2>Сменить роль</h2>
-      <div class="role-selector">
-        <button type="button" class="role-btn" data-role="admin">Админ</button>
-        <button type="button" class="role-btn" data-role="teacher">Преподаватель</button>
-        <button type="button" class="role-btn" data-role="student">Студент</button>
-      </div>
-    </div>
-  </template>
-
-  <template id="student-quiz-view-template">
-    <div class="header">
-      <h1 class="welcome-title" id="student-quiz-title">Тест</h1>
-      <div class="quiz-info">
-        <div>Осталось времени: <span id="quiz-timer">59:59</span></div>
-        <div>Дедлайн: <span id="quiz-deadline">30.06.2025, 23:59</span></div>
-      </div>
-    </div>
-
-    <div class="quiz-container">
-      <div id="quiz-instructions">
-        <h3>Инструкции</h3>
-        <p>Ответьте на все вопросы. После завершения нажмите "Отправить ответы".</p>
-        <p>Вы можете возвращаться к предыдущим вопросам для изменения ответов.</p>
-      </div>
-
-      <form id="quiz-form">
-        <div class="question" id="question-1">
-          <div class="question-header">
-            <h3>Вопрос 1</h3>
-            <div class="question-points">(2 балла)</div>
-          </div>
-          <div class="question-text">
-            <p>Сколько будет 2 + 2 * 2?</p>
-          </div>
-          <div class="question-options">
-            <div class="option">
-              <input type="radio" name="q1" id="q1-option1">
-              <label for="q1-option1">6</label>
-            </div>
-            <div class="option">
-              <input type="radio" name="q1" id="q1-option2">
-              <label for="q1-option2">8</label>
-            </div>
-            <div class="option">
-              <input type="radio" name="q1" id="q1-option3">
-              <label for="q1-option3">4</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="question" id="question-2">
-          <div class="question-header">
-            <h3>Вопрос 2</h3>
-            <div class="question-points">(3 балла)</div>
-          </div>
-          <div class="question-text">
-            <p>Какие из следующих языков являются языками программирования?</p>
-          </div>
-          <div class="question-options">
-            <div class="option">
-              <input type="checkbox" id="q2-option1">
-              <label for="q2-option1">Python</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="q2-option2">
-              <label for="q2-option2">HTML</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="q2-option3">
-              <label for="q2-option3">JavaScript</label>
-            </div>
-            <div class="option">
-              <input type="checkbox" id="q2-option4">
-              <label for="q2-option4">CSS</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="question" id="question-3">
-          <div class="question-header">
-            <h3>Вопрос 3</h3>
-            <div class="question-points">(5 баллов)</div>
-          </div>
-          <div class="question-text">
-            <p>Объясните принцип инкапсуляции в ООП.</p>
-          </div>
-          <div class="question-options">
-            <textarea class="form-input" rows="4" placeholder="Введите ваш ответ..."></textarea>
-          </div>
-        </div>
-
-        <div class="navigation-buttons">
-          <button type="button" class="btn btn-secondary" id="prev-question">Предыдущий</button>
-          <button type="button" class="btn btn-secondary" id="next-question">Следующий</button>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" id="submit-quiz">Отправить ответы</button>
-        </div>
-      </form>
-    </div>
-  </template>
-
-  <script>
-    // Инициализация данных
-    const initData = () => {
-      if (!localStorage.getItem('role')) {
-        localStorage.setItem('role', 'admin');
-      }
-
-      if (!localStorage.getItem('emails')) {
-        const emails = [
-          { id: 1, email: 'student1@innopolis.ru', role: 'student' },
-          { id: 2, email: 'student2@innopolis.ru', role: 'student' },
-          { id: 3, email: 'teacher1@innopolis.ru', role: 'teacher' },
-          { id: 4, email: 'teacher2@innopolis.ru', role: 'teacher' }
-        ];
-        localStorage.setItem('emails', JSON.stringify(emails));
-      }
-
-      if (!localStorage.getItem('groups')) {
-        localStorage.setItem('groups', JSON.stringify([]));
-      }
-
-      if (!localStorage.getItem('courses')) {
-        localStorage.setItem('courses', JSON.stringify([]));
-      }
-
-      if (!localStorage.getItem('quizzes')) {
-        localStorage.setItem('quizzes', JSON.stringify([]));
-      }
-
-      // Сохраняем текущий раздел
-      if (!localStorage.getItem('currentSection')) {
-        localStorage.setItem('currentSection', 'dashboard');
-      }
-    };
-
-    // Получение текущей роли
-    const getCurrentRole = () => {
-      return localStorage.getItem('role') || 'admin';
-    };
-
-    // Обновление видимости элементов в зависимости от роли
-    const updateRoleVisibility = () => {
-      const role = getCurrentRole();
-
-      // Скрываем/показываем элементы в сайдбаре
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.style.display = role === 'admin' ? 'block' : 'none';
-      });
-
-      document.querySelectorAll('.teacher-student-only').forEach(el => {
-        el.style.display = role === 'admin' ? 'none' : 'block';
-      });
-
-      // Обновляем активную кнопку роли в профиле
-      document.querySelectorAll('.role-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.role === role) {
-          btn.classList.add('active');
-        }
-      });
-    };
-
-    // Инициализация темы
-    const initTheme = () => {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-
-      const themeIcon = document.getElementById('themeIcon');
-      if (savedTheme === 'dark') {
-        themeIcon.innerHTML = '<path fill="currentColor" d="M12.8956 3.55332C12.705 3.53848 12.5145 3.5357 12.3244 3.545C12.2186 3.54997 12.1127 3.558 12.007 3.56908C7.91503 3.96808 5 7.36458 5 11.5C5 15.9208 8.57925 19.5 13 19.5C16.1354 19.5 18.7827 17.7148 20 15.1563C20.0627 15.0324 20.0311 14.8841 19.9233 14.7946C19.8154 14.705 19.6562 14.6966 19.5381 14.7747C19.0995 15.061 18.6081 15.2648 18.0916 15.375C17.5751 15.4853 17.0429 15.5002 16.5214 15.4188C16 15.3374 15.4998 15.1611 15.0462 14.8993C14.5926 14.6375 14.1943 14.2953 13.8732 13.891C13.5521 13.4866 13.3145 13.0279 13.173 12.5402C13.0315 12.0525 12.9889 11.545 13.0475 11.0443C13.1061 10.5435 13.2648 10.0593 13.5151 9.6184C13.7655 9.17748 14.1024 8.78877 14.507 8.47422C14.9116 8.15968 15.3761 7.9258 15.8748 7.786C16.3734 7.6462 16.8964 7.60344 17.4127 7.66025C17.929 7.71706 18.4283 7.87231 18.881 8.11672C19.0048 8.18504 19.1569 8.17129 19.2669 8.08259C19.3769 7.99389 19.4247 7.84715 19.3881 7.70847C18.9966 6.12034 18.0004 4.71715 16.5705 3.76408C15.1405 2.81101 13.3685 2.37142 11.6097 2.52847C10.9989 2.5896 10.3958 2.72057 9.81276 2.91878C9.68142 2.96322 9.53306 2.92888 9.439 2.8328C9.34495 2.73673 9.32351 2.59824 9.38438 2.48437C9.79788 1.69938 10.4231 1.04187 11.1932 0.581793C11.9633 0.121717 12.8497 -0.122577 13.7494 0.0462515C14.6491 0.21508 15.529 0.660079 16.2958 1.34136C17.0627 2.02264 17.689 2.91806 18.1131 3.94416C18.5371 4.97026 18.7439 6.09311 18.7141 7.22457C18.6842 8.35603 18.4187 9.45971 17.9423 10.447C17.4659 11.4343 16.7946 12.2754 15.9866 12.8995C15.1787 13.5236 14.2592 13.9124 13.3094 14.032C12.3596 14.1515 11.4103 13.9982 10.5415 13.5875C9.67266 13.1767 8.91263 12.5224 8.33441 11.6846C7.75619 10.8469 7.37996 9.85389 7.24418 8.80338C7.1084 7.75287 7.21825 6.6812 7.56208 5.68922C7.90591 4.69724 8.47186 3.81929 9.205 3.14359C9.93814 2.46789 10.812 2.01786 11.7397 1.839"/>';
-      } else {
-        themeIcon.innerHTML = '<path fill="currentColor" d="M12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9ZM12 4.5L14.03 8.5H9.97L12 4.5ZM12 19.5L9.97 15.5H14.03L12 19.5ZM4.5 12L8.5 9.97V14.03L4.5 12ZM19.5 12L15.5 14.03V9.97L19.5 12ZM14.83 14.83L18.36 18.36L16.95 19.77L13.42 16.24L14.83 14.83ZM9.17 14.83L7.76 16.24L4.23 19.77L2.82 18.36L6.35 14.83L9.17 14.83ZM9.17 9.17L6.35 9.17L2.82 5.64L4.23 4.23L7.76 7.76L9.17 9.17ZM14.83 9.17L16.24 7.76L19.77 4.23L18.36 2.82L14.83 6.35L14.83 9.17Z"/>';
-      }
-    };
-
-    // Переключение темы
-    const setupThemeToggle = () => {
-      document.getElementById('themeToggle').addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        initTheme();
-      });
-    };
-
-    // Переключение вида карточек/списка
-    const setupViewToggle = () => {
-      document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('view-btn')) {
-          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-          e.target.classList.add('active');
-
-          const viewType = e.target.dataset.view;
-          const container = document.querySelector('.card-container');
-
-          if (container) {
-            if (viewType === 'list') {
-              container.classList.add('list-view');
-            } else {
-              container.classList.remove('list-view');
-            }
-          }
-        }
-      });
-    };
-
-    // Обновление сайдбара
-    const updateSidebar = (section) => {
-      const isDashboard = section === 'dashboard';
-      document.getElementById('menu-header').style.display = isDashboard ? 'block' : 'none';
-      document.getElementById('back-link').style.display = isDashboard ? 'none' : 'block';
-
-      document.querySelectorAll('.sidebar__nav a').forEach(a => {
-        a.classList.remove('active');
-        if (a.dataset.section === section) {
-          a.classList.add('active');
-        }
-      });
-    };
-
-    // Рендеринг страницы
-    const renderPage = (templateId) => {
-      const template = document.getElementById(templateId);
-      if (template) {
-        document.getElementById('main-content').innerHTML = '';
-        document.getElementById('main-content').appendChild(template.content.cloneNode(true));
-      }
-    };
-
-    // Загрузка контента для раздела
-    const loadContent = (section) => {
-      try {
-        let templateId = '';
-
-        switch(section) {
-          case 'dashboard':
-            templateId = 'dashboard-template';
-            break;
-          case 'courses':
-            templateId = 'courses-template';
-            break;
-          case 'course_creation':
-            templateId = 'course-creation-template';
-            break;
-          case 'course_editing':
-            templateId = 'course-editing-template';
-            break;
-          case 'groups':
-            templateId = 'groups-template';
-            break;
-          case 'group_creation':
-            templateId = 'group-creation-template';
-            break;
-          case 'group_details':
-            templateId = 'group-details-template';
-            break;
-          case 'database':
-            templateId = 'database-template';
-            break;
-          case 'email_add':
-            templateId = 'email-add-template';
-            break;
-          case 'quizzes':
-            templateId = 'quizzes-template';
-            break;
-          case 'quiz_creation':
-            templateId = 'quiz-creation-template';
-            break;
-          case 'performance':
-            templateId = 'performance-template';
-            break;
-          case 'profile':
-            templateId = 'profile-template';
-            break;
-          case 'student_quiz':
-            templateId = 'student-quiz-view-template';
-            break;
-          default:
-            templateId = 'dashboard-template';
-        }
-
-        renderPage(templateId);
-        updateSidebar(section);
-
-        // Сохраняем текущий раздел
-        localStorage.setItem('currentSection', section);
-
-        // Инициализация компонентов страницы
-        setupViewToggle();
-        initPageSpecificLogic(section);
-      } catch (error) {
-        document.getElementById('main-content').innerHTML = `
-          <div class="error">
-            <h2>Ошибка загрузки</h2>
-            <p>${error.message}</p>
-          </div>
-        `;
-      }
-    };
-
-    // Инициализация логики для конкретных страниц
-    const initPageSpecificLogic = (section) => {
-      switch(section) {
-        case 'courses':
-          initCoursesPage();
-          break;
-        case 'course_creation':
-        case 'course_editing':
-          initCourseCreationPage(section);
-          break;
-        case 'groups':
-          initGroupsPage();
-          break;
-        case 'group_creation':
-          initGroupCreationPage();
-          break;
-        case 'group_details':
-          initGroupDetailsPage();
-          break;
-        case 'database':
-          initDatabasePage();
-          break;
-        case 'email_add':
-          initEmailAddPage();
-          break;
-        case 'quizzes':
-          initQuizzesPage();
-          break;
-        case 'quiz_creation':
-          initQuizCreationPage();
-          break;
-        case 'performance':
-          initPerformancePage();
-          break;
-        case 'profile':
-          initProfilePage();
-          break;
-        case 'student_quiz':
-          initStudentQuizPage();
-          break;
-      }
-    };
-
-    // Инициализация страницы курсов
-    const initCoursesPage = () => {
-      // Обработчик создания курса
-      document.getElementById('create-course-btn')?.addEventListener('click', () => {
-        loadContent('course_creation');
-      });
-
-      // Отображение существующих курсов
-      const courses = JSON.parse(localStorage.getItem('courses')) || [];
-      const container = document.querySelector('.card-container');
-
-      courses.forEach(course => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card__body">
-            <h2 class="card__title">${course.title}</h2>
-            <p class="card__progress">${course.groups?.length || 0} групп, ${course.emails?.length || 0} участников</p>
-          </div>
-        `;
-        card.addEventListener('click', () => {
-          localStorage.setItem('currentCourse', course.id);
-          loadContent('course_editing');
-        });
-        container.appendChild(card);
-      });
-    };
-
-    // Инициализация страницы создания/редактирования курса
-    const initCourseCreationPage = (mode) => {
-      // Заполняем список групп
-      const groupsList = document.getElementById('groups-list');
-      const groups = JSON.parse(localStorage.getItem('groups')) || [];
-
-      groups.forEach(group => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-          <input type="checkbox" id="group-${group.id}" value="${group.id}">
-          <label for="group-${group.id}">${group.name}</label>
-        `;
-        groupsList?.appendChild(div);
-      });
-
-      // Заполняем список почт
-      const emailsList = document.getElementById('emails-list');
-      const emails = JSON.parse(localStorage.getItem('emails')) || [];
-
-      emails.forEach(email => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-          <input type="checkbox" id="email-${email.id}" value="${email.id}">
-          <label for="email-${email.id}">${email.email}</label>
-        `;
-        emailsList?.appendChild(div);
-      });
-
-      // Если это редактирование - заполняем данные
-      if (mode === 'course_editing') {
-        const courseId = localStorage.getItem('currentCourse');
-        const courses = JSON.parse(localStorage.getItem('courses')) || [];
-        const course = courses.find(c => c.id == courseId);
-
-        if (course) {
-          document.getElementById('course-editing-title').textContent = `Редактирование курса: ${course.title}`;
-          document.getElementById('edit-course-title').value = course.title;
-          document.getElementById('edit-course-shortname').value = course.shortName || '';
-          document.getElementById('edit-course-telegram').value = course.telegram || '';
-          document.getElementById('edit-course-visible').checked = course.visible !== false;
-          document.getElementById('edit-course-autovisible').value = course.autoVisible || '';
-          document.getElementById('edit-course-download').checked = course.allowDownload !== false;
-        }
-      }
-
-      // Отмена создания/редактирования
-      document.getElementById('cancel-course')?.addEventListener('click', () => {
-        loadContent('courses');
-      });
-      document.getElementById('cancel-edit-course')?.addEventListener('click', () => {
-        loadContent('courses');
-      });
-
-      // Сохранение курса
-      document.getElementById('course-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const title = document.getElementById('course-title').value;
-        const courses = JSON.parse(localStorage.getItem('courses')) || [];
-
-        // Сохраняем новый курс
-        courses.push({
-          id: Date.now(),
-          title,
-          groups: [],
-          emails: []
-        });
-
-        localStorage.setItem('courses', JSON.stringify(courses));
-        loadContent('courses');
-      });
-
-      // Сохранение изменений курса
-      document.getElementById('edit-course-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const courseId = localStorage.getItem('currentCourse');
-        const courses = JSON.parse(localStorage.getItem('courses')) || [];
-        const courseIndex = courses.findIndex(c => c.id == courseId);
-
-        if (courseIndex !== -1) {
-          courses[courseIndex].title = document.getElementById('edit-course-title').value;
-          courses[courseIndex].shortName = document.getElementById('edit-course-shortname').value;
-          courses[courseIndex].telegram = document.getElementById('edit-course-telegram').value;
-          courses[courseIndex].visible = document.getElementById('edit-course-visible').checked;
-          courses[courseIndex].autoVisible = document.getElementById('edit-course-autovisible').value;
-          courses[courseIndex].allowDownload = document.getElementById('edit-course-download').checked;
-
-          localStorage.setItem('courses', JSON.stringify(courses));
-          loadContent('courses');
-        }
-      });
-    };
-
-    // Инициализация страницы групп
-    const initGroupsPage = () => {
-      // Обработчик создания группы
-      document.getElementById('create-group-btn')?.addEventListener('click', () => {
-        loadContent('group_creation');
-      });
-
-      // Заполняем список групп
-      const groupsContainer = document.getElementById('groups-container');
-      const groups = JSON.parse(localStorage.getItem('groups')) || [];
-
-      groups.forEach(group => {
-        const groupCard = document.createElement('div');
-        groupCard.className = 'group-card';
-
-        // Получаем список email для группы
-        const emails = JSON.parse(localStorage.getItem('emails')) || [];
-        const groupEmails = group.emails.map(emailId => {
-          const email = emails.find(e => e.id == emailId);
-          return email ? email.email : '';
-        }).filter(email => email);
-
-        groupCard.innerHTML = `
-          <div class="group-header">
-            <div class="group-title">${group.name}</div>
-            <button class="btn btn-primary edit-group" data-id="${group.id}">Редактировать</button>
-          </div>
-          <div class="group-emails">
-            ${groupEmails.map(email => `
-              <div class="group-email-item">
-                <div>${email}</div>
-                <div class="email-actions">
-                  <button class="btn btn-danger remove-email" data-id="${email}">Удалить</button>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-
-        // Обработчик редактирования группы
-        groupCard.querySelector('.edit-group').addEventListener('click', () => {
-          const groupId = groupCard.querySelector('.edit-group').dataset.id;
-          localStorage.setItem('currentGroup', groupId);
-          loadContent('group_details');
-        });
-
-        groupsContainer.appendChild(groupCard);
-      });
-    };
-
-    // Инициализация страницы создания группы
-    const initGroupCreationPage = () => {
-      // Заполняем список почт
-      const emailsList = document.getElementById('group-emails-list');
-      const emails = JSON.parse(localStorage.getItem('emails')) || [];
-
-      emails.forEach(email => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-          <input type="checkbox" id="group-email-${email.id}" value="${email.id}">
-          <label for="group-email-${email.id}">${email.email}</label>
-        `;
-        emailsList.appendChild(div);
-      });
-
-      // Отмена создания
-      document.getElementById('cancel-group')?.addEventListener('click', () => {
-        loadContent('groups');
-      });
-
-      // Сохранение группы
-      document.getElementById('group-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const name = document.getElementById('group-name').value;
-        const groups = JSON.parse(localStorage.getItem('groups')) || [];
-
-        // Сохраняем новую группу
-        groups.push({
-          id: Date.now(),
-          name,
-          emails: []
-        });
-
-        localStorage.setItem('groups', JSON.stringify(groups));
-        loadContent('groups');
-      });
-    };
-
-    // Инициализация страницы деталей группы
-    const initGroupDetailsPage = () => {
-      const groupId = localStorage.getItem('currentGroup');
-      const groups = JSON.parse(localStorage.getItem('groups')) || [];
-      const group = groups.find(g => g.id == groupId);
-
-      if (!group) {
-        loadContent('groups');
-        return;
-      }
-
-      // Устанавливаем название группы
-      document.getElementById('group-title').textContent = `Группа: ${group.name}`;
-
-      // Заполняем список почт группы
-      const emailsContainer = document.getElementById('group-emails-container');
-      emailsContainer.innerHTML = '';
-
-      group.emails.forEach(emailId => {
-        const emails = JSON.parse(localStorage.getItem('emails')) || [];
-        const email = emails.find(e => e.id == emailId);
-
-        if (email) {
-          const div = document.createElement('div');
-          div.className = 'list-item';
-          div.innerHTML = `
-            <div>${email.email}</div>
-            <div class="list-item-actions">
-              <button class="btn btn-danger remove-email" data-id="${email.id}">Удалить</button>
-            </div>
-          `;
-          emailsContainer.appendChild(div);
-        }
-      });
-
-      // Обработчик добавления почты
-      document.getElementById('add-email-btn')?.addEventListener('click', () => {
-        const email = document.getElementById('add-email').value.trim();
-        if (!email) return;
-
-        const emails = JSON.parse(localStorage.getItem('emails')) || [];
-        const emailExists = emails.some(e => e.email === email);
-
-        if (!emailExists) {
-          // Добавляем новую почту
-          const newEmail = {
-            id: Date.now(),
-            email,
-            role: 'student'
-          };
-
-          emails.push(newEmail);
-          localStorage.setItem('emails', JSON.stringify(emails));
-
-          // Добавляем почту в группу
-          group.emails.push(newEmail.id);
-          localStorage.setItem('groups', JSON.stringify(groups));
-
-          // Обновляем список
-          initGroupDetailsPage();
-        } else {
-          alert('Этот email уже существует в базе');
-        }
-      });
-
-      // Обработчики удаления почты
-      document.querySelectorAll('.remove-email').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const emailId = btn.dataset.id;
-          group.emails = group.emails.filter(id => id != emailId);
-          localStorage.setItem('groups', JSON.stringify(groups));
-          initGroupDetailsPage();
-        });
-      });
-
-      // Обработчик удаления группы
-      document.getElementById('delete-group')?.addEventListener('click', () => {
-        const updatedGroups = groups.filter(g => g.id != groupId);
-        localStorage.setItem('groups', JSON.stringify(updatedGroups));
-        loadContent('groups');
-      });
-    };
-
-    // Инициализация страницы базы данных
-    const initDatabasePage = () => {
-      // Обработчик добавления почты
-      document.getElementById('add-email-db')?.addEventListener('click', () => {
-        loadContent('email_add');
-      });
-
-      // Заполняем список почт
-      const dbContainer = document.getElementById('database-container');
-      const emails = JSON.parse(localStorage.getItem('emails')) || [];
-
-      emails.forEach(email => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-          <div>
-            <div>${email.email}</div>
-            <div class="text-tertiary">${email.role === 'teacher' ? 'Преподаватель' : 'Студент'}</div>
-          </div>
-          <div class="list-item-actions">
-            <button class="btn btn-danger delete-email" data-id="${email.id}">Удалить</button>
-          </div>
-        `;
-        dbContainer.appendChild(div);
-      });
-
-      // Обработчики удаления почты
-      document.querySelectorAll('.delete-email').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const emailId = btn.dataset.id;
-          const emails = JSON.parse(localStorage.getItem('emails')) || [];
-          const updatedEmails = emails.filter(e => e.id != emailId);
-          localStorage.setItem('emails', JSON.stringify(updatedEmails));
-          initDatabasePage();
-        });
-      });
-    };
-
-    // Инициализация страницы добавления почты
-    const initEmailAddPage = () => {
-      // Отмена добавления
-      document.getElementById('cancel-email')?.addEventListener('click', () => {
-        loadContent('database');
-      });
-
-      // Сохранение почты
-      document.getElementById('email-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('email-address').value;
-        const role = document.getElementById('email-role').value;
-
-        const emails = JSON.parse(localStorage.getItem('emails')) || [];
-        emails.push({
-          id: Date.now(),
-          email,
-          role
-        });
-
-        localStorage.setItem('emails', JSON.stringify(emails));
-        loadContent('database');
-      });
-    };
-
-    // Инициализация страницы тестов и заданий
-    const initQuizzesPage = () => {
-      const role = getCurrentRole();
-
-      // Для преподавателя и админа показываем кнопку создания
-      if (role !== 'student') {
-        document.getElementById('create-quiz-btn').style.display = 'block';
-        document.getElementById('create-quiz-btn')?.addEventListener('click', () => {
-          loadContent('quiz_creation');
-        });
-      } else {
-        document.getElementById('create-quiz-btn').style.display = 'none';
-      }
-
-      // Отображение существующих тестов и заданий
-      const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-      const container = document.querySelector('.card-container');
-
-      quizzes.forEach(quiz => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card__body">
-            <h2 class="card__title">${quiz.title}</h2>
-            <p class="card__progress">${quiz.type === 'test' ? 'Тест' : 'Задание'}</p>
-          </div>
-        `;
-
-        if (role === 'student') {
-          // Для студента - возможность пройти тест
-          card.addEventListener('click', () => {
-            localStorage.setItem('currentQuiz', quiz.id);
-            loadContent('student_quiz');
-          });
-        } else {
-          // Для преподавателя/админа - редактирование
-          card.addEventListener('click', () => {
-            localStorage.setItem('currentQuiz', quiz.id);
-            loadContent('quiz_creation');
-          });
-        }
-
-        container.appendChild(card);
-      });
-    };
-
-    // Инициализация страницы создания теста/задания
-    const initQuizCreationPage = () => {
-      // Заполняем список курсов
-      const courseSelect = document.getElementById('quiz-course');
-      const courses = JSON.parse(localStorage.getItem('courses')) || [];
-
-      courses.forEach(course => {
-        const option = document.createElement('option');
-        option.value = course.id;
-        option.textContent = course.title;
-        courseSelect.appendChild(option);
-      });
-
-      // Обработчик изменения типа
-      const quizType = document.getElementById('quiz-type');
-      const quizContent = document.getElementById('quiz-content');
-
-      const updateContent = () => {
-        quizContent.innerHTML = '';
-
-        if (quizType.value === 'test') {
-          const template = document.getElementById('test-content-template');
-          quizContent.appendChild(template.content.cloneNode(true));
-
-          // Добавление первого вопроса
-          document.getElementById('add-question')?.click();
-        } else {
-          const template = document.getElementById('assignment-content-template');
-          quizContent.appendChild(template.content.cloneNode(true));
-        }
-      };
-
-      quizType.addEventListener('change', updateContent);
-      updateContent();
-
-      // Обработчик добавления вопроса
-      document.addEventListener('click', (e) => {
-        if (e.target.id === 'add-question') {
-          const template = document.getElementById('question-template');
-          const questionContainer = document.getElementById('questions-container');
-          questionContainer.appendChild(template.content.cloneNode(true));
-        }
-      });
-
-      // Обработчик удаления вопроса
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-question')) {
-          e.target.closest('.question-editor').remove();
-        }
-      });
-
-      // Обработчик добавления варианта ответа
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('add-option')) {
-          const optionsList = e.target.previousElementSibling;
-          const optionCount = optionsList.children.length + 1;
-
-          const div = document.createElement('div');
-          div.className = 'checkbox-item';
-          div.innerHTML = `
-            <input type="text" class="form-input" placeholder="Вариант ответа ${optionCount}">
-            <input type="checkbox" class="correct-option"> Правильный
-            <button type="button" class="btn btn-danger delete-option">X</button>
-          `;
-          optionsList.appendChild(div);
-        }
-      });
-
-      // Обработчик удаления варианта ответа
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-option')) {
-          e.target.parentElement.remove();
-        }
-      });
-
-      // Обработчик изменения типа вопроса
-      document.addEventListener('change', (e) => {
-        if (e.target.classList.contains('question-type')) {
-          const questionEditor = e.target.closest('.question-editor');
-          const optionsContainer = questionEditor.querySelector('.question-options');
-
-          if (e.target.value === 'open') {
-            // Для открытого вопроса
-            optionsContainer.innerHTML = `
-              <div class="form-group">
-                <label>Правильные ответы</label>
-                <div class="correct-answers" id="correct-answers"></div>
-                <button type="button" class="btn btn-secondary add-correct-answer">Добавить ответ</button>
-              </div>
-            `;
-
-            // Добавляем обработчик для добавления ответа
-            questionEditor.querySelector('.add-correct-answer').addEventListener('click', () => {
-              const answersContainer = questionEditor.querySelector('.correct-answers');
-              const div = document.createElement('div');
-              div.className = 'correct-answer-item';
-              div.innerHTML = `
-                <input type="text" class="form-input" placeholder="Правильный ответ">
-                <button type="button" class="btn btn-danger delete-answer">X</button>
-              `;
-              answersContainer.appendChild(div);
-            });
-          } else {
-            // Для вопроса с выбором
-            optionsContainer.innerHTML = `
-              <div class="form-group">
-                <label>Варианты ответов</label>
-                <div class="options-list"></div>
-                <button type="button" class="btn btn-secondary add-option">Добавить вариант</button>
-              </div>
-            `;
-          }
-        }
-      });
-
-      // Отмена создания
-      document.getElementById('cancel-quiz')?.addEventListener('click', () => {
-        loadContent('quizzes');
-      });
-
-      // Сохранение теста/задания
-      document.getElementById('quiz-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const title = document.getElementById('quiz-title').value;
-        const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-
-        // Сохраняем новый тест/задание
-        quizzes.push({
-          id: Date.now(),
-          title,
-          type: document.getElementById('quiz-type').value,
-          courseId: document.getElementById('quiz-course').value,
-          startDate: document.getElementById('quiz-start').value,
-          endDate: document.getElementById('quiz-end').value
-        });
-
-        localStorage.setItem('quizzes', JSON.stringify(quizzes));
-        loadContent('quizzes');
-      });
-    };
-
-    // Инициализация страницы успеваемости
-    const initPerformancePage = () => {
-      // Заполняем список курсов
-      const container = document.getElementById('courses-performance');
-      const courses = JSON.parse(localStorage.getItem('courses')) || [];
-
-      courses.forEach(course => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `
-          <div>${course.title}</div>
-          <div>85%</div>
-        `;
-        container.appendChild(div);
-      });
-    };
-
-    // Инициализация страницы профиля
-    const initProfilePage = () => {
-      // Обработчики смены роли
-      document.querySelectorAll('.role-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          localStorage.setItem('role', btn.dataset.role);
-          updateRoleVisibility();
-          loadContent('dashboard');
-        });
-      });
-    };
-
-    // Инициализация страницы теста для студента
-    const initStudentQuizPage = () => {
-      const quizId = localStorage.getItem('currentQuiz');
-      const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-      const quiz = quizzes.find(q => q.id == quizId);
-
-      if (quiz) {
-        document.getElementById('student-quiz-title').textContent = quiz.title;
-
-        // Здесь будет отображение вопросов теста
-      }
-
-      // Таймер обратного отсчета
-      let timeLeft = 60 * 60; // 60 минут
-      const timerElement = document.getElementById('quiz-timer');
-
-      const updateTimer = () => {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById('submit-quiz').click();
-        } else {
-          timeLeft--;
-        }
-      };
-
-      const timerInterval = setInterval(updateTimer, 1000);
-      updateTimer();
-    };
-
-    // Навигация по разделам
-    const setupNavigation = () => {
-      document.querySelectorAll('.sidebar__nav a').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const section = link.dataset.section;
-          loadContent(section);
-        });
-      });
-
-      // Кнопка "Назад"
-      document.getElementById('back-link')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        loadContent('dashboard');
-      });
-    };
-
-    // Инициализация приложения
-    document.addEventListener('DOMContentLoaded', () => {
-      initData();
-      initTheme();
-      setupThemeToggle();
-      updateRoleVisibility();
-      setupNavigation();
-
-      // Загружаем последний открытый раздел
-      const currentSection = localStorage.getItem('currentSection') || 'dashboard';
-      loadContent(currentSection);
-
-      // Обработчик выхода
-      document.getElementById('logout-link')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = 'index.html';
-      });
-    });
-  </script>
+  </div>
+</template>
 </body>
 </html>
+

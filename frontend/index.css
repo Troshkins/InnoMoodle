@@ -7,7 +7,7 @@ html, body {
   align-items: center;
   justify-content: center;
   transition: background 1s, color 1s;
-  background-image: url("../assets/innopolis-photo.jpg");
+  background-image: url("./assets/innopolis-photo.jpg");
   margin: 0;
   padding: 0;
   background-size: cover;
