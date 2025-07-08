@@ -1,33 +1,61 @@
-name: CI Pipeline
+name: Go CI Pipeline
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code with submodules
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Update submodules
-        run: |
-          git submodule sync --recursive
-          git submodule update --init --remote --recursive --force
-
-      - name: Setup Go
+      - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: 1.24.4
+          cache: true
 
       - name: Verify Go installation
         run: |
-          echo "GOROOT: ${{ env.GOROOT }}"
-          ls ${{ env.GOROOT }}/src/database/sql
+          echo "GOROOT: $GOROOT"
           go version
+          go env
+
+      - name: Setup PostgreSQL environment
+        run: |
+          echo "DB_HOST=localhost" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_USER=testuser" >> $GITHUB_ENV
+          echo "DB_PASSWORD=testpass" >> $GITHUB_ENV
+          echo "DB_NAME=testdb" >> $GITHUB_ENV
+
+      - name: Wait for PostgreSQL
+        run: sleep 10  # Даем время PostgreSQL запуститься
+
+      - name: Install dependencies
+        run: go mod tidy
 
       - name: Run unit tests
-        run: go test -v ./tests/unit/...
+        run: go test -v -short ./tests/unit/...
 
       - name: Run integration tests
-        run: go test -v ./tests/integration/...
+        run: go test -v -tags=integration ./tests/integration/...
+        env:
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_PORT: ${{ env.DB_PORT }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DB_NAME: ${{ env.DB_NAME }}
