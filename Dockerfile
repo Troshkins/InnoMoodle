@@ -26,7 +26,7 @@ COPY --from=build /usr/src/app/myapp .
 
 # 2. Копируем статику и фронтенд прямо из корня проекта
 #    (они НЕ внутри build‑этапа!)
-COPY static ./static
+#COPY static ./static
 COPY frontend ./frontend
 COPY index.html ./index.html
 
