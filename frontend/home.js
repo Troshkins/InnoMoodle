@@ -1,57 +1,57 @@
 // Инициализация данных
-const initData = () => {
-    if (!localStorage.getItem('role')) {
-        localStorage.setItem('role', 'admin');
-    }
+const initData = () => { // +
+    if (!localStorage.getItem('role')) { // +
+        localStorage.setItem('role', 'admin'); // +
+    } // +
     
-    if (!localStorage.getItem('emails')) {
-        const emails = [
-            { id: 1, email: 'student1@innopolis.ru', role: 'student' },
-            { id: 2, email: 'student2@innopolis.ru', role: 'student' },
-            { id: 3, email: 'teacher1@innopolis.ru', role: 'teacher' },
-            { id: 4, email: 'teacher2@innopolis.ru', role: 'teacher' }
-        ];
-        localStorage.setItem('emails', JSON.stringify(emails));
-    }
+    if (!localStorage.getItem('emails')) { // +
+        const emails = [ // +
+            { id: 1, email: 'student1@innopolis.ru', role: 'student' }, // +
+            { id: 2, email: 'student2@innopolis.ru', role: 'student' }, // +
+            { id: 3, email: 'teacher1@innopolis.ru', role: 'teacher' }, // +
+            { id: 4, email: 'teacher2@innopolis.ru', role: 'teacher' } // +
+        ]; // +
+        localStorage.setItem('emails', JSON.stringify(emails)); // +
+    } // +
     
-    // Гарантируем создание группы преподавателей
-    let groups = JSON.parse(localStorage.getItem('groups')) || [];
-    if (!groups.some(g => g.id === 'teachers')) {
-        groups.push({
-            id: 'teachers',
-            name: 'Преподаватели',
-            emails: [3, 4] // Добавляем существующих преподавателей
-        });
-        localStorage.setItem('groups', JSON.stringify(groups));
-    }
+    // Гарантируем создание группы преподавателей // -
+    let groups = JSON.parse(localStorage.getItem('groups')) || []; // -
+    if (!groups.some(g => g.id === 'teachers')) { // -
+        groups.push({ // -
+            id: 'teachers', // -
+            name: 'Преподаватели', // -
+            emails: [3, 4] // Добавляем существующих преподавателей // -
+        }); // -
+        localStorage.setItem('groups', JSON.stringify(groups)); // -
+    } // -
     
-    if (!localStorage.getItem('courses')) {
-        localStorage.setItem('courses', JSON.stringify([]));
-    }
+    if (!localStorage.getItem('courses')) { // +
+        localStorage.setItem('courses', JSON.stringify([])); // +
+    } // +
     
-    if (!localStorage.getItem('quizzes')) {
-        localStorage.setItem('quizzes', JSON.stringify([]));
-    }
+    if (!localStorage.getItem('quizzes')) { // +
+        localStorage.setItem('quizzes', JSON.stringify([])); // +
+    } // +
     
-    if (!localStorage.getItem('userCourses')) {
-        localStorage.setItem('userCourses', JSON.stringify([]));
-    }
+    if (!localStorage.getItem('userCourses')) { // +
+        localStorage.setItem('userCourses', JSON.stringify([])); // +
+    } // +
     
-    if (!localStorage.getItem('currentSection')) {
-        localStorage.setItem('currentSection', 'dashboard');
-    }
+    if (!localStorage.getItem('currentSection')) { // +
+        localStorage.setItem('currentSection', 'dashboard'); // +
+    } // +
     
-    if (!localStorage.getItem('userProfile')) {
-        localStorage.setItem('userProfile', JSON.stringify({
-            name: 'Иван Иванов',
-            email: 'i.ivanov@innopolis.ru'
-        }));
-    }
-};
-// Получение текущей роли
-const getCurrentRole = () => {
-    return localStorage.getItem('role') || 'admin';
-};
+    if (!localStorage.getItem('userProfile')) { // +
+        localStorage.setItem('userProfile', JSON.stringify({ // +
+            name: 'Иван Иванов', // +
+            email: 'i.ivanov@innopolis.ru' // +
+        })); // +
+    } // +
+}; // +
+// Получение текущей роли // +
+const getCurrentRole = () => { // +
+    return localStorage.getItem('role') || 'admin'; // +
+}; // +
 
 
 
