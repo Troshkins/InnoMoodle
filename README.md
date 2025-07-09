@@ -1,9 +1,50 @@
 # InnoMoodle
 
+## Header
+
 ![logo](frontend/assets/logo.png)
+
 Moodle but he's stronger, he's smarter.
 
-# Project README
+![Demo](docs/demos/demo2.mov)
+
+## About
+
+### Project Description:
+
+InnoMoodle is a learning management system designed to replace the university’s current educational portal. Leveraging modern UX/UI principles and responsive design, InnoMoodle will deliver a clean, intuitive interface that streamlines course creation, management, and delivery. By focusing on the needs of both instructors and students, the platform aims to foster engagement, improve usability, and reduce administrative overhead.
+
+### Project Objectives:
+
+1. Seamless Migration: Safely migrate existing courses, user accounts, and content from the legacy system to InnoMoodle with minimal downtime.
+2. Enhanced User Experience:
+
+   * Redesign the interface to be more intuitive and visually appealing.
+   * Implement responsive layouts for optimal use on desktops, tablets, and smartphones.
+3. Instructor-Centric Tools:
+
+   * Simplify the course creation workflow with guided wizards and drag‑and‑drop functionality.
+   * Enable bulk upload of resources, automated grading setup, and customizable course templates.
+4. Improved Engagement:
+
+   * Introduce interactive elements such as in‑line quizzes, discussion badges, and real‑time notifications.
+   * Provide analytics dashboards for instructors to monitor student participation and performance.
+5. Accessibility & Compliance:
+
+   * Support multilingual content and right‑to‑left languages as needed.
+6. Scalability & Security:
+
+   * Build on a modular architecture that can scale to accommodate future growth in user base and functionality.
+   * Implement robust authentication, role‑based permissions, and data encryption to protect user privacy.
+7. Integration & Extensibility:
+
+   * Provide APIs for seamless integration with campus systems.
+   * Offer a plugin framework to allow rapid development of new features by third‑party developers.
+
+## Project context diagram
+
+## Roadmap
+![Roadmap](https://docs.google.com/spreadsheets/d/1an42l_jVi_Oo9T1aVh1T9NXflPxPeyAxiTUE6gkxcCw/edit?usp=sharing)
 
 ## Usage
 
@@ -73,113 +114,11 @@ Moodle but he's stronger, he's smarter.
 
 ## Architecture
 
-The architecture documentation resides in docs/architecture/ with the following structure:
-
-
-docs/architecture/
-├── static-view/
-│   └── component-diagram.png
-├── dynamic-view/
-│   └── sequence-diagram.png
-└── deployment-view/
-    └── deployment-diagram.png
-
-
-### Static View
-
-![Component Diagram](docs/architecture/static-view/component-diagram.png)
-
-* Key Components:
-
-  * API Server (Go): REST endpoints, business logic
-  * Database Module: db package, handles connections
-  * Repository Layer: repository package, abstracts data operations
-  * Frontend: static HTML/CSS/JS served by Go server
-* Coupling & Cohesion:
-
-  * Low coupling between server and persistence via repository interface
-  * High cohesion within each package
-* Maintainability:
-
-  * Modular structure enables independent enhancements
-  * Clear separation of concerns
-
-### Dynamic View
-
-![Sequence Diagram](docs/architecture/dynamic-view/sequence-diagram.png)
-
-This diagram illustrates a typical request to GET /api/hello:
-
-1. Client sends HTTP request to Go server
-2. Router (mux) dispatches to handler
-3. Handler uses repository to construct response
-4. Server sends JSON response back to client
-
-* Runtime Performance: average response time \~150 ms in production
-
-### Deployment View
-
-![Deployment Diagram](docs/architecture/deployment-view/deployment-diagram.png)
-
-* Infrastructure:
-
-  * Docker Compose orchestrates two containers: app and db
-  * Volume db_data persists PostgreSQL data
-  * CI/CD uses GitHub Actions
-* Scalability & Resilience:
-
-  * Scale app container horizontally behind a load balancer
-  * Database backup and replication strategies can be introduced
-
----
+See ![Architecture](docs/architecture/architecture.md)
 
 ## Development
 
-### Kanban Board
-
-Link: https://trello.com/invite/b/686a86496d61b6f1130e317f/ATTIaae09c137b6b95d20853deed5160e5c7BFC6BBD9/innomoodle
-
-| Column          | Entry Criteria                                             |
-| --------------- | ---------------------------------------------------------- |
-| To Do           | discussed with customer or with team and planned for sprint|
-| In Progress     | Branch created, assignee assigned                          |
-| Testing         | task completed, reviewer assigned                          |
-| Done            | tests passed, reviewer agreed,                             |
-|                 | issue closed, documentation updated                        |
-
-### Git Workflow
-
-![git graph](docs/architecture/Mermaid.png)
-
-We follow GitHub Flow:
-
-1. Issue Creation: use templates from .github/ISSUE_TEMPLATE
-2. Branch Naming: feature/XYZ-description or bugfix/XYZ-description
-3. Commits: use Base Commits: description
-4. Pull Requests: reference issue, use .github/PULL_REQUEST_TEMPLATE.md
-5. Review & Merge: require 2 approvals and successful CI; merge with squash
-
-Mermaid Diagram of Git Workflow
-mermaid
-gitGraph
-  commit id: "main branch initialized"
-  branch feature/login
-  checkout feature/login
-  commit id: "feat(auth): add login endpoint"
-  push
-  createPullRequest
-  merge
-  checkout main
-
-</details>
-
-### Secrets Management
-
-* Local: .env file (ignored by Git)
-* CI: GitHub Secrets (for DB credentials, API keys)
-* Permissions: restricted to authorized roles
-
----
+![Contributing](docs/CONTRIBUTING.md)
 
 ## Quality Assurance
 
@@ -189,29 +128,18 @@ See [Quality Attribute Scenarios](docs/quality-assurance/quality-attribute-scena
 
 ### Automated Tests
 
-* Unit Tests: Located in backend, covering Go handlers and repo methods
-* CI runs tests via GitHub Actions in .github/workflows/ci.yml using go test ./...
+See ![Automated Tests](docs/quality-assurance/automated-tests.md)
 
 ### User Acceptance Tests
 
 See [User Acceptance Tests](docs/quality-assurance/user-acceptance-tests.md)
 
-* Summary: 2 new tests passed, with one pending due to issue #42
-
----
-
 ## Build and Deployment
 
 ### Continuous Integration
 
-* Workflow file: .github/workflows/ci.yml
-* Processes:
+See ![Continious Integration](docs/automation/continious-integration.md)
 
-  * Runs Go unit tests (go test ./...)
-  * Builds Docker images
-  * (Optional) Security and vulnerability scans
+## Licence
 
-### Continuous Deployment (if applicable)
-
-* No automated CD configured currently. Deployment is manual via Docker Compose or Kubernetes.
-
+![Licence](docs/LICENCE.md)
