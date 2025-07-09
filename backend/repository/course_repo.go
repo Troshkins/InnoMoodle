@@ -18,10 +18,10 @@ func NewCourseRepository(db *sqlx.DB) *CourseRepository {
 
 func (r *CourseRepository) CreateCourse(ctx context.Context, course *models.Course) error {
 	query := `
-		INSERT INTO "Moodle".courses (name, completeness)
-		VALUES ($1, $2)
-		RETURNING id
-	`
+        INSERT INTO "Moodle".courses (name, completeness)
+        VALUES ($1, $2)
+        RETURNING id
+    `
 	return r.db.QueryRowContext(ctx, query,
 		course.Name, course.Completeness).Scan(&course.ID)
 }

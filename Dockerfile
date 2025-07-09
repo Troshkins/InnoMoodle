@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY --from=build /usr/src/app/myapp .
 
-COPY static ./static
+
 COPY frontend ./frontend
 
 COPY .env ./

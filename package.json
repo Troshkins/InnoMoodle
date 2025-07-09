@@ -4,7 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'No tests yet' && exit 0"
+    "test:unit": "node_modules/.bin/mocha unit/**/*.test.js",
+    "test:integration": "node_modules/.bin/mocha integration/**/*.test.js",
+    "test": "npm run test:unit && npm run test:integration"
+  },
+  "devDependencies": {
+    "mocha": "^10.4.0",
+    "chai": "^5.1.0",
+    "sqlmock": "^1.7.0",
+    "testcontainers-go": "^0.28.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1"
   },
   "repository": {
     "type": "git",

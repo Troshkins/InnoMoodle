@@ -1,24 +1,60 @@
-name: CI Pipeline
+name: Go CI Pipeline
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: testdb # Создаем базу testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+
     steps:
-    - name: Checkout code + submodules
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-        
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        
-    - name: Install dependencies
-      run: npm ci
-      working-directory: tests
-      
-    - name: Run tests
-      run: npm test
-      working-directory: tests
+      - name: Checkout code with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.24.4
+          cache: true
+
+      - name: Verify Go installation
+        run: |
+          echo "GOROOT: $GOROOT"
+          go version
+          go env
+
+      - name: Setup PostgreSQL environment
+        run: |
+          echo "DB_HOST=localhost" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_USER=testuser" >> $GITHUB_ENV
+          echo "DB_PASSWORD=testpass" >> $GITHUB_ENV
+          echo "DB_NAME=testdb" >> $GITHUB_ENV
+
+      - name: Wait for PostgreSQL
+        run: sleep 10  # Даем время PostgreSQL запуститься
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Run unit tests
+        run: go test -v -short ./tests/unit/...
+
+      - name: Run integration tests
+        run: go test -v -tags=integration ./tests/integration/...
+        env:
+            DB_HOST: localhost
+            DB_PORT: 5432
+            DB_USER: testuser
+            DB_PASSWORD: testpass
+            DB_NAME: testdb
