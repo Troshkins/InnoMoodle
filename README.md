@@ -6,6 +6,8 @@
 
 Moodle but he's stronger, he's smarter.
 
+[Deployed Product](https://troshkins.github.io/InnoMoodle/)
+
 ![Demo](docs/demos/demo2.mov)
 
 ## About
@@ -42,9 +44,9 @@ InnoMoodle is a learning management system designed to replace the university’
    * Offer a plugin framework to allow rapid development of new features by third‑party developers.
 
 ## Project context diagram
-
+![Diagram](https://github.com/Troshkins/InnoMoodle/blob/main/docs/ProjContextDiagram.pdf)
 ## Roadmap
-![Roadmap](https://docs.google.com/spreadsheets/d/1an42l_jVi_Oo9T1aVh1T9NXflPxPeyAxiTUE6gkxcCw/edit?usp=sharing)
+[Roadmap](https://docs.google.com/spreadsheets/d/1an42l_jVi_Oo9T1aVh1T9NXflPxPeyAxiTUE6gkxcCw/edit?usp=sharing)
 
 ## Usage
 
