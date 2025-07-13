@@ -23,6 +23,11 @@ func (s *UserService) RegisterUser(ctx context.Context, user *models.User) error
 		return errors.New("email already in use")
 	}
 
+	// Set default password if none provided
+	if user.Password == "" {
+		user.Password = "defaultpassword123"
+	}
+
 	// Set password (plain text for testing)
 	if err := user.SetPassword(user.Password); err != nil {
 		return err

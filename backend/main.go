@@ -79,12 +79,14 @@ func main() {
 	authMiddleware := middleware.NewAuthMiddleware(jwtSecret)
 	api.HandleFunc("/login", authHandler.Login).Methods("POST")
 
+	// User creation endpoint (public for development)
+	api.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
+
 	// Apply authentication middleware to the rest of the /api endpoints
 	protected := api.NewRoute().Subrouter()
 	protected.Use(authMiddleware.AuthMiddleware)
 
-	// User endpoints
-	protected.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
+	// User endpoints (protected)
 	protected.HandleFunc("/users", userHandler.GetAllUsers).Methods("GET")
 	protected.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods("GET")
 	protected.HandleFunc("/users/{id:[0-9]+}", userHandler.UpdateUser).Methods("PUT")

@@ -116,79 +116,6 @@ const renderPage = (templateId) => {
     }
 };
 
-// Загрузка контента для раздела
-const loadContent = (section) => {
-    try {
-        console.log('Loading content for section:', section); // Debug log
-        let templateId = '';
-
-        switch(section) {
-            case 'dashboard':
-                templateId = 'dashboard-template';
-                break;
-            case 'courses':
-                templateId = 'courses-template';
-                break;
-            case 'course_creation':
-                templateId = 'course-creation-template';
-                break;
-            case 'course_editing':
-                templateId = 'course-editing-template';
-                break;
-            case 'groups':
-                templateId = 'groups-template';
-                break;
-            case 'group_creation':
-                templateId = 'group-creation-template';
-                break;
-            case 'group_details':
-                templateId = 'group-details-template';
-                break;
-            case 'database':
-                templateId = 'database-template';
-                break;
-            case 'email_add':
-                templateId = 'email-add-template';
-                break;
-            case 'user_courses':
-                templateId = 'user_courses-template';
-                break;
-            case 'course_detail':
-                templateId = 'course_detail-template';
-                break;
-            case 'course_settings':
-                templateId = 'course_settings-template';
-                break;
-            case 'course_content':
-                templateId = 'course_content-template';
-                break;
-            case 'quizzes':
-                templateId = 'quizzes-template';
-                break;
-            case 'quiz_creation':
-                templateId = 'quiz-creation-template';
-                break;
-            case 'performance':
-                templateId = 'performance-template';
-                break;
-            case 'profile':
-                templateId = 'profile-template';
-                break;
-            default:
-                templateId = 'dashboard-template';
-                break;
-        }
-
-        renderPage(templateId);
-        updateSidebar(section);
-        localStorage.setItem('currentSection', section);
-        initPageSpecificLogic(section);
-
-    } catch (error) {
-        console.error('Error loading content:', error);
-    }
-};
-
 // Инициализация логики для конкретных страниц
 const initPageSpecificLogic = (section) => {
     try {
@@ -262,6 +189,79 @@ const initPageSpecificLogic = (section) => {
     }
 };
 
+// Загрузка контента для раздела
+const loadContent = (section) => {
+    try {
+        console.log('Loading content for section:', section); // Debug log
+        let templateId = '';
+
+        switch(section) {
+            case 'dashboard':
+                templateId = 'dashboard-template';
+                break;
+            case 'courses':
+                templateId = 'courses-template';
+                break;
+            case 'course_creation':
+                templateId = 'course-creation-template';
+                break;
+            case 'course_editing':
+                templateId = 'course-editing-template';
+                break;
+            case 'groups':
+                templateId = 'groups-template';
+                break;
+            case 'group_creation':
+                templateId = 'group-creation-template';
+                break;
+            case 'group_details':
+                templateId = 'group-details-template';
+                break;
+            case 'database':
+                templateId = 'database-template';
+                break;
+            case 'email_add':
+                templateId = 'email-add-template';
+                break;
+            case 'user_courses':
+                templateId = 'user_courses-template';
+                break;
+            case 'course_detail':
+                templateId = 'course_detail-template';
+                break;
+            case 'course_settings':
+                templateId = 'course_settings-template';
+                break;
+            case 'course_content':
+                templateId = 'course_content-template';
+                break;
+            case 'quizzes':
+                templateId = 'quizzes-template';
+                break;
+            case 'quiz_creation':
+                templateId = 'quiz-creation-template';
+                break;
+            case 'performance':
+                templateId = 'performance-template';
+                break;
+            case 'profile':
+                templateId = 'profile-template';
+                break;
+            default:
+                templateId = 'dashboard-template';
+                break;
+        }
+
+        renderPage(templateId);
+        updateSidebar(section);
+        localStorage.setItem('currentSection', section);
+        initPageSpecificLogic(section);
+
+    } catch (error) {
+        console.error('Error loading content:', error);
+    }
+};
+
 // Инициализация страницы курсов (админ)
 const initCoursesPage = async () => {
     document.getElementById('create-course-btn')?.addEventListener('click', () => {
@@ -272,29 +272,29 @@ const initCoursesPage = async () => {
 
     try {
         const courses = await api.getAllCourses();
-    const container = document.querySelector('.card-container');
-    container.innerHTML = '';
+        const container = document.querySelector('.card-container');
+        container.innerHTML = '';
 
         if (!courses || courses.length === 0) {
             container.innerHTML = '<div class="empty-state">Нет созданных курсов</div>';
             return;
         }
 
-    courses.forEach(course => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="card__body">
+        courses.forEach(course => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card__body">
                     <h2 class="card__title">${course.name}</h2>
                     <p class="card__progress">Полнота: ${course.completeness || 0}%</p>
-            </div>
-        `;
-        card.addEventListener('click', () => {
-            localStorage.setItem('currentCourse', course.id);
-            loadContent('course_editing');
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                localStorage.setItem('currentCourse', course.id);
+                loadContent('course_editing');
+            });
+            container.appendChild(card);
         });
-        container.appendChild(card);
-    });
     } catch (error) {
         console.error('Error loading courses:', error);
         document.querySelector('.card-container').innerHTML =
@@ -323,18 +323,19 @@ const initCourseCreationPage = () => {
     }
 
             if (teachersGroup.emails && Array.isArray(teachersGroup.emails)) {
-            teachersGroup.emails.forEach(emailId => {
-        const email = emails.find(e => e.id == emailId);
-        if (email) {
-            const div = document.createElement('div');
-            div.className = 'checkbox-item';
-            div.innerHTML = `
-                <input type="checkbox" id="teacher-${email.id}" value="${email.id}">
-                <label for="teacher-${email.id}">${email.email}</label>
-            `;
-            teachersList.appendChild(div);
-        }
-    });
+                teachersGroup.emails.forEach(emailId => {
+                    const email = emails.find(e => e.id == emailId);
+                    if (email) {
+                        const div = document.createElement('div');
+                        div.className = 'checkbox-item';
+                        div.innerHTML = `
+                            <input type="checkbox" id="teacher-${email.id}" value="${email.id}">
+                            <label for="teacher-${email.id}">${email.email}</label>
+                        `;
+                        teachersList.appendChild(div);
+                    }
+                });
+            }
 
     // Заполняем список групп студентов (все кроме системы "teachers")
     const groupsList = document.getElementById('student-groups-list');
@@ -557,6 +558,68 @@ const initGroupDetailsPage = async () => {
         loadContent('groups');
         return;
     }
+};
+
+// Инициализация страницы создания теста/задания
+const initQuizCreationPage = () => {
+    console.log('Initializing quiz creation page...'); // Debug log
+
+    // Close modal handler
+    document.querySelector('.modal-close')?.addEventListener('click', () => {
+        document.querySelector('.modal').style.display = 'none';
+        loadContent('quizzes');
+    });
+
+    // Cancel button handler
+    document.getElementById('cancel-quiz')?.addEventListener('click', () => {
+        document.querySelector('.modal').style.display = 'none';
+        loadContent('quizzes');
+    });
+
+    // Form submission handler
+    document.getElementById('quiz-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Quiz form submitted'); // Debug log
+        // TODO: Implement quiz creation logic
+        alert('Quiz creation functionality will be implemented here');
+    });
+};
+
+// Инициализация страницы начала теста для студента
+const initStudentQuizStart = () => {
+    console.log('Initializing student quiz start page...'); // Debug log
+
+    // Close modal handler
+    document.querySelector('.modal-close')?.addEventListener('click', () => {
+        document.querySelector('.modal').style.display = 'none';
+        loadContent('quizzes');
+    });
+
+    // Cancel button handler
+    document.getElementById('cancel-quiz-start')?.addEventListener('click', () => {
+        document.querySelector('.modal').style.display = 'none';
+        loadContent('quizzes');
+    });
+
+    // Start quiz button handler
+    document.getElementById('start-quiz')?.addEventListener('click', () => {
+        console.log('Starting quiz...'); // Debug log
+        loadContent('student_quiz_view');
+    });
+};
+
+// Инициализация страницы прохождения теста для студента
+const initStudentQuizView = () => {
+    console.log('Initializing student quiz view page...'); // Debug log
+
+    // Submit quiz button handler
+    document.getElementById('submit-quiz')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('Submitting quiz...'); // Debug log
+        // TODO: Implement quiz submission logic
+        alert('Quiz submission functionality will be implemented here');
+        loadContent('quizzes');
+    });
 };
 
 // Инициализация страницы базы данных
@@ -1126,7 +1189,6 @@ const initQuizzesPage = async () => {
         document.getElementById('my-quizzes-container').innerHTML =
             '<div class="error">Ошибка загрузки тестов и заданий</div>';
     }
-}
 };
 
 // Инициализация страницы успеваемости
