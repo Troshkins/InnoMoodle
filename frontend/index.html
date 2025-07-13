@@ -30,8 +30,19 @@
     </div>
   </div>
 
+  <script src="api.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is already logged in
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const authToken = localStorage.getItem('authToken');
+
+      if (isLoggedIn && authToken) {
+        // User is already logged in, redirect to home
+        window.location.href = '/home.html';
+        return;
+      }
+
       // Получение элементов
       const body = document.body;
       const themeToggle = document.getElementById('themeToggle');
@@ -91,25 +102,8 @@
 
       // Обработка нажатия на кнопку входа
       submitBtn.addEventListener('click', function() {
-        // Сохраняем исходный текст кнопки
-        const originalText = submitBtn.textContent;
-
-        // Блокируем кнопку и меняем текст
-        submitBtn.disabled = true;
-        submitBtn.textContent = textMap[currentLang].checking;
-
-        // Имитация процесса входа (2 секунды)
-        setTimeout(() => {
-          // Устанавливаем флаг авторизации
-          localStorage.setItem('isLoggedIn', 'true');
-
-          // Перенаправляем на главную страницу
-          window.location.href = "home.html";
-
-          // Восстанавливаем кнопку (на случай, если перенаправление не сработает)
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        }, 2000);
+        // Redirect to SSO login page
+        window.location.href = '/sso-login.html';
       });
       function updateDiagonal() {
       const w = window.innerWidth;

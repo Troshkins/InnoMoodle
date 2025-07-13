@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnoMoodle SSO Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo img {
+            width: 80px;
+            height: 80px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        .test-accounts {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .test-accounts h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-account {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .test-account:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="./assets/logo.png" alt="InnoMoodle Logo">
+        </div>
+        <h1>Войти в InnoMoodle</h1>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn" id="loginBtn">Войти</button>
+        </form>
+
+        <div class="error" id="errorMessage"></div>
+
+        <div class="test-accounts">
+            <h3>Тестовые аккаунты:</h3>
+            <div class="test-account" onclick="fillCredentials('teacher1@innopolis.ru', 'password123')">
+                <strong>Преподаватель:</strong> teacher1@innopolis.ru / password123
+            </div>
+            <div class="test-account" onclick="fillCredentials('student1@innopolis.ru', 'password123')">
+                <strong>Студент:</strong> student1@innopolis.ru / password123
+            </div>
+            <div class="test-account" onclick="fillCredentials('admin@innopolis.ru', 'password123')">
+                <strong>Администратор:</strong> admin@innopolis.ru / password123
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        function fillCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Вход...';
+            errorMessage.style.display = 'none';
+
+            try {
+                const response = await api.login(email, password);
+
+                if (response.token) {
+                    // Store authentication data
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    localStorage.setItem('isLoggedIn', 'true');
+
+                    // Redirect back to main app
+                    window.location.href = '/';
+                } else {
+                    throw new Error('Login failed');
+                    
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'Ошибка входа. Проверьте email и пароль.';
+                errorMessage.style.display = 'block';
+
+                // Re-enable button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Войти';
+            }
+        });
+    </script>
+</body>
+</html>

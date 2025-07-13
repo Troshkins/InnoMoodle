@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <div id="results"></div>
+
+    <script src="api.js?v=1.3"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        async function testAPI() {
+            resultsDiv.innerHTML = '<p>Testing API...</p>';
+
+            try {
+                // Test 1: Check if API service is loaded
+                console.log('1. API service:', api);
+                console.log('2. API service type:', typeof api);
+                resultsDiv.innerHTML += '<p>✓ API service loaded</p>';
+
+                // Test 2: Check authentication
+                console.log('3. Current token:', api.token);
+                console.log('4. localStorage token:', localStorage.getItem('authToken'));
+                resultsDiv.innerHTML += '<p>✓ Token check complete</p>';
+
+                // Test 3: Try to get users
+                console.log('5. Making API call...');
+                const users = await api.getAllUsers();
+                console.log('6. API result:', users);
+
+                if (users) {
+                    resultsDiv.innerHTML += '<p>✓ API call successful! Found ' + users.length + ' users</p>';
+                    resultsDiv.innerHTML += '<pre>' + JSON.stringify(users, null, 2) + '</pre>';
+                } else {
+                    resultsDiv.innerHTML += '<p>❌ API call returned null</p>';
+                }
+
+            } catch (error) {
+                console.error('API test error:', error);
+                resultsDiv.innerHTML += '<p>❌ API test failed: ' + error.message + '</p>';
+            }
+        }
+
+        // Run test when page loads
+        testAPI();
+    </script>
+</body>
+</html>

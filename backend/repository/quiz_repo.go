@@ -18,9 +18,9 @@ func NewQuizRepository(db *sqlx.DB) *QuizRepository {
 
 func (r *QuizRepository) CreateQuiz(ctx context.Context, quiz *models.Quiz) error {
 	query := `
-		INSERT INTO "Moodle".quizzes 
+		INSERT INTO "Moodle".quizzes
 			(name, start, "end", returnable, random, "time", results_shown, try_count, filling_id)
-		VALUES 
+		VALUES
 			(:name, :start, :end, :returnable, :random, :time, :results_shown, :try_count, :filling_id)
 		RETURNING id
 	`
@@ -33,8 +33,8 @@ func (r *QuizRepository) CreateQuiz(ctx context.Context, quiz *models.Quiz) erro
 
 func (r *QuizRepository) GetQuizByID(ctx context.Context, id int64) (*models.Quiz, error) {
 	query := `
-		SELECT 
-			id, name, start, "end", returnable, random, "time", 
+		SELECT
+			id, name, start, "end", returnable, random, "time",
 			results_shown, try_count, filling_id
 		FROM "Moodle".quizzes
 		WHERE id = $1
@@ -62,4 +62,37 @@ func (r *QuizRepository) CreateOneAnsTask(ctx context.Context, task *models.OneA
 	`
 	return r.db.QueryRowContext(ctx, query,
 		task.TaskID, task.Question).Scan(&task.ID)
+}
+
+func (r *QuizRepository) UpdateQuiz(ctx context.Context, quiz *models.Quiz) error {
+	query := `
+		UPDATE "Moodle".quizzes
+		SET name = $1, start = $2, "end" = $3, returnable = $4,
+			random = $5, "time" = $6, results_shown = $7,
+			try_count = $8, filling_id = $9
+		WHERE id = $10
+	`
+	_, err := r.Exec(ctx, query,
+		quiz.Name, quiz.Start, quiz.End, quiz.Returnable, quiz.Random,
+		quiz.TimeLimit, quiz.ResultsShown, quiz.TryCount, quiz.FillingID, quiz.ID)
+	return err
+}
+
+func (r *QuizRepository) DeleteQuiz(ctx context.Context, id int64) error {
+	query := `DELETE FROM "Moodle".quizzes WHERE id = $1`
+	_, err := r.Exec(ctx, query, id)
+	return err
+}
+
+func (r *QuizRepository) GetAllQuizzes(ctx context.Context) ([]*models.Quiz, error) {
+	query := `
+		SELECT
+			id, name, start, "end", returnable, random, "time",
+			results_shown, try_count, filling_id
+		FROM "Moodle".quizzes
+		ORDER BY id
+	`
+	var quizzes []*models.Quiz
+	err := r.Select(ctx, &quizzes, query)
+	return quizzes, err
 }

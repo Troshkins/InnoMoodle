@@ -1126,7 +1126,6 @@ const initQuizzesPage = async () => {
         document.getElementById('my-quizzes-container').innerHTML =
             '<div class="error">Ошибка загрузки тестов и заданий</div>';
     }
-}
 };
 
 // Инициализация страницы успеваемости

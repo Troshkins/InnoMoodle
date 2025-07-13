@@ -104,3 +104,29 @@ func (r *CourseRepository) CreateAnnouncement(ctx context.Context, announcement 
 	return r.db.QueryRowContext(ctx, query,
 		announcement.Name, announcement.Info, announcement.BlockID).Scan(&announcement.ID)
 }
+
+func (r *CourseRepository) GetAllCourses(ctx context.Context) ([]*models.Course, error) {
+	query := `
+		SELECT id, name, completeness
+		FROM "Moodle".courses
+		ORDER BY id
+	`
+	var courses []*models.Course
+	err := r.Select(ctx, &courses, query)
+	return courses, err
+}
+
+func (r *CourseRepository) GetCoursesByUserEmail(ctx context.Context, email string) ([]*models.Course, error) {
+	query := `
+		SELECT DISTINCT c.id, c.name, c.completeness
+		FROM "Moodle".courses c
+		LEFT JOIN "Moodle".course_student cs ON c.id = cs.course_id
+		LEFT JOIN "Moodle".course_teacher ct ON c.id = ct.course_id
+		LEFT JOIN "Moodle".users u ON (cs.student_id = u.id OR ct.teacher_id = u.id)
+		WHERE u.email = $1
+		ORDER BY c.id
+	`
+	var courses []*models.Course
+	err := r.Select(ctx, &courses, query, email)
+	return courses, err
+}

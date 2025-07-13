@@ -28,7 +28,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) erro
 }
 
 func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*models.User, error) {
-	query := `SELECT id, name, email, password FROM "Moodle".users
+	query := `SELECT id, name, email, password, role, status FROM "Moodle".users
 		WHERE id = $1
 	`
 	user := &models.User{}
@@ -38,7 +38,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id int64) (*models.Use
 
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-		SELECT id, name, email, password
+		SELECT id, name, email, password, role, status
 		FROM "Moodle".users
 		WHERE email = $1
 	`
@@ -62,6 +62,17 @@ func (r *UserRepository) DeleteUser(ctx context.Context, id int64) error {
 	query := `DELETE FROM "Moodle".users WHERE id = $1`
 	_, err := r.Exec(ctx, query, id)
 	return err
+}
+
+func (r *UserRepository) GetAllUsers(ctx context.Context) ([]*models.User, error) {
+	query := `
+		SELECT id, name, email, password, role, status
+		FROM "Moodle".users
+		ORDER BY id
+	`
+	var users []*models.User
+	err := r.Select(ctx, &users, query)
+	return users, err
 }
 
 // Admin methods
