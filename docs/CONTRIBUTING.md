@@ -12,7 +12,7 @@ Link: https://trello.com/invite/b/686a86496d61b6f1130e317f/ATTIaae09c137b6b95d20
 
 # Git Workflow
 
-![git graph](docs/architecture/Mermaid.png)
+![git graph](architecture/Mermaid.png)
 
 We follow GitHub Flow:
 

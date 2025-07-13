@@ -39,8 +39,6 @@
   THEN the system:
     Creates the group with selected members
 
-2 new tests:
-
 4. Task: "Add new user with role teacher to the system"
    GIVEN:
     I'm logged in as an admin
