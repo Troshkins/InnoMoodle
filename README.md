@@ -46,7 +46,7 @@ InnoMoodle is a learning management system designed to replace the university’
 ## Project context diagram
 ![Diagram](https://github.com/Troshkins/InnoMoodle/blob/main/docs/ProjContextDiagram.pdf)
 ## Roadmap
-[Roadmap](https://docs.google.com/spreadsheets/d/1an42l_jVi_Oo9T1aVh1T9NXflPxPeyAxiTUE6gkxcCw/edit?usp=sharing)
+[Roadmap](https://docs.google.com/document/d/1xYH7P_ANho2j-ttWLbBRVQI7kzSm05P7zhwPIVlu2hk/edit?usp=sharing)
 
 ## Usage
 
