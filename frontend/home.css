@@ -362,7 +362,7 @@ body {
         padding: 10px;
         height: auto;
     }
-    
+
     .top-toolbar {
         position: relative;
         top: 0;
@@ -370,13 +370,13 @@ body {
         right: 0;
         margin: 10px;
     }
-    
+
     .sidebar {
         width: 100%;
         flex: 0 0 auto;
         margin-top: 10px;
     }
-    
+
     .main-content {
         margin-top: 10px;
     }
@@ -389,26 +389,26 @@ body {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .toolbar-left, .toolbar-right {
         width: 100%;
         justify-content: center;
     }
-    
+
     .toolbar-right {
         flex-wrap: wrap;
     }
-    
+
     .card-container {
         grid-template-columns: 1fr;
     }
-    
+
     .header {
         flex-direction: column;
         gap: 15px;
         align-items: flex-start;
     }
-    
+
     .search {
         width: 100%;
         flex-direction: column;
@@ -1095,4 +1095,238 @@ h2 {
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 1px solid var(--element-primary);
+}
+
+/* Autocomplete dropdown styles */
+.autocomplete-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 0 0 4px 4px;
+}
+
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:hover {
+    background-color: #f5f5f5;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.search {
+    position: relative;
+}
+
+/* Group details page specific styles */
+.group-details-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#group-emails-container {
+    margin-top: 20px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background: white;
+}
+
+.list-item:hover {
+    background-color: #f9f9f9;
+}
+
+.list-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+.error {
+    text-align: center;
+    padding: 20px;
+    color: #d32f2f;
+    background-color: #ffebee;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+/* Group creation page specific styles */
+#group-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#group-form .form-group {
+    margin-bottom: 20px;
+}
+
+#group-form .search {
+    position: relative;
+}
+
+#group-form .list-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Ensure consistent styling between group creation and group details */
+.editor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.editor .form-group {
+    margin-bottom: 20px;
+}
+
+.editor .form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Group member management styles */
+.group-members-section {
+    margin-top: 15px;
+}
+
+.add-member-section {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+}
+
+.input-group .form-input {
+    flex: 1;
+}
+
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--background-secondary);
+    border: 1px solid var(--element-primary);
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+    box-shadow: var(--shadow);
+    margin-top: -1px;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--element-primary);
+    transition: background-color 0.2s;
+    background-color: var(--background-secondary);
+}
+
+.suggestion-item:hover {
+    background-color: var(--background-tertiary);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-email {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.suggestion-name {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.members-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--element-primary);
+    border-radius: var(--border-radius-small);
+    background: var(--background-secondary);
+}
+
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--element-primary);
+    transition: background-color 0.2s;
+}
+
+.member-item:hover {
+    background-color: var(--background-tertiary);
+}
+
+.member-item:last-child {
+    border-bottom: none;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-email {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.member-name {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85em;
+}
+
+.no-members {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
 }

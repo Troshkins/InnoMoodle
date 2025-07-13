@@ -218,6 +218,26 @@ class APIService {
         return await this.request('/groups');
     }
 
+    // Get group members
+    async getGroupMembers(groupId) {
+        return await this.request(`/groups/${groupId}/members`);
+    }
+
+    // Add student to group
+    async addStudentToGroup(groupId, email) {
+        return await this.request(`/groups/${groupId}/students`, {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    }
+
+    // Remove student from group
+    async removeStudentFromGroup(groupId, studentId) {
+        return await this.request(`/groups/${groupId}/students/${studentId}`, {
+            method: 'DELETE',
+        });
+    }
+
     // Get user courses
     async getUserCourses(userEmail) {
         return await this.request(`/courses/user/${encodeURIComponent(userEmail)}`);

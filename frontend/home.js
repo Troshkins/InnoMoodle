@@ -425,50 +425,231 @@ const initGroupsPage = async () => {
 
 // Инициализация страницы создания группы
 const initGroupCreationPage = () => {
-    // Заполняем список почт
-    const emailsList = document.getElementById('group-emails-list');
-    const emails = JSON.parse(localStorage.getItem('emails')) || [];
+    console.log('Initializing group creation page');
 
-    emails.forEach(email => {
-        const div = document.createElement('div');
-        div.className = 'checkbox-item';
-        div.innerHTML = `
-            <input type="checkbox" id="group-email-${email.id}" value="${email.id}">
-            <label for="group-email-${email.id}">${email.email}</label>
-        `;
-        emailsList.appendChild(div);
-    });
+    // Store selected users for the new group
+    let selectedUsers = [];
 
-    // Поиск почт
-    document.getElementById('email-search')?.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        emailsList.querySelectorAll('.checkbox-item').forEach(item => {
-            const label = item.querySelector('label').textContent.toLowerCase();
-            item.style.display = label.includes(searchTerm) ? 'block' : 'none';
-        });
-    });
+    // Set up email autocomplete
+    setupGroupCreationAutocomplete(selectedUsers);
 
-    // Отмена
+    // Cancel button
     document.getElementById('cancel-group')?.addEventListener('click', () => {
         loadContent('groups');
     });
 
-    // Сохранение группы
+    // Form submission
     document.getElementById('group-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('group-name').value;
+        const name = document.getElementById('group-name').value.trim();
+
+        if (!name) {
+            alert('Пожалуйста, введите название группы');
+            return;
+        }
 
         try {
-            const groupData = {
-                name: name
-            };
+            // Create the group first
+            const groupData = { name };
+            const newGroup = await api.createGroup(groupData);
 
-            await api.createGroup(groupData);
-        loadContent('groups');
+            // Add selected users to the group
+            for (const user of selectedUsers) {
+                try {
+                    await api.addStudentToGroup(newGroup.id, user.email);
+                } catch (error) {
+                    console.error(`Error adding user ${user.email} to group:`, error);
+                    // Continue with other users even if one fails
+                }
+            }
+
+            alert('Группа создана успешно!');
+            loadContent('groups');
         } catch (error) {
             console.error('Error creating group:', error);
             alert('Ошибка при создании группы');
         }
+    });
+};
+
+// Setup email autocomplete for group creation
+const setupGroupCreationAutocomplete = async (selectedUsers) => {
+    const emailInput = document.getElementById('add-email');
+    const addButton = document.getElementById('add-email-btn');
+
+    if (!emailInput || !addButton) {
+        console.error('Email input or add button not found');
+        return;
+    }
+
+    // Get all users for autocomplete
+    let allUsers = [];
+    try {
+        allUsers = await api.getAllUsers();
+    } catch (error) {
+        console.error('Error fetching users for autocomplete:', error);
+    }
+
+    // Create autocomplete dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'autocomplete-dropdown';
+    dropdown.style.cssText = `
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        max-height: 200px;
+        overflow-y: auto;
+        width: 100%;
+        z-index: 1000;
+        display: none;
+    `;
+
+    emailInput.parentNode.style.position = 'relative';
+    emailInput.parentNode.appendChild(dropdown);
+
+    // Filter users based on input
+    const filterUsers = (input) => {
+        const searchTerm = input.toLowerCase();
+        const filtered = allUsers.filter(user =>
+            (user.email.toLowerCase().includes(searchTerm) ||
+             user.name.toLowerCase().includes(searchTerm)) &&
+            !selectedUsers.some(selected => selected.id === user.id)
+        );
+
+        dropdown.innerHTML = '';
+
+        if (filtered.length === 0) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        filtered.forEach(user => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.style.cssText = `
+                padding: 10px;
+                cursor: pointer;
+                border-bottom: 1px solid #eee;
+            `;
+            item.innerHTML = `
+                <div>${user.email}</div>
+                <div style="font-size: 12px; color: #666;">${user.name}</div>
+            `;
+
+            item.addEventListener('click', () => {
+                emailInput.value = user.email;
+                dropdown.style.display = 'none';
+            });
+
+            item.addEventListener('mouseenter', () => {
+                item.style.backgroundColor = '#f5f5f5';
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.backgroundColor = 'white';
+            });
+
+            dropdown.appendChild(item);
+        });
+
+        dropdown.style.display = 'block';
+    };
+
+    // Show dropdown on input focus
+    emailInput.addEventListener('focus', () => {
+        if (emailInput.value.trim()) {
+            filterUsers(emailInput.value);
+        }
+    });
+
+    // Filter on input
+    emailInput.addEventListener('input', (e) => {
+        filterUsers(e.target.value);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!emailInput.parentNode.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Add user to selected list
+    addButton.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+            alert('Пожалуйста, введите email');
+            return;
+        }
+
+        const user = allUsers.find(u => u.email === email);
+        if (!user) {
+            alert('Пользователь с таким email не найден');
+            return;
+        }
+
+        if (selectedUsers.some(u => u.id === user.id)) {
+            alert('Этот пользователь уже добавлен');
+            return;
+        }
+
+        selectedUsers.push(user);
+        emailInput.value = '';
+        dropdown.style.display = 'none';
+        updateSelectedUsersList(selectedUsers);
+    });
+
+    // Allow Enter key to add user
+    emailInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addButton.click();
+        }
+    });
+};
+
+// Update the selected users list display
+const updateSelectedUsersList = (selectedUsers) => {
+    const container = document.getElementById('group-emails-container');
+
+    if (!container) {
+        console.error('Group emails container not found');
+        return;
+    }
+
+    container.innerHTML = '';
+
+    if (selectedUsers.length === 0) {
+        container.innerHTML = '<div class="empty-state">Нет выбранных участников</div>';
+        return;
+    }
+
+    selectedUsers.forEach(user => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div>
+                <div>${user.email}</div>
+                <div class="text-tertiary">${user.name}</div>
+            </div>
+            <div class="list-item-actions">
+                <button class="btn btn-danger remove-user" data-id="${user.id}">Удалить</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+
+    // Add event listeners for remove buttons
+    document.querySelectorAll('.remove-user').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const userId = parseInt(btn.dataset.id);
+            const index = selectedUsers.findIndex(u => u.id === userId);
+            if (index > -1) {
+                selectedUsers.splice(index, 1);
+                updateSelectedUsersList(selectedUsers);
+            }
+        });
     });
 };
 
@@ -510,6 +691,22 @@ const initGroupDetailsPage = async () => {
                         <label for="group-description">Описание:</label>
                         <textarea id="group-description" class="form-input">${group.description || ''}</textarea>
                     </div>
+
+                    <div class="form-group">
+                        <label>Участники группы</label>
+                        <div class="group-members-section">
+                            <div class="add-member-section">
+                                <div class="input-group">
+                                    <input type="text" id="add-member-email" class="form-input" placeholder="Введите email пользователя">
+                                    <button type="button" class="btn btn-secondary" id="add-member-btn">Добавить</button>
+                                </div>
+                            </div>
+                            <div id="group-members-list" class="members-list">
+                                <!-- Список участников будет загружен динамически -->
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-actions">
                         <button class="btn btn-secondary" id="cancel-edit-group">Отмена</button>
                         <button class="btn btn-primary" id="save-group">Сохранить</button>
@@ -517,6 +714,12 @@ const initGroupDetailsPage = async () => {
                     </div>
                 </div>
             `;
+
+            // Load current group members
+            await loadGroupMembers(group.id);
+
+            // Setup member management functionality
+            setupGroupMemberManagement(group.id);
 
             // Add event listeners
             document.getElementById('cancel-edit-group')?.addEventListener('click', () => {
@@ -558,6 +761,194 @@ const initGroupDetailsPage = async () => {
         loadContent('groups');
         return;
     }
+};
+
+// Load group members
+const loadGroupMembers = async (groupId) => {
+    try {
+        const members = await api.getGroupMembers(groupId);
+        const membersList = document.getElementById('group-members-list');
+
+        if (members && members.length > 0) {
+            membersList.innerHTML = members.map(member => `
+                <div class="member-item">
+                    <div class="member-info">
+                        <div class="member-email">${member.email}</div>
+                        <div class="member-name">${member.name || 'Без имени'}</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm remove-member" data-email="${member.email}">Удалить</button>
+                </div>
+            `).join('');
+        } else {
+            membersList.innerHTML = '<div class="no-members">В группе пока нет участников</div>';
+        }
+    } catch (error) {
+        console.error('Error loading group members:', error);
+        document.getElementById('group-members-list').innerHTML =
+            '<div class="error">Ошибка загрузки участников группы</div>';
+    }
+};
+
+// Setup group member management
+const setupGroupMemberManagement = async (groupId) => {
+    const emailInput = document.getElementById('add-member-email');
+    const addButton = document.getElementById('add-member-btn');
+
+    if (!emailInput || !addButton) {
+        console.error('Email input or add button not found');
+        return;
+    }
+
+    console.log('Setting up group member management for group:', groupId);
+
+    // Get all users for suggestions
+    let allUsers = [];
+    try {
+        allUsers = await api.getAllUsers();
+        console.log('Fetched all users:', allUsers.length);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+
+    // Get current group members to avoid duplicates
+    let currentMembers = [];
+    try {
+        currentMembers = await api.getGroupMembers(groupId);
+        console.log('Current group members:', currentMembers);
+    } catch (error) {
+        console.error('Error fetching current members:', error);
+    }
+
+    const currentMemberEmails = currentMembers.map(m => m.email);
+
+    // Create autocomplete dropdown dynamically (like in group creation)
+    const dropdown = document.createElement('div');
+    dropdown.className = 'autocomplete-dropdown';
+    dropdown.style.cssText = `
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        max-height: 200px;
+        overflow-y: auto;
+        width: 100%;
+        z-index: 1000;
+        display: none;
+    `;
+
+    emailInput.parentNode.style.position = 'relative';
+    emailInput.parentNode.appendChild(dropdown);
+
+    // Filter users based on input
+    const filterUsers = (input) => {
+        console.log('Filtering users for input:', input);
+        const searchTerm = input.toLowerCase();
+        const filtered = allUsers.filter(user =>
+            (user.email.toLowerCase().includes(searchTerm) ||
+             (user.name && user.name.toLowerCase().includes(searchTerm))) &&
+            !currentMemberEmails.includes(user.email)
+        );
+
+        console.log('Filtered users:', filtered.length);
+
+        dropdown.innerHTML = '';
+
+        if (filtered.length === 0 || !input.trim()) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        filtered.forEach(user => {
+            const item = document.createElement('div');
+            item.className = 'autocomplete-item';
+            item.style.cssText = `
+                padding: 10px;
+                cursor: pointer;
+                border-bottom: 1px solid #eee;
+            `;
+            item.innerHTML = `
+                <div>${user.email}</div>
+                <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
+            `;
+
+            item.addEventListener('click', () => {
+                console.log('Suggestion clicked:', user.email);
+                emailInput.value = user.email;
+                dropdown.style.display = 'none';
+            });
+
+            item.addEventListener('mouseenter', () => {
+                item.style.backgroundColor = '#f5f5f5';
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.backgroundColor = 'white';
+            });
+
+            dropdown.appendChild(item);
+        });
+
+        dropdown.style.display = 'block';
+        console.log('Dropdown shown with', filtered.length, 'items');
+    };
+
+    // Show dropdown on input focus
+    emailInput.addEventListener('focus', () => {
+        console.log('Input focused');
+        if (emailInput.value.trim()) {
+            filterUsers(emailInput.value);
+        }
+    });
+
+    // Filter on input
+    emailInput.addEventListener('input', (e) => {
+        console.log('Input event triggered:', e.target.value);
+        filterUsers(e.target.value);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!emailInput.parentNode.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Add member button
+    addButton.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+            alert('Пожалуйста, введите email');
+            return;
+        }
+
+        try {
+            await api.addStudentToGroup(groupId, email);
+            emailInput.value = '';
+            dropdown.style.display = 'none';
+            await loadGroupMembers(groupId);
+            alert('Пользователь добавлен в группу');
+        } catch (error) {
+            console.error('Error adding member to group:', error);
+            alert('Ошибка при добавлении пользователя в группу');
+        }
+    });
+
+    // Remove member functionality
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('remove-member')) {
+            const email = e.target.dataset.email;
+            if (confirm(`Удалить пользователя ${email} из группы?`)) {
+                try {
+                    await api.removeStudentFromGroup(groupId, email);
+                    await loadGroupMembers(groupId);
+                    alert('Пользователь удален из группы');
+                } catch (error) {
+                    console.error('Error removing member from group:', error);
+                    alert('Ошибка при удалении пользователя из группы');
+                }
+            }
+        }
+    });
 };
 
 // Инициализация страницы создания теста/задания

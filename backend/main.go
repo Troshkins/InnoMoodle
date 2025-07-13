@@ -114,6 +114,9 @@ func main() {
 	protected.HandleFunc("/groups/{id:[0-9]+}", groupHandler.GetGroup).Methods("GET")
 	protected.HandleFunc("/groups/{id:[0-9]+}", groupHandler.UpdateGroup).Methods("PUT")
 	protected.HandleFunc("/groups/{id:[0-9]+}", groupHandler.DeleteGroup).Methods("DELETE")
+	protected.HandleFunc("/groups/{id:[0-9]+}/members", groupHandler.GetGroupMembers).Methods("GET")
+	protected.HandleFunc("/groups/{id:[0-9]+}/students", groupHandler.AddStudentToGroup).Methods("POST")
+	protected.HandleFunc("/groups/{id:[0-9]+}/students/{studentId:[0-9]+}", groupHandler.RemoveStudentFromGroup).Methods("DELETE")
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("frontend")))
