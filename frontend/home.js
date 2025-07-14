@@ -453,12 +453,18 @@ const initGroupCreationPage = () => {
             const groupData = { name };
             const newGroup = await api.createGroup(groupData);
 
+            // Debug log: show group and users
+            console.log('Created group:', newGroup);
+            console.log('Selected users to add:', selectedUsers);
+
             // Add selected users to the group
             for (const user of selectedUsers) {
                 try {
+                    console.log('Adding user to group:', user.email, '->', newGroup.id);
                     await api.addStudentToGroup(newGroup.id, user.email);
                 } catch (error) {
                     console.error(`Error adding user ${user.email} to group:`, error);
+                    alert(`Ошибка при добавлении пользователя ${user.email} в группу`);
                     // Continue with other users even if one fails
                 }
             }
