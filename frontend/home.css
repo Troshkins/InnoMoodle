@@ -49,17 +49,8 @@ body {
     /* Ensure consistent sizing */
     min-height: 100vh;
     overflow-x: hidden;
-}
-
-/* Ensure consistent layout */
-.layout {
-    display: flex;
-    min-height: calc(100vh - 80px);
-    gap: 20px;
-    padding: 20px;
-    /* Ensure consistent sizing */
-    max-width: 100vw;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 /* Ensure consistent toolbar styling */
@@ -71,10 +62,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin: 20px 20px 0 20px;
     /* Ensure consistent sizing */
     height: 80px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
 
 .toolbar-left {
@@ -95,9 +88,12 @@ body {
 
 .toolbar-logo {
     height: 50px;
-    /* Ensure consistent sizing */
     width: auto;
-    flex-shrink: 0;
+    max-width: 220px;
+    display: block;
+    object-fit: contain;
+    vertical-align: middle;
+    /* No margin, spacing handled by flex gap */
 }
 
 .toolbar-title {
@@ -110,6 +106,19 @@ body {
     line-height: 1;
     margin: 0;
     white-space: nowrap;
+}
+
+/* Ensure consistent layout */
+.layout {
+    display: flex;
+    min-height: calc(100vh - 120px); /* Account for topbar + margins */
+    gap: 20px;
+    padding: 20px;
+    padding-top: 0; /* No top padding since topbar has margin */
+    /* Ensure consistent sizing */
+    max-width: 100vw;
+    overflow: hidden;
+    margin-top: 0;
 }
 
 .sidebar {
@@ -125,6 +134,8 @@ body {
     /* Ensure consistent sizing */
     min-width: 250px;
     max-width: 250px;
+    height: fit-content;
+    max-height: calc(100vh - 140px); /* Account for topbar + margins */
 }
 
 .sidebar-header {
@@ -212,6 +223,9 @@ body {
     /* Ensure consistent sizing */
     min-width: 0;
     overflow: hidden;
+    height: fit-content;
+    max-height: calc(100vh - 140px); /* Account for topbar + margins */
+    overflow-y: auto;
 }
 
 .header {
