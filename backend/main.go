@@ -103,6 +103,14 @@ func main() {
 	protected.HandleFunc("/courses/{id:[0-9]+}", courseHandler.DeleteCourse).Methods("DELETE")
 	protected.HandleFunc("/courses/user/{email}", courseHandler.GetUserCourses).Methods("GET")
 
+	// Course membership endpoints
+	protected.HandleFunc("/courses/{id:[0-9]+}/teachers", courseHandler.GetCourseTeachers).Methods("GET")
+	protected.HandleFunc("/courses/{id:[0-9]+}/teachers", courseHandler.AddTeacherToCourse).Methods("POST")
+	protected.HandleFunc("/courses/{id:[0-9]+}/teachers/{teacherId:[0-9]+}", courseHandler.RemoveTeacherFromCourse).Methods("DELETE")
+	protected.HandleFunc("/courses/{id:[0-9]+}/students", courseHandler.GetCourseStudents).Methods("GET")
+	protected.HandleFunc("/courses/{id:[0-9]+}/students", courseHandler.AddStudentToCourse).Methods("POST")
+	protected.HandleFunc("/courses/{id:[0-9]+}/students/{studentId:[0-9]+}", courseHandler.RemoveStudentFromCourse).Methods("DELETE")
+
 	// Quiz endpoints
 	protected.HandleFunc("/quizzes", quizHandler.CreateQuiz).Methods("POST")
 	protected.HandleFunc("/quizzes", quizHandler.GetAllQuizzes).Methods("GET")

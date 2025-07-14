@@ -111,3 +111,135 @@ func (h *CourseHandler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(courses)
 }
+
+func (h *CourseHandler) GetCourseTeachers(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	users, err := h.Repo.GetCourseTeachers(context.Background(), courseID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+
+func (h *CourseHandler) AddTeacherToCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	var req struct { Email string `json:"email"` }
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	if req.Email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+	userRepo := repository.NewUserRepository(h.Repo.GetDB())
+	user, err := userRepo.GetUserByEmail(context.Background(), req.Email)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+	if err := h.Repo.AssignTeacher(context.Background(), courseID, user.ID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Teacher added to course successfully"})
+}
+
+func (h *CourseHandler) RemoveTeacherFromCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	teacherID, err := strconv.ParseInt(vars["teacherId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid teacher ID", http.StatusBadRequest)
+		return
+	}
+	if err := h.Repo.RemoveTeacherFromCourse(context.Background(), courseID, teacherID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Teacher removed from course successfully"})
+}
+
+func (h *CourseHandler) GetCourseStudents(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	users, err := h.Repo.GetCourseStudents(context.Background(), courseID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+
+func (h *CourseHandler) AddStudentToCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	var req struct { Email string `json:"email"` }
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	if req.Email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+	userRepo := repository.NewUserRepository(h.Repo.GetDB())
+	user, err := userRepo.GetUserByEmail(context.Background(), req.Email)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+	if err := h.Repo.EnrollStudent(context.Background(), courseID, user.ID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Student added to course successfully"})
+}
+
+func (h *CourseHandler) RemoveStudentFromCourse(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	studentID, err := strconv.ParseInt(vars["studentId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid student ID", http.StatusBadRequest)
+		return
+	}
+	if err := h.Repo.RemoveStudentFromCourse(context.Background(), courseID, studentID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Student removed from course successfully"})
+}

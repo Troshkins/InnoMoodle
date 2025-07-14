@@ -192,11 +192,358 @@ const initPageSpecificLogic = (section) => {
 };
 
 // Add a stub for initCourseEditingPage if missing
-const initCourseEditingPage = () => {
-    // TODO: Implement course editing logic here
-    const title = document.getElementById('course-editing-title');
-    if (title) title.textContent = 'Редактирование курса';
-    // Add more logic as needed
+const initCourseEditingPage = async () => {
+    // Get current course ID from localStorage
+    const courseId = localStorage.getItem('currentCourse');
+    if (!courseId) return;
+    // Fetch course data
+    let course = null;
+    try {
+        course = await api.getCourse(courseId);
+        console.log('[EDIT COURSE] Loaded course:', course);
+    } catch (error) {
+        console.error('Error fetching course:', error);
+        return;
+    }
+    setTimeout(async () => {
+        const titleInput = document.getElementById('edit-course-title');
+        if (titleInput && course && course.name) {
+            titleInput.value = course.name;
+            console.log('[EDIT COURSE] Set input value:', course.name);
+        } else {
+            console.log('[EDIT COURSE] Could not set input value:', {titleInput, course});
+        }
+        // Set page title
+        const title = document.getElementById('course-editing-title');
+        if (title) title.textContent = 'Редактирование курса';
+
+        // --- New logic: teachers and students autocomplete and selection ---
+        let allUsers = [];
+        try {
+            allUsers = await api.getAllUsers();
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return;
+        }
+        // Arrays to hold selected teachers and students
+        let selectedTeachers = [];
+        let selectedStudents = [];
+        // Fetch current teachers/students for this course from backend
+        let originalTeachers = [];
+        let originalStudents = [];
+        try {
+            originalTeachers = await api.getCourseTeachers(courseId) || [];
+            originalStudents = await api.getCourseStudents(courseId) || [];
+        } catch (err) {
+            console.error('Error fetching course teachers/students:', err);
+        }
+        selectedTeachers = [...originalTeachers];
+        selectedStudents = [...originalStudents];
+
+        // Render selected teachers
+        const teachersContainer = document.getElementById('teachers-container');
+        const renderTeachers = () => {
+            teachersContainer.innerHTML = '';
+            if (selectedTeachers.length === 0) {
+                teachersContainer.innerHTML = '<div class="empty-state">Нет выбранных преподавателей</div>';
+                return;
+            }
+            selectedTeachers.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div>${user.email}</div>
+                    <div class="text-tertiary">${user.name || ''}</div>
+                    <button class="btn btn-danger remove-teacher" data-id="${user.id}">Удалить</button>
+                `;
+                teachersContainer.appendChild(div);
+            });
+            teachersContainer.querySelectorAll('.remove-teacher').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const userId = parseInt(btn.dataset.id);
+                    selectedTeachers = selectedTeachers.filter(u => u.id !== userId);
+                    renderTeachers();
+                });
+            });
+        };
+        renderTeachers();
+
+        // Render selected students
+        const studentsContainer = document.getElementById('student-groups-container');
+        const renderStudents = () => {
+            studentsContainer.innerHTML = '';
+            if (selectedStudents.length === 0) {
+                studentsContainer.innerHTML = '<div class="empty-state">Нет выбранных студентов</div>';
+                return;
+            }
+            selectedStudents.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div>${user.email}</div>
+                    <div class="text-tertiary">${user.name || ''}</div>
+                    <button class="btn btn-danger remove-student" data-id="${user.id}">Удалить</button>
+                `;
+                studentsContainer.appendChild(div);
+            });
+            studentsContainer.querySelectorAll('.remove-student').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const userId = parseInt(btn.dataset.id);
+                    selectedStudents = selectedStudents.filter(u => u.id !== userId);
+                    renderStudents();
+                });
+            });
+        };
+        renderStudents();
+
+        // Add autocomplete input for teachers
+        const teacherInputDiv = document.createElement('div');
+        teacherInputDiv.className = 'search';
+        teacherInputDiv.style.position = 'relative'; // Ensure relative positioning for dropdown
+        teacherInputDiv.innerHTML = `
+            <input class="form-input" id="add-teacher-email" placeholder="Введите email преподавателя" type="email" autocomplete="off"/>
+            <button class="btn btn-primary" id="add-teacher-btn" type="button">Добавить</button>
+        `;
+        teachersContainer.parentNode.insertBefore(teacherInputDiv, teachersContainer);
+        const teacherInput = teacherInputDiv.querySelector('#add-teacher-email');
+        const addTeacherBtn = teacherInputDiv.querySelector('#add-teacher-btn');
+        // Autocomplete dropdown for teachers
+        const teacherDropdown = document.createElement('div');
+        teacherDropdown.className = 'autocomplete-dropdown';
+        teacherDropdown.id = 'teacher-edit-dropdown';
+        teacherDropdown.style.position = 'absolute';
+        teacherDropdown.style.top = '100%';
+        teacherDropdown.style.left = '0';
+        teacherDropdown.style.width = '100%';
+        teacherDropdown.style.zIndex = '10';
+        teacherDropdown.style.background = '#fff';
+        teacherDropdown.style.border = '1px solid #ccc';
+        teacherDropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+        teacherDropdown.style.display = 'none';
+        teacherInputDiv.appendChild(teacherDropdown);
+        const filterTeachers = (input) => {
+            const searchTerm = input.toLowerCase().trim();
+            if (!searchTerm) {
+                teacherDropdown.style.display = 'none';
+                return;
+            }
+            const filtered = allUsers.filter(user =>
+                user.role === 'teacher' &&
+                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                (user.name && user.name.toLowerCase().includes(searchTerm)))
+            ).filter(user =>
+                !selectedTeachers.some(selected => selected.id === user.id)
+            );
+            teacherDropdown.innerHTML = '';
+            if (filtered.length === 0) {
+                teacherDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
+                teacherDropdown.style.display = 'block';
+                return;
+            }
+            filtered.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.innerHTML = `
+                    <div style="font-weight: 500;">${user.email}</div>
+                    <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
+                `;
+                item.addEventListener('click', () => {
+                    teacherInput.value = user.email;
+                    teacherDropdown.style.display = 'none';
+                    teacherInput.dispatchEvent(new Event('input'));
+                });
+                teacherDropdown.appendChild(item);
+            });
+            teacherDropdown.style.display = 'block';
+        };
+        teacherInput.addEventListener('focus', () => {
+            if (teacherInput.value.trim()) filterTeachers(teacherInput.value);
+        });
+        teacherInput.addEventListener('input', (e) => {
+            filterTeachers(e.target.value);
+        });
+        addTeacherBtn.addEventListener('click', () => {
+            const email = teacherInput.value.trim();
+            if (!email) {
+                alert('Пожалуйста, введите email');
+                return;
+            }
+            const user = allUsers.find(u => u.email === email && u.role === 'teacher');
+            if (!user) {
+                alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
+                return;
+            }
+            if (selectedTeachers.some(u => u.id === user.id)) {
+                alert('Этот преподаватель уже добавлен');
+                return;
+            }
+            selectedTeachers.push(user);
+            teacherInput.value = '';
+            teacherDropdown.style.display = 'none';
+            renderTeachers();
+        });
+        document.addEventListener('click', (e) => {
+            if (!teacherInputDiv.contains(e.target)) teacherDropdown.style.display = 'none';
+        });
+
+        // Add autocomplete input for students
+        const studentInputDiv = document.createElement('div');
+        studentInputDiv.className = 'search';
+        studentInputDiv.style.position = 'relative'; // Ensure relative positioning for dropdown
+        studentInputDiv.innerHTML = `
+            <input class="form-input" id="add-student-email" placeholder="Введите email студента" type="email" autocomplete="off"/>
+            <button class="btn btn-primary" id="add-student-btn" type="button">Добавить</button>
+        `;
+        studentsContainer.parentNode.insertBefore(studentInputDiv, studentsContainer);
+        const studentInput = studentInputDiv.querySelector('#add-student-email');
+        const addStudentBtn = studentInputDiv.querySelector('#add-student-btn');
+        // Autocomplete dropdown for students
+        const studentDropdown = document.createElement('div');
+        studentDropdown.className = 'autocomplete-dropdown';
+        studentDropdown.id = 'student-edit-dropdown';
+        studentDropdown.style.position = 'absolute';
+        studentDropdown.style.top = '100%';
+        studentDropdown.style.left = '0';
+        studentDropdown.style.width = '100%';
+        studentDropdown.style.zIndex = '10';
+        studentDropdown.style.background = '#fff';
+        studentDropdown.style.border = '1px solid #ccc';
+        studentDropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+        studentDropdown.style.display = 'none';
+        studentInputDiv.appendChild(studentDropdown);
+        const filterStudents = (input) => {
+            const searchTerm = input.toLowerCase().trim();
+            if (!searchTerm) {
+                studentDropdown.style.display = 'none';
+                return;
+            }
+            const filtered = allUsers.filter(user =>
+                user.role === 'student' &&
+                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                (user.name && user.name.toLowerCase().includes(searchTerm)))
+            ).filter(user =>
+                !selectedStudents.some(selected => selected.id === user.id)
+            );
+            studentDropdown.innerHTML = '';
+            if (filtered.length === 0) {
+                studentDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
+                studentDropdown.style.display = 'block';
+                return;
+            }
+            filtered.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.innerHTML = `
+                    <div style="font-weight: 500;">${user.email}</div>
+                    <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
+                `;
+                item.addEventListener('click', () => {
+                    studentInput.value = user.email;
+                    studentDropdown.style.display = 'none';
+                    studentInput.dispatchEvent(new Event('input'));
+                });
+                studentDropdown.appendChild(item);
+            });
+            studentDropdown.style.display = 'block';
+        };
+        studentInput.addEventListener('focus', () => {
+            if (studentInput.value.trim()) filterStudents(studentInput.value);
+        });
+        studentInput.addEventListener('input', (e) => {
+            filterStudents(e.target.value);
+        });
+        addStudentBtn.addEventListener('click', () => {
+            const email = studentInput.value.trim();
+            if (!email) {
+                alert('Пожалуйста, введите email');
+                return;
+            }
+            const user = allUsers.find(u => u.email === email && u.role === 'student');
+            if (!user) {
+                alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
+                return;
+            }
+            if (selectedStudents.some(u => u.id === user.id)) {
+                alert('Этот студент уже добавлен');
+                return;
+            }
+            selectedStudents.push(user);
+            studentInput.value = '';
+            studentDropdown.style.display = 'none';
+            renderStudents();
+        });
+        document.addEventListener('click', (e) => {
+            if (!studentInputDiv.contains(e.target)) studentDropdown.style.display = 'none';
+        });
+
+        // Save logic for teachers and students on submit
+        document.getElementById('edit-course-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Save course name
+            const newName = document.getElementById('edit-course-title')?.value?.trim();
+            if (!newName) {
+                alert('Название курса не может быть пустым');
+                return;
+            }
+            // Update course name if changed
+            if (newName !== course.name) {
+                try {
+                    await api.updateCourse(courseId, { ...course, name: newName });
+                } catch (err) {
+                    alert('Ошибка при обновлении названия курса');
+                    return;
+                }
+            }
+            // Compare teachers
+            const origTeacherIds = new Set((originalTeachers || []).map(u => u.id));
+            const newTeacherIds = new Set((selectedTeachers || []).map(u => u.id));
+            // Add new teachers
+            for (const user of selectedTeachers) {
+                if (!origTeacherIds.has(user.id)) {
+                    try {
+                        await api.addTeacherToCourse(courseId, user.email);
+                    } catch (err) {
+                        alert(`Ошибка при добавлении преподавателя ${user.email}`);
+                    }
+                }
+            }
+            // Remove teachers
+            for (const user of originalTeachers) {
+                if (!newTeacherIds.has(user.id)) {
+                    try {
+                        await api.removeTeacherFromCourse(courseId, user.id);
+                    } catch (err) {
+                        alert(`Ошибка при удалении преподавателя ${user.email}`);
+                    }
+                }
+            }
+            // Compare students
+            const origStudentIds = new Set((originalStudents || []).map(u => u.id));
+            const newStudentIds = new Set((selectedStudents || []).map(u => u.id));
+            // Add new students
+            for (const user of selectedStudents) {
+                if (!origStudentIds.has(user.id)) {
+                    try {
+                        await api.addStudentToCourse(courseId, user.email);
+                    } catch (err) {
+                        alert(`Ошибка при добавлении студента ${user.email}`);
+                    }
+                }
+            }
+            // Remove students
+            for (const user of originalStudents) {
+                if (!newStudentIds.has(user.id)) {
+                    try {
+                        await api.removeStudentFromCourse(courseId, user.id);
+                    } catch (err) {
+                        alert(`Ошибка при удалении студента ${user.email}`);
+                    }
+                }
+            }
+            alert('Курс обновлен!');
+            loadContent('courses');
+        });
+    }, 0);
 };
 
 // Загрузка контента для раздела
@@ -739,14 +1086,14 @@ const initGroupDetailsPage = async () => {
                     </div>
                     <div class="form-group">
                         <label>Участники группы</label>
-                        <div class="add-member-section">
+                            <div class="add-member-section">
                             <div class="search">
-                                <input type="text" id="add-member-email" class="form-input" placeholder="Введите email пользователя">
+                                    <input type="text" id="add-member-email" class="form-input" placeholder="Введите email пользователя">
                                 <button type="button" class="btn btn-primary" id="add-member-btn">Добавить</button>
+                                </div>
                             </div>
-                        </div>
                         <div id="group-members-list" class="list-container"></div>
-                    </div>
+                            </div>
                     <div class="form-actions">
                         <button class="btn btn-secondary" id="cancel-edit-group">Отмена</button>
                         <button class="btn btn-primary" id="save-group">Сохранить</button>
@@ -1015,11 +1362,11 @@ const setupGroupMemberManagement = async (groupId) => {
 
     // Helper to refresh and render current group members
     const refreshMembers = async () => {
-        let currentMembers = [];
-        try {
-            currentMembers = await api.getGroupMembers(groupId);
-        } catch (error) {
-            console.error('Error fetching current members:', error);
+    let currentMembers = [];
+    try {
+        currentMembers = await api.getGroupMembers(groupId);
+    } catch (error) {
+        console.error('Error fetching current members:', error);
             membersList.innerHTML = '<div class="error">Ошибка загрузки участников группы</div>';
             return;
         }

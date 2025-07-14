@@ -59,6 +59,7 @@ func (r *CourseRepository) EnrollStudent(ctx context.Context, courseID, studentI
 	query := `
 		INSERT INTO "Moodle".course_student (course_id, student_id)
 		VALUES ($1, $2)
+		ON CONFLICT (course_id, student_id) DO NOTHING
 	`
 	_, err := r.Exec(ctx, query, courseID, studentID)
 	return err
@@ -68,6 +69,7 @@ func (r *CourseRepository) AssignTeacher(ctx context.Context, courseID, teacherI
 	query := `
 		INSERT INTO "Moodle".course_teacher (course_id, teacher_id)
 		VALUES ($1, $2)
+		ON CONFLICT (course_id, teacher_id) DO NOTHING
 	`
 	_, err := r.Exec(ctx, query, courseID, teacherID)
 	return err
@@ -129,4 +131,47 @@ func (r *CourseRepository) GetCoursesByUserEmail(ctx context.Context, email stri
 	var courses []*models.Course
 	err := r.Select(ctx, &courses, query, email)
 	return courses, err
+}
+
+func (r *CourseRepository) GetCourseTeachers(ctx context.Context, courseID int64) ([]*models.User, error) {
+	query := `
+		SELECT u.id, u.name, u.email, u.role, u.status
+		FROM "Moodle".users u
+		JOIN "Moodle".course_teacher ct ON u.id = ct.teacher_id
+		WHERE ct.course_id = $1
+		ORDER BY u.name
+	`
+	var users []*models.User
+	err := r.Select(ctx, &users, query, courseID)
+	return users, err
+}
+
+func (r *CourseRepository) RemoveTeacherFromCourse(ctx context.Context, courseID, teacherID int64) error {
+	query := `DELETE FROM "Moodle".course_teacher WHERE course_id = $1 AND teacher_id = $2`
+	_, err := r.Exec(ctx, query, courseID, teacherID)
+	return err
+}
+
+func (r *CourseRepository) GetCourseStudents(ctx context.Context, courseID int64) ([]*models.User, error) {
+	query := `
+		SELECT u.id, u.name, u.email, u.role, u.status
+		FROM "Moodle".users u
+		JOIN "Moodle".course_student cs ON u.id = cs.student_id
+		WHERE cs.course_id = $1
+		ORDER BY u.name
+	`
+	var users []*models.User
+	err := r.Select(ctx, &users, query, courseID)
+	return users, err
+}
+
+func (r *CourseRepository) RemoveStudentFromCourse(ctx context.Context, courseID, studentID int64) error {
+	query := `DELETE FROM "Moodle".course_student WHERE course_id = $1 AND student_id = $2`
+	_, err := r.Exec(ctx, query, courseID, studentID)
+	return err
+}
+
+// GetDB returns the database connection for use in other repositories
+func (r *CourseRepository) GetDB() *sqlx.DB {
+    return r.BaseRepository.db
 }

@@ -258,6 +258,37 @@ class APIService {
     async getCurrentUserProfile() {
         return await this.request('/users/profile');
     }
+
+    // Course teachers
+    async getCourseTeachers(courseId) {
+        return await this.request(`/courses/${courseId}/teachers`);
+    }
+    async addTeacherToCourse(courseId, email) {
+        return await this.request(`/courses/${courseId}/teachers`, {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    }
+    async removeTeacherFromCourse(courseId, teacherId) {
+        return await this.request(`/courses/${courseId}/teachers/${teacherId}`, {
+            method: 'DELETE',
+        });
+    }
+    // Course students
+    async getCourseStudents(courseId) {
+        return await this.request(`/courses/${courseId}/students`);
+    }
+    async addStudentToCourse(courseId, email) {
+        return await this.request(`/courses/${courseId}/students`, {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    }
+    async removeStudentFromCourse(courseId, studentId) {
+        return await this.request(`/courses/${courseId}/students/${studentId}`, {
+            method: 'DELETE',
+        });
+    }
 }
 
 // Create global API service instance
