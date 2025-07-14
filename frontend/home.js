@@ -127,8 +127,10 @@ const initPageSpecificLogic = (section) => {
                 initCoursesPage();
                 break;
             case 'course_creation':
+                initCourseCreationPage();
+                break;
             case 'course_editing':
-                initCourseCreationPage(section);
+                initCourseEditingPage();
                 break;
             case 'groups':
                 initGroupsPage(); // Исправленная функция
@@ -187,6 +189,14 @@ const initPageSpecificLogic = (section) => {
             </div>
         `;
     }
+};
+
+// Add a stub for initCourseEditingPage if missing
+const initCourseEditingPage = () => {
+    // TODO: Implement course editing logic here
+    const title = document.getElementById('course-editing-title');
+    if (title) title.textContent = 'Редактирование курса';
+    // Add more logic as needed
 };
 
 // Загрузка контента для раздела
