@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Autocomplete - InnoMoodle</title>
+    <link rel="stylesheet" href="home.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .debug-info {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test Autocomplete Functionality</h1>
+
+        <div class="test-section">
+            <h2>Test 1: API Connection</h2>
+            <button id="test-api">Test API Connection</button>
+            <div id="api-result" class="debug-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2: Get All Users</h2>
+            <button id="test-users">Get All Users</button>
+            <div id="users-result" class="debug-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 3: Autocomplete Input</h2>
+            <div class="search">
+                <input type="text" id="test-autocomplete" placeholder="Start typing email..." class="form-input">
+                <button id="test-add-btn" class="btn btn-primary">Add User</button>
+            </div>
+            <div id="selected-users" class="debug-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Debug Information</h2>
+            <div id="debug-info" class="debug-info"></div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Test API connection
+        document.getElementById('test-api').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('api-result');
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                resultDiv.textContent = `API Status: ${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.textContent = `API Error: ${error.message}`;
+            }
+        });
+
+        // Test get all users
+        document.getElementById('test-users').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('users-result');
+            try {
+                const users = await api.getAllUsers();
+                resultDiv.textContent = `Users: ${JSON.stringify(users, null, 2)}`;
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // Test autocomplete
+        let allUsers = [];
+        let selectedUsers = [];
+
+        // Load users on page load
+        window.addEventListener('load', async () => {
+            try {
+                allUsers = await api.getAllUsers();
+                console.log('Loaded users:', allUsers);
+                updateDebugInfo();
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        });
+
+        // Setup autocomplete
+        const emailInput = document.getElementById('test-autocomplete');
+        const addButton = document.getElementById('test-add-btn');
+
+        // Create dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'autocomplete-dropdown';
+        emailInput.parentNode.style.position = 'relative';
+        emailInput.parentNode.appendChild(dropdown);
+
+        // Filter function
+        const filterUsers = (input) => {
+            const searchTerm = input.toLowerCase().trim();
+
+            if (!searchTerm) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            const filtered = allUsers.filter(user =>
+                (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                (user.name && user.name.toLowerCase().includes(searchTerm))
+            ).filter(user =>
+                !selectedUsers.some(selected => selected.id === user.id)
+            );
+
+            dropdown.innerHTML = '';
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div class="autocomplete-item">Пользователи не найдены</div>';
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            filtered.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.innerHTML = `
+                    <div style="font-weight: 500;">${user.email}</div>
+                    <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
+                `;
+
+                item.addEventListener('click', () => {
+                    emailInput.value = user.email;
+                    dropdown.style.display = 'none';
+                });
+
+                dropdown.appendChild(item);
+            });
+
+            dropdown.style.display = 'block';
+        };
+
+        // Event listeners
+        emailInput.addEventListener('input', (e) => {
+            filterUsers(e.target.value);
+        });
+
+        emailInput.addEventListener('focus', () => {
+            if (emailInput.value.trim()) {
+                filterUsers(emailInput.value);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!emailInput.parentNode.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        addButton.addEventListener('click', () => {
+            const email = emailInput.value.trim();
+            if (!email) {
+                alert('Введите email');
+                return;
+            }
+
+            const user = allUsers.find(u => u.email === email);
+            if (!user) {
+                alert('Пользователь не найден');
+                return;
+            }
+
+            if (selectedUsers.some(u => u.id === user.id)) {
+                alert('Пользователь уже добавлен');
+                return;
+            }
+
+            selectedUsers.push(user);
+            emailInput.value = '';
+            dropdown.style.display = 'none';
+            updateSelectedUsers();
+            updateDebugInfo();
+        });
+
+        function updateSelectedUsers() {
+            const container = document.getElementById('selected-users');
+            container.textContent = `Selected: ${JSON.stringify(selectedUsers.map(u => u.email), null, 2)}`;
+        }
+
+        function updateDebugInfo() {
+            const container = document.getElementById('debug-info');
+            container.textContent = `
+Total Users: ${allUsers.length}
+Selected Users: ${selectedUsers.length}
+Token: ${api.token ? 'Present' : 'Missing'}
+            `.trim();
+        }
+    </script>
+</body>
+</html>

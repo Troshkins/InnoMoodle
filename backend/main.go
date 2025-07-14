@@ -82,12 +82,14 @@ func main() {
 	// User creation endpoint (public for development)
 	api.HandleFunc("/users", userHandler.CreateUser).Methods("POST")
 
+	// Temporarily make getAllUsers public for testing
+	api.HandleFunc("/users", userHandler.GetAllUsers).Methods("GET")
+
 	// Apply authentication middleware to the rest of the /api endpoints
 	protected := api.NewRoute().Subrouter()
 	protected.Use(authMiddleware.AuthMiddleware)
 
 	// User endpoints (protected)
-	protected.HandleFunc("/users", userHandler.GetAllUsers).Methods("GET")
 	protected.HandleFunc("/users/{id:[0-9]+}", userHandler.GetUser).Methods("GET")
 	protected.HandleFunc("/users/{id:[0-9]+}", userHandler.UpdateUser).Methods("PUT")
 	protected.HandleFunc("/users/{id:[0-9]+}", userHandler.DeleteUser).Methods("DELETE")

@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -114,16 +115,26 @@ func (h *GroupHandler) AddStudentToGroup(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	// Validate email
+	if request.Email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+
 	// Get user by email
 	userRepo := repository.NewUserRepository(h.Repo.GetDB())
 	user, err := userRepo.GetUserByEmail(context.Background(), request.Email)
 	if err != nil {
+		// Log the error for debugging
+		log.Printf("Error getting user by email %s: %v", request.Email, err)
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
 	}
 
 	// Add student to group
 	if err := h.Repo.AddStudentToGroup(context.Background(), groupID, user.ID); err != nil {
+		// Log the error for debugging
+		log.Printf("Error adding student %d to group %d: %v", user.ID, groupID, err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

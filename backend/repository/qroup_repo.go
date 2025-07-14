@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Troshkins/InnoMoodle/backend/models"
 	"github.com/jmoiron/sqlx"
@@ -72,13 +73,66 @@ func (r *GroupRepository) GetAllStudyGroups(ctx context.Context) ([]*models.Stud
 }
 
 func (r *GroupRepository) AddStudentToGroup(ctx context.Context, groupID, studentID int64) error {
+	// First, check if the group exists
+	groupExists, err := r.groupExists(ctx, groupID)
+	if err != nil {
+		return fmt.Errorf("failed to check if group exists: %w", err)
+	}
+	if !groupExists {
+		return fmt.Errorf("group with ID %d does not exist", groupID)
+	}
+
+	// Check if the user exists
+	userExists, err := r.userExists(ctx, studentID)
+	if err != nil {
+		return fmt.Errorf("failed to check if user exists: %w", err)
+	}
+	if !userExists {
+		return fmt.Errorf("user with ID %d does not exist", studentID)
+	}
+
+	// Check if the student is already in the group
+	alreadyInGroup, err := r.studentInGroup(ctx, groupID, studentID)
+	if err != nil {
+		return fmt.Errorf("failed to check if student is already in group: %w", err)
+	}
+	if alreadyInGroup {
+		return fmt.Errorf("student %d is already in group %d", studentID, groupID)
+	}
+
+	// Add student to group
 	query := `
 		INSERT INTO "Moodle".group_student (group_id, student_id)
 		VALUES ($1, $2)
-		ON CONFLICT (group_id, student_id) DO NOTHING
 	`
-	_, err := r.Exec(ctx, query, groupID, studentID)
-	return err
+	_, err = r.Exec(ctx, query, groupID, studentID)
+	if err != nil {
+		return fmt.Errorf("failed to add student to group: %w", err)
+	}
+
+	return nil
+}
+
+// Helper methods for validation
+func (r *GroupRepository) groupExists(ctx context.Context, groupID int64) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM "Moodle".study_groups WHERE id = $1)`
+	var exists bool
+	err := r.Get(ctx, &exists, query, groupID)
+	return exists, err
+}
+
+func (r *GroupRepository) userExists(ctx context.Context, userID int64) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM "Moodle".users WHERE id = $1)`
+	var exists bool
+	err := r.Get(ctx, &exists, query, userID)
+	return exists, err
+}
+
+func (r *GroupRepository) studentInGroup(ctx context.Context, groupID, studentID int64) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM "Moodle".group_student WHERE group_id = $1 AND student_id = $2)`
+	var exists bool
+	err := r.Get(ctx, &exists, query, groupID, studentID)
+	return exists, err
 }
 
 func (r *GroupRepository) RemoveStudentFromGroup(ctx context.Context, groupID, studentID int64) error {

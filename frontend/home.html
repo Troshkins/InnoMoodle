@@ -4,10 +4,110 @@
 <head> <!-- + -->
 <meta charset="utf-8"/> <!-- + -->
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/> <!-- + -->
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/> <!-- + -->
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/> <!-- + -->
+<meta name="format-detection" content="telephone=no"/> <!-- + -->
+<meta name="msapplication-tap-highlight" content="no"/> <!-- + -->
 <title>Innomoodle</title> <!-- + -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet"> <!-- + -->
+<!-- Preload critical fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"> <!-- + -->
 <link rel="stylesheet" href="home.css"> <!-- + -->
+<!-- Ensure consistent rendering across browsers -->
+<style>
+/* CSS Reset for consistent rendering */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Ensure consistent button and input styling */
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Ensure consistent image rendering */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Ensure consistent table rendering */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Ensure consistent list rendering */
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Ensure consistent link rendering */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ensure consistent focus states */
+*:focus {
+    outline: none;
+}
+
+/* Ensure consistent selection */
+::selection {
+    background-color: rgba(61, 127, 255, 0.2);
+    color: inherit;
+}
+
+/* Ensure consistent scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-tertiary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--element-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Ensure consistent print styles */
+@media print {
+    * {
+        background: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}
+</style>
 </head> <!-- + -->
 
 <body> <!-- + -->

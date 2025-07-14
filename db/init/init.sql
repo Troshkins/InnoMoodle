@@ -319,6 +319,11 @@ CREATE INDEX idx_course_teacher_teacher_id ON "Moodle".course_teacher(teacher_id
 CREATE INDEX idx_group_student_group_id ON "Moodle".group_student(group_id);
 CREATE INDEX idx_group_student_student_id ON "Moodle".group_student(student_id);
 
+-- Unique constraints to prevent duplicate entries
+CREATE UNIQUE INDEX idx_group_student_unique ON "Moodle".group_student(group_id, student_id);
+CREATE UNIQUE INDEX idx_course_student_unique ON "Moodle".course_student(course_id, student_id);
+CREATE UNIQUE INDEX idx_course_teacher_unique ON "Moodle".course_teacher(course_id, teacher_id);
+
 -- Constraints for data validation
 
 ALTER TABLE "Moodle".users

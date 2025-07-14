@@ -200,7 +200,18 @@ class APIService {
 
         // Get all users
     async getAllUsers() {
-        return await this.request('/users');
+        console.log('=== getAllUsers API Call ===');
+        console.log('Current token:', this.token);
+        console.log('Headers:', this.getHeaders());
+
+        try {
+            const result = await this.request('/users');
+            console.log('getAllUsers result:', result);
+            return result;
+        } catch (error) {
+            console.error('getAllUsers error:', error);
+            throw error;
+        }
     }
 
     // Get all courses

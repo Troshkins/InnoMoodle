@@ -479,75 +479,89 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
 
     if (!emailInput || !addButton) {
         console.error('Email input or add button not found');
+        console.log('Available elements:', {
+            emailInput: document.getElementById('add-email'),
+            addButton: document.getElementById('add-email-btn')
+        });
         return;
     }
+
+    console.log('Setting up group creation autocomplete');
 
     // Get all users for autocomplete
     let allUsers = [];
     try {
+        console.log('Fetching users for autocomplete...');
         allUsers = await api.getAllUsers();
+        console.log('Fetched users:', allUsers);
     } catch (error) {
         console.error('Error fetching users for autocomplete:', error);
+        // Show user-friendly error
+        emailInput.placeholder = 'Ошибка загрузки пользователей';
+        return;
+    }
+
+    if (!allUsers || allUsers.length === 0) {
+        console.log('No users found for autocomplete');
+        emailInput.placeholder = 'Нет пользователей в системе';
+        return;
     }
 
     // Create autocomplete dropdown
     const dropdown = document.createElement('div');
     dropdown.className = 'autocomplete-dropdown';
-    dropdown.style.cssText = `
-        position: absolute;
-        background: white;
-        border: 1px solid #ddd;
-        border-top: none;
-        max-height: 200px;
-        overflow-y: auto;
-        width: 100%;
-        z-index: 1000;
-        display: none;
-    `;
+    dropdown.id = 'group-creation-dropdown';
+
+    // Remove any existing dropdown
+    const existingDropdown = document.getElementById('group-creation-dropdown');
+    if (existingDropdown) {
+        existingDropdown.remove();
+    }
 
     emailInput.parentNode.style.position = 'relative';
     emailInput.parentNode.appendChild(dropdown);
 
     // Filter users based on input
     const filterUsers = (input) => {
-        const searchTerm = input.toLowerCase();
+        console.log('Filtering users for input:', input);
+        const searchTerm = input.toLowerCase().trim();
+
+        if (!searchTerm) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
         const filtered = allUsers.filter(user =>
-            (user.email.toLowerCase().includes(searchTerm) ||
-             user.name.toLowerCase().includes(searchTerm)) &&
+            (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+            (user.name && user.name.toLowerCase().includes(searchTerm))
+        ).filter(user =>
             !selectedUsers.some(selected => selected.id === user.id)
         );
+
+        console.log('Filtered users:', filtered.length);
 
         dropdown.innerHTML = '';
 
         if (filtered.length === 0) {
-            dropdown.style.display = 'none';
+            dropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
+            dropdown.style.display = 'block';
             return;
         }
 
         filtered.forEach(user => {
             const item = document.createElement('div');
             item.className = 'autocomplete-item';
-            item.style.cssText = `
-                padding: 10px;
-                cursor: pointer;
-                border-bottom: 1px solid #eee;
-            `;
             item.innerHTML = `
-                <div>${user.email}</div>
-                <div style="font-size: 12px; color: #666;">${user.name}</div>
+                <div style="font-weight: 500;">${user.email}</div>
+                <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
             `;
 
             item.addEventListener('click', () => {
+                console.log('User selected:', user.email);
                 emailInput.value = user.email;
                 dropdown.style.display = 'none';
-            });
-
-            item.addEventListener('mouseenter', () => {
-                item.style.backgroundColor = '#f5f5f5';
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.style.backgroundColor = 'white';
+                // Trigger input event to validate
+                emailInput.dispatchEvent(new Event('input'));
             });
 
             dropdown.appendChild(item);
@@ -558,6 +572,7 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
 
     // Show dropdown on input focus
     emailInput.addEventListener('focus', () => {
+        console.log('Input focused');
         if (emailInput.value.trim()) {
             filterUsers(emailInput.value);
         }
@@ -565,6 +580,7 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
 
     // Filter on input
     emailInput.addEventListener('input', (e) => {
+        console.log('Input event triggered:', e.target.value);
         filterUsers(e.target.value);
     });
 
@@ -585,7 +601,7 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
 
         const user = allUsers.find(u => u.email === email);
         if (!user) {
-            alert('Пользователь с таким email не найден');
+            alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
             return;
         }
 
@@ -594,6 +610,7 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
             return;
         }
 
+        console.log('Adding user to selected list:', user);
         selectedUsers.push(user);
         emailInput.value = '';
         dropdown.style.display = 'none';
@@ -607,6 +624,8 @@ const setupGroupCreationAutocomplete = async (selectedUsers) => {
             addButton.click();
         }
     });
+
+    console.log('Group creation autocomplete setup complete');
 };
 
 // Update the selected users list display
@@ -796,6 +815,10 @@ const setupGroupMemberManagement = async (groupId) => {
 
     if (!emailInput || !addButton) {
         console.error('Email input or add button not found');
+        console.log('Available elements:', {
+            emailInput: document.getElementById('add-member-email'),
+            addButton: document.getElementById('add-member-btn')
+        });
         return;
     }
 
@@ -808,6 +831,14 @@ const setupGroupMemberManagement = async (groupId) => {
         console.log('Fetched all users:', allUsers.length);
     } catch (error) {
         console.error('Error fetching users:', error);
+        emailInput.placeholder = 'Ошибка загрузки пользователей';
+        return;
+    }
+
+    if (!allUsers || allUsers.length === 0) {
+        console.log('No users found');
+        emailInput.placeholder = 'Нет пользователей в системе';
+        return;
     }
 
     // Get current group members to avoid duplicates
@@ -817,24 +848,21 @@ const setupGroupMemberManagement = async (groupId) => {
         console.log('Current group members:', currentMembers);
     } catch (error) {
         console.error('Error fetching current members:', error);
+        // Continue anyway, just won't filter out existing members
     }
 
     const currentMemberEmails = currentMembers.map(m => m.email);
 
-    // Create autocomplete dropdown dynamically (like in group creation)
+    // Create autocomplete dropdown dynamically
     const dropdown = document.createElement('div');
     dropdown.className = 'autocomplete-dropdown';
-    dropdown.style.cssText = `
-        position: absolute;
-        background: white;
-        border: 1px solid #ddd;
-        border-top: none;
-        max-height: 200px;
-        overflow-y: auto;
-        width: 100%;
-        z-index: 1000;
-        display: none;
-    `;
+    dropdown.id = 'group-edit-dropdown';
+
+    // Remove any existing dropdown
+    const existingDropdown = document.getElementById('group-edit-dropdown');
+    if (existingDropdown) {
+        existingDropdown.remove();
+    }
 
     emailInput.parentNode.style.position = 'relative';
     emailInput.parentNode.appendChild(dropdown);
@@ -842,10 +870,17 @@ const setupGroupMemberManagement = async (groupId) => {
     // Filter users based on input
     const filterUsers = (input) => {
         console.log('Filtering users for input:', input);
-        const searchTerm = input.toLowerCase();
+        const searchTerm = input.toLowerCase().trim();
+
+        if (!searchTerm) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
         const filtered = allUsers.filter(user =>
-            (user.email.toLowerCase().includes(searchTerm) ||
-             (user.name && user.name.toLowerCase().includes(searchTerm))) &&
+            (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+            (user.name && user.name.toLowerCase().includes(searchTerm))
+        ).filter(user =>
             !currentMemberEmails.includes(user.email)
         );
 
@@ -853,21 +888,17 @@ const setupGroupMemberManagement = async (groupId) => {
 
         dropdown.innerHTML = '';
 
-        if (filtered.length === 0 || !input.trim()) {
-            dropdown.style.display = 'none';
+        if (filtered.length === 0) {
+            dropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены или уже в группе</div>';
+            dropdown.style.display = 'block';
             return;
         }
 
         filtered.forEach(user => {
             const item = document.createElement('div');
             item.className = 'autocomplete-item';
-            item.style.cssText = `
-                padding: 10px;
-                cursor: pointer;
-                border-bottom: 1px solid #eee;
-            `;
             item.innerHTML = `
-                <div>${user.email}</div>
+                <div style="font-weight: 500;">${user.email}</div>
                 <div style="font-size: 12px; color: #666;">${user.name || 'Без имени'}</div>
             `;
 
@@ -875,14 +906,8 @@ const setupGroupMemberManagement = async (groupId) => {
                 console.log('Suggestion clicked:', user.email);
                 emailInput.value = user.email;
                 dropdown.style.display = 'none';
-            });
-
-            item.addEventListener('mouseenter', () => {
-                item.style.backgroundColor = '#f5f5f5';
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.style.backgroundColor = 'white';
+                // Trigger input event to validate
+                emailInput.dispatchEvent(new Event('input'));
             });
 
             dropdown.appendChild(item);
@@ -921,15 +946,64 @@ const setupGroupMemberManagement = async (groupId) => {
             return;
         }
 
+        // Validate that the user exists and is not already in the group
+        const user = allUsers.find(u => u.email === email);
+        if (!user) {
+            alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
+            return;
+        }
+
+        if (currentMemberEmails.includes(email)) {
+            alert('Этот пользователь уже в группе');
+            return;
+        }
+
         try {
+            console.log('Adding user to group:', email);
+            console.log('Group ID:', groupId);
+            console.log('User ID:', user.id);
+
             await api.addStudentToGroup(groupId, email);
             emailInput.value = '';
             dropdown.style.display = 'none';
+
+            // Refresh the members list
             await loadGroupMembers(groupId);
+
+            // Update current members list
+            currentMembers.push(user);
+            currentMemberEmails.push(email);
+
             alert('Пользователь добавлен в группу');
         } catch (error) {
             console.error('Error adding member to group:', error);
-            alert('Ошибка при добавлении пользователя в группу');
+
+            // Provide more specific error messages
+            let errorMessage = 'Ошибка при добавлении пользователя в группу';
+
+            if (error.message) {
+                if (error.message.includes('User not found')) {
+                    errorMessage = 'Пользователь не найден в системе';
+                } else if (error.message.includes('already in group')) {
+                    errorMessage = 'Пользователь уже находится в этой группе';
+                } else if (error.message.includes('group does not exist')) {
+                    errorMessage = 'Группа не найдена';
+                } else if (error.message.includes('user does not exist')) {
+                    errorMessage = 'Пользователь не существует';
+                } else {
+                    errorMessage = error.message;
+                }
+            }
+
+            alert(errorMessage);
+        }
+    });
+
+    // Allow Enter key to add user
+    emailInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addButton.click();
         }
     });
 
@@ -939,16 +1013,33 @@ const setupGroupMemberManagement = async (groupId) => {
             const email = e.target.dataset.email;
             if (confirm(`Удалить пользователя ${email} из группы?`)) {
                 try {
-                    await api.removeStudentFromGroup(groupId, email);
+                    // Find user ID by email
+                    const user = allUsers.find(u => u.email === email);
+                    if (!user) {
+                        alert('Пользователь не найден');
+                        return;
+                    }
+
+                    await api.removeStudentFromGroup(groupId, user.id);
                     await loadGroupMembers(groupId);
+
+                    // Update current members list
+                    const index = currentMemberEmails.indexOf(email);
+                    if (index > -1) {
+                        currentMemberEmails.splice(index, 1);
+                        currentMembers.splice(index, 1);
+                    }
+
                     alert('Пользователь удален из группы');
                 } catch (error) {
                     console.error('Error removing member from group:', error);
-                    alert('Ошибка при удалении пользователя из группы');
+                    alert('Ошибка при удалении пользователя из группы: ' + error.message);
                 }
             }
         }
     });
+
+    console.log('Group member management setup complete');
 };
 
 // Инициализация страницы создания теста/задания
