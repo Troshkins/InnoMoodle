@@ -451,11 +451,22 @@ const initGroupCreationPage = () => {
         try {
             // Create the group first
             const groupData = { name };
-            const newGroup = await api.createGroup(groupData);
+            let newGroup = await api.createGroup(groupData);
+
+            // If backend returns no JSON, fetch the group by name as fallback
+            if (!newGroup || !newGroup.id) {
+                const allGroups = await api.getAllGroups();
+                newGroup = allGroups.find(g => g.name === name);
+            }
 
             // Debug log: show group and users
             console.log('[CREATE] Created group:', newGroup);
             console.log('[CREATE] Selected users to add:', selectedUsers);
+
+            if (!newGroup || !newGroup.id) {
+                alert('Ошибка: не удалось получить созданную группу.');
+                return;
+            }
 
             // Add selected users to the group
             for (const user of selectedUsers) {
