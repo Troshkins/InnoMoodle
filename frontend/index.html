@@ -13,51 +13,7 @@
   <link rel="stylesheet" href="index.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Ensure consistent rendering across browsers -->
-  <style>
-  /* CSS Reset for consistent rendering */
-  *, *::before, *::after {
-      box-sizing: border-box;
-  }
-
-  html {
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-  }
-
-  body {
-      margin: 0;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-  }
-
-  /* Ensure consistent button and input styling */
-  button, input, select, textarea {
-      font-family: inherit;
-      font-size: inherit;
-      line-height: inherit;
-  }
-
-  /* Ensure consistent image rendering */
-  img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-  }
-
-  /* Ensure consistent focus states */
-  *:focus {
-      outline: none;
-  }
-
-  /* Ensure consistent selection */
-  ::selection {
-      background-color: rgba(61, 127, 255, 0.2);
-      color: inherit;
-  }
-  </style>
+   <link rel="stylesheet" href="index.css">
 </head>
 <body>
   <div class="auth-card">
@@ -151,6 +107,7 @@
         applyLanguage();
       });
 
+<<<<<<< HEAD
       // Обработка нажатия на кнопку входа
       submitBtn.addEventListener('click', function() {
         // Redirect to SSO login page
@@ -163,6 +120,8 @@
       document.documentElement.style.setProperty('--screen-diagonal', `${d}px`);
       }
 
+=======
+>>>>>>> 118b97802aa51b8d4284f33ce887009274d9ccff
       updateDiagonal();
       window.addEventListener('resize', updateDiagonal);
     });
