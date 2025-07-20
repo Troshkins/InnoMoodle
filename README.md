@@ -145,3 +145,7 @@ See ![Continious Integration](docs/automation/continious-integration.md)
 ## Licence
 
 ![Licence](docs/LICENCE.md)
+
+## Design
+
+![Design in Figma](docs/Innomoodle.fig)
