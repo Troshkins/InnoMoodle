@@ -28,7 +28,7 @@ CREATE TABLE "Moodle".users (
     name       text   NOT NULL,
     email      text   NOT NULL,
     password   text   NOT NULL,
-    role       text   DEFAULT 'student' NOT NULL,
+    role       text   DEFAULT 'user' NOT NULL,
     status     text   DEFAULT 'active' NOT NULL,
     avatar     text,
     bio        text,
@@ -357,6 +357,13 @@ ALTER TABLE "Moodle".quizzes
 ALTER TABLE "Moodle".study_groups
   ADD CONSTRAINT study_groups_status_check
   CHECK (status IN ('active', 'inactive', 'archived'));
+
+-- Fix user roles: only 'user' and 'admin' allowed
+ALTER TABLE "Moodle".users ALTER COLUMN role SET DEFAULT 'user';
+ALTER TABLE "Moodle".users DROP CONSTRAINT IF EXISTS users_role_check;
+ALTER TABLE "Moodle".users ADD CONSTRAINT users_role_check CHECK (role IN ('user', 'admin'));
+-- Update any old data
+UPDATE "Moodle".users SET role = 'user' WHERE role NOT IN ('user', 'admin');
 
 -- Insert initial data
 

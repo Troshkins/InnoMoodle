@@ -119,13 +119,16 @@ func (h *CourseHandler) GetCourseTeachers(w http.ResponseWriter, r *http.Request
 		http.Error(w, "Invalid course ID", http.StatusBadRequest)
 		return
 	}
-	users, err := h.Repo.GetCourseTeachers(context.Background(), courseID)
+	teachers, err := h.Repo.GetCourseTeachers(context.Background(), courseID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if teachers == nil {
+		teachers = []*models.User{}
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(teachers)
 }
 
 func (h *CourseHandler) AddTeacherToCourse(w http.ResponseWriter, r *http.Request) {
@@ -185,13 +188,16 @@ func (h *CourseHandler) GetCourseStudents(w http.ResponseWriter, r *http.Request
 		http.Error(w, "Invalid course ID", http.StatusBadRequest)
 		return
 	}
-	users, err := h.Repo.GetCourseStudents(context.Background(), courseID)
+	students, err := h.Repo.GetCourseStudents(context.Background(), courseID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if students == nil {
+		students = []*models.User{}
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(students)
 }
 
 func (h *CourseHandler) AddStudentToCourse(w http.ResponseWriter, r *http.Request) {

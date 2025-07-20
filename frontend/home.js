@@ -2126,10 +2126,11 @@ const initDatabasePage = async () => {
     emails.forEach(email => {
         const div = document.createElement('div');
         div.className = 'list-item';
+        const roleLabel = email.role === 'admin' ? 'Админ' : 'Пользователь';
         div.innerHTML = `
             <div>
                 <div>${email.email}</div>
-                <div class="text-tertiary">${email.role === 'teacher' ? 'Преподаватель' : 'Студент'}</div>
+                <div class="text-tertiary">${roleLabel}</div>
             </div>
             <div class="list-item-actions">
                 <button class="btn btn-danger delete-email" data-id="${email.id}">Удалить</button>
