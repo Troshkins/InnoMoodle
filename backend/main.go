@@ -111,6 +111,10 @@ func main() {
 	protected.HandleFunc("/courses/{id:[0-9]+}/students", courseHandler.AddStudentToCourse).Methods("POST")
 	protected.HandleFunc("/courses/{id:[0-9]+}/students/{studentId:[0-9]+}", courseHandler.RemoveStudentFromCourse).Methods("DELETE")
 
+	// Course block endpoint
+	protected.HandleFunc("/courses/{id:[0-9]+}/blocks", courseHandler.CreateCourseBlock).Methods("POST")
+	protected.HandleFunc("/courses/{id:[0-9]+}/blocks", courseHandler.GetCourseBlocks).Methods("GET")
+
 	// Quiz endpoints
 	protected.HandleFunc("/quizzes", quizHandler.CreateQuiz).Methods("POST")
 	protected.HandleFunc("/quizzes", quizHandler.GetAllQuizzes).Methods("GET")

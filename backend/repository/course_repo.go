@@ -171,6 +171,13 @@ func (r *CourseRepository) RemoveStudentFromCourse(ctx context.Context, courseID
 	return err
 }
 
+func (r *CourseRepository) GetCourseBlocks(ctx context.Context, courseID int64) ([]*models.CourseBlock, error) {
+	query := `SELECT id, name, course_id, "order", created_at, updated_at FROM "Moodle".course_blocks WHERE course_id = $1 ORDER BY "order", id`
+	var blocks []*models.CourseBlock
+	err := r.Select(ctx, &blocks, query, courseID)
+	return blocks, err
+}
+
 // GetDB returns the database connection for use in other repositories
 func (r *CourseRepository) GetDB() *sqlx.DB {
     return r.BaseRepository.db

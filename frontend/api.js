@@ -296,6 +296,19 @@ class APIService {
             method: 'DELETE',
         });
     }
+
+    // Create a new block in a course
+    async createCourseBlock(courseId, blockName) {
+        return await this.request(`/courses/${courseId}/blocks`, {
+            method: 'POST',
+            body: JSON.stringify({ name: blockName }),
+        });
+    }
+
+    // Get all blocks for a course
+    async getCourseBlocks(courseId) {
+        return await this.request(`/courses/${courseId}/blocks`);
+    }
 }
 
 // Create global API service instance

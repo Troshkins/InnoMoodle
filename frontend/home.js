@@ -2325,18 +2325,39 @@ const initCourseDetailPage = () => {
 
     } else if (activeTab === 'course') {
         // Добавляем разделы для контента курса
-        const sections = ['Общее', 'Тема 1', 'Тема 2', 'Тема 3'];
-
-        sections.forEach(section => {
-            const item = document.createElement('div');
-            item.className = 'course-sidebar-item';
-            item.textContent = section;
-            courseSidebar.appendChild(item);
+        // Fetch and display blocks
+        api.getCourseBlocks(courseId).then(blocks => {
+            // Add each block as a sidebar item
+            blocks.forEach(block => {
+                const item = document.createElement('div');
+                item.className = 'course-sidebar-item';
+                item.textContent = block.name;
+                courseSidebar.appendChild(item);
+            });
         });
+
+        // Если пользователь преподаватель, показываем кнопку добавить блок
+        if (isTeacher) {
+            const addBlockBtn = document.createElement('button');
+            addBlockBtn.className = 'btn btn-primary';
+            addBlockBtn.textContent = 'Добавить блок';
+            addBlockBtn.style.margin = '12px 0';
+            addBlockBtn.onclick = async () => {
+                const blockName = prompt('Введите название нового блока:');
+                if (!blockName) return;
+                try {
+                    await api.createCourseBlock(courseId, blockName);
+                    alert('Блок добавлен!');
+                    loadContent('course_detail');
+                } catch (err) {
+                    alert('Ошибка при добавлении блока');
+                }
+            };
+            courseSidebar.appendChild(addBlockBtn);
+        }
 
         // Загружаем контент курса
         loadContent('course_content');
-
     } else {
         // Для статистики/успеваемости
         const item = document.createElement('div');
