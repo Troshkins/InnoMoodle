@@ -330,17 +330,22 @@ const initCourseEditingPage = async () => {
         teacherInputDiv.appendChild(teacherDropdown);
         const filterTeachers = (input) => {
             const searchTerm = input.toLowerCase().trim();
+            console.log('All users:', allUsers);
+            let filtered;
             if (!searchTerm) {
-                teacherDropdown.style.display = 'none';
-                return;
+                // Show all users with role 'user' if search is empty
+                filtered = allUsers.filter(user => user.role === 'user')
+                    .filter(user => !selectedTeachers.some(selected => selected.id === user.id));
+            } else {
+                filtered = allUsers.filter(user =>
+                    user.role === 'user' &&
+                    ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                    (user.name && user.name.toLowerCase().includes(searchTerm)))
+                ).filter(user =>
+                    !selectedTeachers.some(selected => selected.id === user.id)
+                );
             }
-            const filtered = allUsers.filter(user =>
-                user.role === 'user' &&
-                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
-                (user.name && user.name.toLowerCase().includes(searchTerm)))
-            ).filter(user =>
-                !selectedTeachers.some(selected => selected.id === user.id)
-            );
+            console.log('Filtered users:', filtered);
             teacherDropdown.innerHTML = '';
             if (filtered.length === 0) {
                 teacherDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
@@ -364,7 +369,7 @@ const initCourseEditingPage = async () => {
             teacherDropdown.style.display = 'block';
         };
         teacherInput.addEventListener('focus', () => {
-            if (teacherInput.value.trim()) filterTeachers(teacherInput.value);
+            filterTeachers(teacherInput.value);
         });
         teacherInput.addEventListener('input', (e) => {
             filterTeachers(e.target.value);
@@ -420,17 +425,21 @@ const initCourseEditingPage = async () => {
         studentInputDiv.appendChild(studentDropdown);
         const filterStudents = (input) => {
             const searchTerm = input.toLowerCase().trim();
+            console.log('All users:', allUsers);
+            let filtered;
             if (!searchTerm) {
-                studentDropdown.style.display = 'none';
-                return;
+                filtered = allUsers.filter(user => user.role === 'user')
+                    .filter(user => !selectedStudents.some(selected => selected.id === user.id));
+            } else {
+                filtered = allUsers.filter(user =>
+                    user.role === 'user' &&
+                    ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                    (user.name && user.name.toLowerCase().includes(searchTerm)))
+                ).filter(user =>
+                    !selectedStudents.some(selected => selected.id === user.id)
+                );
             }
-            const filtered = allUsers.filter(user =>
-                user.role === 'user' &&
-                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
-                (user.name && user.name.toLowerCase().includes(searchTerm)))
-            ).filter(user =>
-                !selectedStudents.some(selected => selected.id === user.id)
-            );
+            console.log('Filtered users:', filtered);
             studentDropdown.innerHTML = '';
             if (filtered.length === 0) {
                 studentDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
@@ -454,7 +463,7 @@ const initCourseEditingPage = async () => {
             studentDropdown.style.display = 'block';
         };
         studentInput.addEventListener('focus', () => {
-            if (studentInput.value.trim()) filterStudents(studentInput.value);
+            filterStudents(studentInput.value);
         });
         studentInput.addEventListener('input', (e) => {
             filterStudents(e.target.value);
@@ -926,17 +935,22 @@ const initCourseCreationPage = () => {
         teacherInputDiv.appendChild(teacherDropdown);
         const filterTeachers = (input) => {
             const searchTerm = input.toLowerCase().trim();
+            console.log('All users:', allUsers);
+            let filtered;
             if (!searchTerm) {
-                teacherDropdown.style.display = 'none';
-                return;
+                // Show all users with role 'user' if search is empty
+                filtered = allUsers.filter(user => user.role === 'user')
+                    .filter(user => !selectedTeachers.some(selected => selected.id === user.id));
+            } else {
+                filtered = allUsers.filter(user =>
+                    user.role === 'user' &&
+                    ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                    (user.name && user.name.toLowerCase().includes(searchTerm)))
+                ).filter(user =>
+                    !selectedTeachers.some(selected => selected.id === user.id)
+                );
             }
-            const filtered = allUsers.filter(user =>
-                user.role === 'user' &&
-                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
-                (user.name && user.name.toLowerCase().includes(searchTerm)))
-            ).filter(user =>
-                !selectedTeachers.some(selected => selected.id === user.id)
-            );
+            console.log('Filtered users:', filtered);
             teacherDropdown.innerHTML = '';
             if (filtered.length === 0) {
                 teacherDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
@@ -960,7 +974,7 @@ const initCourseCreationPage = () => {
             teacherDropdown.style.display = 'block';
         };
         teacherInput.addEventListener('focus', () => {
-            if (teacherInput.value.trim()) filterTeachers(teacherInput.value);
+            filterTeachers(teacherInput.value);
         });
         teacherInput.addEventListener('input', (e) => {
             filterTeachers(e.target.value);
@@ -1014,17 +1028,21 @@ const initCourseCreationPage = () => {
         studentInputDiv.appendChild(studentDropdown);
         const filterStudents = (input) => {
             const searchTerm = input.toLowerCase().trim();
+            console.log('All users:', allUsers);
+            let filtered;
             if (!searchTerm) {
-                studentDropdown.style.display = 'none';
-                return;
+                filtered = allUsers.filter(user => user.role === 'user')
+                    .filter(user => !selectedStudents.some(selected => selected.id === user.id));
+            } else {
+                filtered = allUsers.filter(user =>
+                    user.role === 'user' &&
+                    ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
+                    (user.name && user.name.toLowerCase().includes(searchTerm)))
+                ).filter(user =>
+                    !selectedStudents.some(selected => selected.id === user.id)
+                );
             }
-            const filtered = allUsers.filter(user =>
-                user.role === 'user' &&
-                ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
-                (user.name && user.name.toLowerCase().includes(searchTerm)))
-            ).filter(user =>
-                !selectedStudents.some(selected => selected.id === user.id)
-            );
+            console.log('Filtered users:', filtered);
             studentDropdown.innerHTML = '';
             if (filtered.length === 0) {
                 studentDropdown.innerHTML = '<div class="autocomplete-item" style="padding: 10px; color: #666; font-style: italic;">Пользователи не найдены</div>';
@@ -1048,7 +1066,7 @@ const initCourseCreationPage = () => {
             studentDropdown.style.display = 'block';
         };
         studentInput.addEventListener('focus', () => {
-            if (studentInput.value.trim()) filterStudents(studentInput.value);
+            filterStudents(studentInput.value);
         });
         studentInput.addEventListener('input', (e) => {
             filterStudents(e.target.value);

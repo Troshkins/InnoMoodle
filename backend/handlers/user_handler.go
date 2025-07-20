@@ -25,6 +25,16 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
+	// In CreateUser and UpdateUser handlers, map role to 'user' or 'admin' only
+	if user.Role == "пользователь" || user.Role == "Пользователь" {
+		user.Role = "user"
+	}
+	if user.Role == "админ" || user.Role == "Админ" {
+		user.Role = "admin"
+	}
+	if user.Role != "user" && user.Role != "admin" {
+		user.Role = "user"
+	}
 	if err := h.Service.RegisterUser(context.Background(), &user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -63,6 +73,16 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.ID = id
+	// In CreateUser and UpdateUser handlers, map role to 'user' or 'admin' only
+	if user.Role == "пользователь" || user.Role == "Пользователь" {
+		user.Role = "user"
+	}
+	if user.Role == "админ" || user.Role == "Админ" {
+		user.Role = "admin"
+	}
+	if user.Role != "user" && user.Role != "admin" {
+		user.Role = "user"
+	}
 	if err := h.Service.UpdateUser(context.Background(), &user); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -90,6 +110,18 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+	// When returning users (e.g., in GetAllUsers), map role to 'user' or 'admin' for each user
+	for i := range users {
+		if users[i].Role == "пользователь" || users[i].Role == "Пользователь" {
+			users[i].Role = "user"
+		}
+		if users[i].Role == "админ" || users[i].Role == "Админ" {
+			users[i].Role = "admin"
+		}
+		if users[i].Role != "user" && users[i].Role != "admin" {
+			users[i].Role = "user"
+		}
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
