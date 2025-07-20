@@ -798,6 +798,7 @@ const initCoursesPage = async () => {
 
     try {
         const courses = await api.getAllCourses();
+        localStorage.setItem('courses', JSON.stringify(courses)); // <-- Store in localStorage
         const container = document.querySelector('.card-container');
         container.innerHTML = '';
 
@@ -816,7 +817,7 @@ const initCoursesPage = async () => {
             `;
             card.addEventListener('click', () => {
                 localStorage.setItem('currentCourse', course.id);
-                loadContent('course_editing');
+                loadContent('course_detail');
             });
             container.appendChild(card);
         });
@@ -2220,9 +2221,11 @@ const initUserCoursesPage = async () => {
     try {
     const container = document.getElementById('user-courses-container');
         const userProfile = await api.getCurrentUserProfile();
+        localStorage.setItem('userProfile', JSON.stringify(userProfile)); // <-- Store in localStorage
         const userEmail = userProfile.email;
 
         const userCourses = await api.getUserCourses(userEmail);
+        localStorage.setItem('courses', JSON.stringify(userCourses)); // <-- Store in localStorage
 
         if (!userCourses || userCourses.length === 0) {
         container.innerHTML = '<div class="empty-message">Курсы вам пока не доступны :(</div>';
@@ -2332,18 +2335,27 @@ const initCourseDetailPage = () => {
                 const item = document.createElement('div');
                 item.className = 'course-sidebar-item';
                 item.textContent = block.name;
+                item.onclick = () => {
+                    // Highlight selected block and show in main content
+                    document.querySelectorAll('.course-sidebar-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    renderBlockContent(block);
+                };
                 courseSidebar.appendChild(item);
             });
+
+            // Render blocks in main content area
+            renderBlocksList(blocks, isTeacher);
         });
 
-        // Если пользователь преподаватель, показываем кнопку добавить блок
+        // Если пользователь преподаватель, показываем кнопку добавить блок (оставим в сайдбаре)
         if (isTeacher) {
             const addBlockBtn = document.createElement('button');
             addBlockBtn.className = 'btn btn-primary';
             addBlockBtn.textContent = 'Добавить блок';
             addBlockBtn.style.margin = '12px 0';
             addBlockBtn.onclick = async () => {
-                const blockName = prompt('Введите название нового блока:');
+                const blockName = document.getElementById('new-block-name')?.value || prompt('Введите название нового блока:');
                 if (!blockName) return;
                 try {
                     await api.createCourseBlock(courseId, blockName);
@@ -2358,6 +2370,49 @@ const initCourseDetailPage = () => {
 
         // Загружаем контент курса
         loadContent('course_content');
+
+        // Helper to render blocks in main content
+        function renderBlocksList(blocks, isTeacher) {
+            const content = document.getElementById('course-content');
+            content.innerHTML = '<h2>Блоки курса</h2>';
+            const list = document.createElement('ul');
+            list.style.listStyle = 'none';
+            list.style.padding = '0';
+            blocks.forEach(block => {
+                const li = document.createElement('li');
+                li.className = 'block-list-item';
+                li.textContent = block.name;
+                li.style.cursor = 'pointer';
+                li.onclick = () => renderBlockContent(block);
+                list.appendChild(li);
+            });
+            content.appendChild(list);
+            if (isTeacher) {
+                const addDiv = document.createElement('div');
+                addDiv.style.marginTop = '20px';
+                addDiv.innerHTML = `
+                    <input id="new-block-name" class="form-input" placeholder="Название нового блока" style="margin-right:8px;max-width:220px;" />
+                    <button class="btn btn-primary" id="add-block-btn">Добавить блок</button>
+                `;
+                content.appendChild(addDiv);
+                document.getElementById('add-block-btn').onclick = async () => {
+                    const blockName = document.getElementById('new-block-name').value.trim();
+                    if (!blockName) return alert('Введите название блока');
+                    try {
+                        await api.createCourseBlock(courseId, blockName);
+                        alert('Блок добавлен!');
+                        loadContent('course_detail');
+                    } catch (err) {
+                        alert('Ошибка при добавлении блока');
+                    }
+                };
+            }
+        }
+        // Helper to render block content
+        function renderBlockContent(block) {
+            const content = document.getElementById('course-content');
+            content.innerHTML = `<h2>Блок: ${block.name}</h2><p>ID: ${block.id}</p>`;
+        }
     } else {
         // Для статистики/успеваемости
         const item = document.createElement('div');

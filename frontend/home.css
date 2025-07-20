@@ -225,7 +225,6 @@ body {
     overflow: hidden;
     height: fit-content;
     max-height: calc(100vh - 140px); /* Account for topbar + margins */
-    overflow-y: auto;
 }
 
 .header {
@@ -490,9 +489,34 @@ body {
 .list-container {
     background-color: var(--background-secondary);
     border-radius: var(--border-radius-medium);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     /* Ensure consistent sizing */
     min-height: 200px;
+    max-height: calc(100vh - 300px); /* Dynamic height based on viewport minus header/padding */
+    flex: 1; /* Take remaining space in flex container */
+    /* Custom scrollbar styling for better UX */
+    scrollbar-width: thin;
+    scrollbar-color: var(--element-primary) transparent;
+}
+
+/* Webkit scrollbar styling for Chrome/Safari */
+.list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.list-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.list-container::-webkit-scrollbar-thumb {
+    background-color: var(--element-primary);
+    border-radius: 4px;
+    border: 2px solid var(--background-secondary);
+}
+
+.list-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
 }
 
 .list-item {
