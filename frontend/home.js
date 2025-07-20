@@ -28,7 +28,14 @@ const initData = async () => {
 
     // Set default current section if not set
     if (!localStorage.getItem('currentSection')) {
-        localStorage.setItem('currentSection', 'dashboard');
+        const role = localStorage.getItem('role');
+        if (!localStorage.getItem('currentSection')) {
+            if (role === 'admin') {
+                localStorage.setItem('currentSection', 'courses');
+            } else {
+                localStorage.setItem('currentSection', 'user_courses');
+            }
+        }
     }
 
     console.log('Data initialization complete'); // Debug log
@@ -2679,26 +2686,6 @@ const initProfilePage = () => {
     // Заполняем поля профиля
     if (profile.name) document.getElementById('profile-name').value = profile.name;
     if (profile.email) document.getElementById('profile-email').value = profile.email;
-
-    document.querySelectorAll('.role-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const newRole = btn.dataset.role;
-            localStorage.setItem('role', newRole);
-            updateRoleVisibility();  // ← обновляем
-            loadContent('dashboard');
-        });
-    });
-
-    // Сохранение изменений профиля
-    document.getElementById('profile-name').addEventListener('change', e => {
-        profile.name = e.target.value;
-        localStorage.setItem('userProfile', JSON.stringify(profile));
-    });
-
-    document.getElementById('profile-email').addEventListener('change', e => {
-        profile.email = e.target.value;
-        localStorage.setItem('userProfile', JSON.stringify(profile));
-    });
 };
 
 // Navigation setup (should only be called once after DOM is ready)

@@ -128,11 +128,8 @@
 
         <div class="test-accounts">
             <h3>Тестовые аккаунты:</h3>
-            <div class="test-account" onclick="fillCredentials('teacher1@innopolis.ru', 'password123')">
-                <strong>Преподаватель:</strong> teacher1@innopolis.ru / password123
-            </div>
-            <div class="test-account" onclick="fillCredentials('student1@innopolis.ru', 'password123')">
-                <strong>Студент:</strong> student1@innopolis.ru / password123
+            <div class="test-account" onclick="fillCredentials('user@innopolis.ru', 'password123')">
+                <strong>Пользователь:</strong> user@innopolis.ru / password123
             </div>
             <div class="test-account" onclick="fillCredentials('admin@innopolis.ru', 'password123')">
                 <strong>Администратор:</strong> admin@innopolis.ru / password123
@@ -168,12 +165,12 @@
                     localStorage.setItem('authToken', response.token);
                     localStorage.setItem('user', JSON.stringify(response.user));
                     localStorage.setItem('isLoggedIn', 'true');
-
+                    localStorage.setItem('role', response.user.role); // Ensure correct role is set
                     // Redirect back to main app
                     window.location.href = '/';
                 } else {
                     throw new Error('Login failed');
-                    
+
                 }
             } catch (error) {
                 console.error('Login error:', error);

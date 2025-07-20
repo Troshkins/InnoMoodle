@@ -7,9 +7,8 @@ import (
 type UserRole string
 
 const (
-	RoleStudent UserRole = "student"
-	RoleTeacher UserRole = "teacher"
-	RoleAdmin   UserRole = "admin"
+	RoleUser  UserRole = "user"
+	RoleAdmin UserRole = "admin"
 )
 
 type UserStatus string
@@ -58,6 +57,9 @@ func (u *User) BeforeCreate() {
 	u.UpdatedAt = now
 	if u.Status == "" {
 		u.Status = StatusActive
+	}
+	if u.Role == "" {
+		u.Role = RoleUser
 	}
 }
 

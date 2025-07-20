@@ -328,7 +328,7 @@ CREATE UNIQUE INDEX idx_course_teacher_unique ON "Moodle".course_teacher(course_
 
 ALTER TABLE "Moodle".users
   ADD CONSTRAINT users_role_check
-  CHECK (role IN ('student', 'teacher', 'admin'));
+  CHECK (role IN ('user', 'admin'));
 
 ALTER TABLE "Moodle".users
   ADD CONSTRAINT users_status_check
@@ -362,23 +362,7 @@ ALTER TABLE "Moodle".study_groups
 
 INSERT INTO "Moodle".users (name, email, password, role, status) VALUES
 ('Admin User', 'admin@innopolis.ru', 'password123', 'admin', 'active'),
-('Teacher One', 'teacher1@innopolis.ru', 'password123', 'teacher', 'active'),
-('Teacher Two', 'teacher2@innopolis.ru', 'password123', 'teacher', 'active'),
-('Student One', 'student1@innopolis.ru', 'password123', 'student', 'active'),
-('Student Two', 'student2@innopolis.ru', 'password123', 'student', 'active');
+('Regular User', 'user@innopolis.ru', 'password123', 'user', 'active');
 
-INSERT INTO "Moodle".study_groups (name, description, status) VALUES
-('Преподаватели', 'Системная группа преподавателей', 'active'),
-('Студенты 2024', 'Студенты 2024 года поступления', 'active');
-
--- Insert teachers into teachers group
-INSERT INTO "Moodle".group_student (student_id, group_id)
-SELECT u.id, g.id
-FROM "Moodle".users u, "Moodle".study_groups g
-WHERE u.role = 'teacher' AND g.name = 'Преподаватели';
-
--- Insert students into students group
-INSERT INTO "Moodle".group_student (student_id, group_id)
-SELECT u.id, g.id
-FROM "Moodle".users u, "Moodle".study_groups g
-WHERE u.role = 'student' AND g.name = 'Студенты 2024';
+-- Remove any INSERT INTO "Moodle".study_groups ... for base groups
+-- Remove any INSERT INTO "Moodle".group_student ... for base groups

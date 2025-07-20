@@ -49,9 +49,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
+	role := string(user.Role)
+	if role == "пользователь" || role == "Пользователь" { role = "user" }
+	if role == "админ" || role == "Админ" { role = "admin" }
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
-		"role": user.Role,
+		"role": role,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 	})
 	tokenString, err := token.SignedString(h.JWTSecret)
@@ -71,7 +74,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 			ID:    user.ID,
 			Email: user.Email,
 			Name:  user.Name,
-			Role:  string(user.Role),
+			Role:  role,
 		},
 	}
 
