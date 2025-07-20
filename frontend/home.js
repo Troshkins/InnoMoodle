@@ -335,7 +335,7 @@ const initCourseEditingPage = async () => {
                 return;
             }
             const filtered = allUsers.filter(user =>
-                user.role === 'teacher' &&
+                user.role === 'user' &&
                 ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
                 (user.name && user.name.toLowerCase().includes(searchTerm)))
             ).filter(user =>
@@ -375,7 +375,7 @@ const initCourseEditingPage = async () => {
                 alert('Пожалуйста, введите email');
                 return;
             }
-            const user = allUsers.find(u => u.email === email && u.role === 'teacher');
+            const user = allUsers.find(u => u.email === email && u.role === 'user');
             if (!user) {
                 alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
                 return;
@@ -425,7 +425,7 @@ const initCourseEditingPage = async () => {
                 return;
             }
             const filtered = allUsers.filter(user =>
-                user.role === 'student' &&
+                user.role === 'user' &&
                 ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
                 (user.name && user.name.toLowerCase().includes(searchTerm)))
             ).filter(user =>
@@ -465,7 +465,7 @@ const initCourseEditingPage = async () => {
                 alert('Пожалуйста, введите email');
                 return;
             }
-            const user = allUsers.find(u => u.email === email && u.role === 'student');
+            const user = allUsers.find(u => u.email === email && u.role === 'user');
             if (!user) {
                 alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
                 return;
@@ -607,7 +607,7 @@ const initCourseEditingPage = async () => {
                 const members = await api.getGroupMembers(group.id);
                 let added = 0;
                 members.forEach(user => {
-                    if (user.role === 'student' && !selectedStudents.some(u => u.id === user.id)) {
+                    if (user.role === 'user' && !selectedStudents.some(u => u.id === user.id)) {
                         selectedStudents.push(user);
                         added++;
                     }
@@ -688,6 +688,21 @@ const initCourseEditingPage = async () => {
             alert('Курс обновлен!');
             loadContent('courses');
         });
+
+        // Add delete course functionality
+        const deleteBtn = document.getElementById('delete-course');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async () => {
+                if (confirm('Вы уверены, что хотите удалить этот курс? Это действие нельзя отменить.')) {
+                    try {
+                        await api.deleteCourse(courseId);
+                        loadContent('courses');
+                    } catch (err) {
+                        alert('Ошибка при удалении курса');
+                    }
+                }
+            });
+        }
     }, 0);
 };
 
@@ -788,7 +803,6 @@ const initCoursesPage = async () => {
             card.innerHTML = `
                 <div class="card__body">
                     <h2 class="card__title">${course.name}</h2>
-                    <p class="card__progress">Полнота: ${course.completeness || 0}%</p>
                 </div>
             `;
             card.addEventListener('click', () => {
@@ -917,7 +931,7 @@ const initCourseCreationPage = () => {
                 return;
             }
             const filtered = allUsers.filter(user =>
-                user.role === 'teacher' &&
+                user.role === 'user' &&
                 ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
                 (user.name && user.name.toLowerCase().includes(searchTerm)))
             ).filter(user =>
@@ -957,7 +971,7 @@ const initCourseCreationPage = () => {
                 alert('Пожалуйста, введите email');
                 return;
             }
-            const user = allUsers.find(u => u.email === email && u.role === 'teacher');
+            const user = allUsers.find(u => u.email === email && u.role === 'user');
             if (!user) {
                 alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
                 return;
@@ -1005,7 +1019,7 @@ const initCourseCreationPage = () => {
                 return;
             }
             const filtered = allUsers.filter(user =>
-                user.role === 'student' &&
+                user.role === 'user' &&
                 ((user.email && user.email.toLowerCase().includes(searchTerm)) ||
                 (user.name && user.name.toLowerCase().includes(searchTerm)))
             ).filter(user =>
@@ -1045,7 +1059,7 @@ const initCourseCreationPage = () => {
                 alert('Пожалуйста, введите email');
                 return;
             }
-            const user = allUsers.find(u => u.email === email && u.role === 'student');
+            const user = allUsers.find(u => u.email === email && u.role === 'user');
             if (!user) {
                 alert('Пользователь с таким email не найден. Пожалуйста, выберите пользователя из списка.');
                 return;
@@ -1177,7 +1191,7 @@ const initCourseCreationPage = () => {
                 const members = await api.getGroupMembers(group.id);
                 let added = 0;
                 members.forEach(user => {
-                    if (user.role === 'student' && !selectedStudents.some(u => u.id === user.id)) {
+                    if (user.role === 'user' && !selectedStudents.some(u => u.id === user.id)) {
                         selectedStudents.push(user);
                         added++;
                     }
@@ -1780,7 +1794,7 @@ const initGroupDetailsPage = async () => {
                 for (const user of originalMembers) {
                     if (!selectedIds.has(user.id)) {
                         try {
-                            await api.removeStudentFromGroup(group.id, user.email);
+                            await api.removeStudentFromGroup(group.id, user.id);
                         } catch (error) {
                             alert(`Ошибка при удалении пользователя ${user.email}`);
                         }
@@ -2203,7 +2217,6 @@ const initUserCoursesPage = async () => {
         card.innerHTML = `
             <div class="card__body">
                     <h2 class="card__title">${course.name}</h2>
-                    <p class="card__progress">Полнота: ${course.completeness || 0}%</p>
             </div>
         `;
         card.addEventListener('click', () => {
@@ -2600,7 +2613,6 @@ const initQuizzesPage = async () => {
               card.innerHTML = `
                   <div class="card__body">
                             <h2 class="card__title">${quiz.name}</h2>
-                            <p class="card__progress">Тест/Задание</p>
                   </div>
               `;
               card.addEventListener('click', () => {

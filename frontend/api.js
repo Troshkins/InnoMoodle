@@ -249,6 +249,13 @@ class APIService {
         });
     }
 
+    // Remove teacher from group
+    async removeTeacherFromGroup(groupId, teacherId) {
+        return await this.request(`/groups/${groupId}/teachers/${teacherId}`, {
+            method: 'DELETE',
+        });
+    }
+
     // Get user courses
     async getUserCourses(userEmail) {
         return await this.request(`/courses/user/${encodeURIComponent(userEmail)}`);
