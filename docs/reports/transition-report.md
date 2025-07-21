@@ -8,12 +8,20 @@ There is a design and it is very nice, also the creation of the course and its e
 
 ## 2. Customer Usage & Deployment
 
+The product is part of a large system and requires many stages of development, so it cannot be fully used. But there is a workpiece that will be used in the future.
+In the future, I envision a very stripped-down version of a deployable product that will only be deployed once by the university IT department.
 
 ## 3. Transition Plan  
 
+Initially, it was understood that the product would not be made in one go. Therefore, further development is required
+
 ## 4. Post-Delivery Plans
+
+A proposal to continue working on the project within the framework of any other course. Plans for the product include further development by other teams.
+The chances of success of the project are not very high, because the project is too large and the constant change of team further extends the project timeline.
 
 ## 5. README Feedback
 
+Remove the "header" title from the title. Change the name of the demo video from "Demo" to "Demo Video". Resize the image. Change the motto to a more specific one. After completing the course, remove the 'Quality Assurance' sections. Simplify the section with the project description.
 
 ## Meeting Transcript 
