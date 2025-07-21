@@ -2752,7 +2752,10 @@ const initCourseSettings = () => {
         course.description = document.getElementById('course-description').innerHTML;
         localStorage.setItem('courses', JSON.stringify(courses));
     });
-};
+
+    // Ensure save button handler is attached after populating the form
+    attachSaveCourseSettingsHandler();
+}
 
 // Инициализация страницы контента курса
 const initCourseContent = async () => {
