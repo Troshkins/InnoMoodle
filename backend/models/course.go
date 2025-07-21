@@ -13,10 +13,16 @@ const (
 type Course struct {
 	ID           int64        `db:"id" json:"id"`
 	Name         string       `db:"name" json:"name"`
+	ShortName    *string      `db:"short_name" json:"shortName,omitempty"`
+	ChatLink     *string      `db:"chat_link" json:"chatLink,omitempty"`
 	Description  *string      `db:"description" json:"description,omitempty"`
 	Completeness int          `db:"completeness" json:"completeness"`
 	Status       CourseStatus `db:"status" json:"status"`
-	ImageURL     *string      `db:"image_url" json:"image_url,omitempty"`
+	ImageURL     *string      `db:"image_url" json:"image,omitempty"`
+	Visibility   *string      `db:"visibility" json:"visibility,omitempty"`
+	AllowDownload *string     `db:"allow_download" json:"allowDownload,omitempty"`
+	StartDate    *time.Time   `db:"start_date" json:"startDate,omitempty"`
+	ShowDates    *string      `db:"show_dates" json:"showDates,omitempty"`
 	CreatedAt    time.Time    `db:"created_at" json:"created_at"`
 	UpdatedAt    time.Time    `db:"updated_at" json:"updated_at"`
 }

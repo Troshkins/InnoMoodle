@@ -63,6 +63,14 @@ ALTER TABLE "Moodle".courses
     CACHE 1
   );
 
+ALTER TABLE "Moodle".courses
+  ADD COLUMN short_name text,
+  ADD COLUMN chat_link text,
+  ADD COLUMN visibility text,
+  ADD COLUMN allow_download text,
+  ADD COLUMN start_date timestamp with time zone,
+  ADD COLUMN show_dates text;
+
 CREATE TABLE "Moodle".course_student (
     course_id   bigint NOT NULL,
     student_id  bigint NOT NULL,

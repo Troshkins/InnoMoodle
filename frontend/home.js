@@ -792,7 +792,6 @@ const loadContent = (section) => {
 const initCoursesPage = async () => {
     document.getElementById('create-course-btn')?.addEventListener('click', () => {
         console.log('Create course button clicked'); // Debug log
-        alert('Create course button clicked!'); // Test alert
         loadContent('course_creation');
     });
 
@@ -830,7 +829,30 @@ const initCoursesPage = async () => {
                     if (template) {
                         mainContent.appendChild(template.content.cloneNode(true));
                         setTimeout(() => {
+                            // Remove/hide fields not needed for teachers
+                            const hideById = [
+                                'course-materials-link',
+                                'course-id',
+                                'add-curator',
+                                'curators-list',
+                                'show-grades',
+                                'show-reports',
+                                'group-mode',
+                                'group-grades'
+                            ];
+                            hideById.forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) el.closest('.form-group')?.remove();
+                            });
+                            // Remove 'Часы работы' section
+                            const hoursSection = Array.from(document.querySelectorAll('.settings-section')).find(sec => sec.textContent && sec.textContent.includes('Часы работы'));
+                            if (hoursSection) hoursSection.remove();
+                            // Remove 'Группы' section
+                            const groupsSection = Array.from(document.querySelectorAll('.settings-section')).find(sec => sec.textContent && sec.textContent.includes('Группы'));
+                            if (groupsSection) groupsSection.remove();
                             if (typeof window.initCourseSettings === 'function') window.initCourseSettings();
+
+                            // Save button handler will be attached by attachSaveCourseSettingsHandler
                         }, 0);
                     }
                 } else {
@@ -1024,7 +1046,7 @@ const initCourseCreationPage = () => {
         // Add autocomplete input for students
         const studentInputDiv = document.createElement('div');
         studentInputDiv.className = 'search';
-        studentInputDiv.style.position = 'relative';
+        studentInputDiv.style.position = 'relative'; // Ensure relative positioning for dropdown
         studentInputDiv.innerHTML = `
             <input class="form-input" id="add-student-email" placeholder="Введите email студента" type="email" autocomplete="off"/>
             <button class="btn btn-primary" id="add-student-btn" type="button">Добавить</button>
@@ -2284,6 +2306,27 @@ const initUserCoursesPage = async () => {
                     if (template) {
                         mainContent.appendChild(template.content.cloneNode(true));
                         setTimeout(() => {
+                            // Remove/hide fields not needed for teachers
+                            const hideById = [
+                                'course-materials-link',
+                                'course-id',
+                                'add-curator',
+                                'curators-list',
+                                'show-grades',
+                                'show-reports',
+                                'group-mode',
+                                'group-grades'
+                            ];
+                            hideById.forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) el.closest('.form-group')?.remove();
+                            });
+                            // Remove 'Часы работы' section
+                            const hoursSection = Array.from(document.querySelectorAll('.settings-section')).find(sec => sec.textContent && sec.textContent.includes('Часы работы'));
+                            if (hoursSection) hoursSection.remove();
+                            // Remove 'Группы' section
+                            const groupsSection = Array.from(document.querySelectorAll('.settings-section')).find(sec => sec.textContent && sec.textContent.includes('Группы'));
+                            if (groupsSection) groupsSection.remove();
                             if (typeof window.initCourseSettings === 'function') window.initCourseSettings();
                         }, 0);
                     }
@@ -3211,4 +3254,63 @@ if (document.readyState === 'loading') {
 } else {
     console.log('DOM is already ready, calling initializeApp immediately...'); // Debug log
     initializeApp();
+}
+
+function attachSaveCourseSettingsHandler() {
+    const saveBtn = document.getElementById('save-course-settings');
+    if (saveBtn) {
+        saveBtn.onclick = async () => {
+            const courseId = localStorage.getItem('currentCourse');
+            if (!courseId) {
+                alert('Не удалось определить курс');
+                return;
+            }
+            const fullName = document.getElementById('course-full-name')?.value?.trim();
+            const shortName = document.getElementById('course-short-name')?.value?.trim();
+            const chatLink = document.getElementById('course-chat-link')?.value?.trim();
+            const description = document.getElementById('course-description')?.innerHTML?.trim();
+            const imageUrl = document.getElementById('course-image-upload')?.querySelector('img')?.src || null;
+            const visibility = document.getElementById('course-visibility')?.value;
+            const allowDownload = document.getElementById('course-download')?.value;
+            const startDate = document.getElementById('course-start-date')?.value;
+            const showDates = document.getElementById('show-dates')?.value;
+            const data = {
+                fullName,
+                shortName,
+                chatLink,
+                description,
+                image: imageUrl,
+                visibility,
+                allowDownload,
+                startDate,
+                showDates
+            };
+            try {
+                await api.updateCourse(courseId, data);
+                alert('Изменения сохранены!');
+            } catch (err) {
+                alert('Ошибка при сохранении изменений');
+            }
+        };
+    }
+    // Delete course handler
+    const deleteBtn = document.getElementById('delete-course-btn');
+    if (deleteBtn) {
+        deleteBtn.onclick = async () => {
+            const courseId = localStorage.getItem('currentCourse');
+            if (!courseId) {
+                alert('Не удалось определить курс');
+                return;
+            }
+            if (!confirm('Вы уверены, что хотите удалить этот курс? Это действие нельзя отменить.')) return;
+            try {
+                await api.deleteCourse(courseId);
+                alert('Курс удалён!');
+                // Redirect to courses list
+                loadContent('user_courses');
+            } catch (err) {
+                alert('Ошибка при удалении курса');
+            }
+        };
+    }
 }
