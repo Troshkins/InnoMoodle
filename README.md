@@ -147,5 +147,6 @@ See ![Continious Integration](docs/automation/continious-integration.md)
 ![Licence](docs/LICENCE.md)
 
 ## Design
+The project will continue to be done, so a developed design section is needed to avoid re-work.
 
 ![Design in Figma](docs/Innomoodle.fig)
