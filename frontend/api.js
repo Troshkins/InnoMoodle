@@ -309,6 +309,66 @@ class APIService {
     async getCourseBlocks(courseId) {
         return await this.request(`/courses/${courseId}/blocks`);
     }
+
+    // Update a block in a course
+    async updateCourseBlock(blockId, newName) {
+        // Find the courseId from the current context if needed, or require it as a parameter if you want
+        // For now, assume blockId is unique and enough
+        return await this.request(`/blocks/${blockId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ name: newName }),
+        });
+    }
+
+    // Theme methods
+    async createTheme(courseId, themeData) {
+        return await this.request(`/courses/${courseId}/themes`, {
+            method: 'POST',
+            body: JSON.stringify(themeData),
+        });
+    }
+
+    async getThemes(courseId) {
+        return await this.request(`/courses/${courseId}/themes`);
+    }
+
+    async updateTheme(themeId, themeData) {
+        return await this.request(`/themes/${themeId}`, {
+            method: 'PUT',
+            body: JSON.stringify(themeData),
+        });
+    }
+
+    async deleteTheme(themeId) {
+        return await this.request(`/themes/${themeId}`, {
+            method: 'DELETE',
+        });
+    }
+
+    // Assignment methods
+    async createAssignment(themeId, assignmentData) {
+        return await this.request(`/themes/${themeId}/assignments`, {
+            method: 'POST',
+            body: JSON.stringify(assignmentData),
+        });
+    }
+
+    async getAssignments(themeId) {
+        return await this.request(`/themes/${themeId}/assignments`);
+    }
+
+    async updateAssignment(assignmentId, assignmentData) {
+        return await this.request(`/assignments/${assignmentId}`, {
+            method: 'PUT',
+            body: JSON.stringify(assignmentData),
+        });
+    }
+
+    async deleteAssignment(assignmentId) {
+        return await this.request(`/assignments/${assignmentId}`, {
+            method: 'DELETE',
+        });
+    }
 }
 
 // Create global API service instance

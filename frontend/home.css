@@ -847,3 +847,375 @@ body {
     padding: 8px;
     background: #fff;
 }
+
+/* Save button styling */
+.save-button {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.save-button:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.save-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.save-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Theme card styling */
+.theme-card {
+    background: var(--background-secondary);
+    border: 1px solid var(--element-primary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.theme-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--main-primary);
+}
+
+.theme-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--element-primary);
+}
+
+.theme-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.theme-content {
+    margin-top: 16px;
+}
+
+.theme-content h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+/* Assignment styling */
+.assignment-item {
+    background: var(--background-tertiary);
+    border: 1px solid var(--element-primary);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.assignment-item:hover {
+    border-color: var(--main-primary);
+    box-shadow: var(--shadow);
+}
+
+.assignment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.assignment-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.assignment-type {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.type-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--element-primary);
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.type-btn:hover {
+    border-color: var(--main-primary);
+    color: var(--main-primary);
+}
+
+.type-btn.active {
+    background: var(--main-primary);
+    color: white;
+    border-color: var(--main-primary);
+}
+
+.assignments-container {
+    margin-top: 12px;
+}
+
+/* Course detail page styling */
+.course-layout {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 140px);
+    margin: 20px;
+}
+
+.course-sidebar {
+    width: 250px;
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    overflow-y: auto;
+}
+
+.course-sidebar-item {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: var(--background-tertiary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.course-sidebar-item:hover {
+    background: var(--element-primary);
+    transform: translateX(4px);
+}
+
+.course-sidebar-item.active {
+    background: var(--main-primary);
+    color: white;
+}
+
+.course-content {
+    flex: 1;
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    overflow-y: auto;
+}
+
+.course-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.course-bar-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--element-primary);
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.course-bar-btn:hover {
+    border-color: var(--main-primary);
+    color: var(--main-primary);
+}
+
+.course-bar-btn.active {
+    background: var(--main-primary);
+    color: white;
+    border-color: var(--main-primary);
+}
+
+/* Block list styling */
+.block-list-item {
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: var(--background-tertiary);
+    border-radius: 8px;
+    border: 1px solid var(--element-primary);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.block-list-item:hover {
+    border-color: var(--main-primary);
+    box-shadow: var(--shadow);
+}
+
+.block-list-item input {
+    flex: 1;
+    margin: 0;
+}
+
+.block-list-item button {
+    margin: 0;
+}
+
+/* Settings sections styling */
+.settings-section {
+    background: var(--background-secondary);
+    border-radius: var(--border-radius-small);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--element-primary);
+}
+
+.settings-section:last-child {
+    margin-bottom: 0;
+}
+
+.settings-section h2 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--element-primary);
+}
+
+/* Course preview styling */
+.course-preview {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.course-image-preview {
+    width: 120px;
+    height: 80px;
+    border: 2px dashed var(--element-primary);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--background-tertiary);
+    flex-shrink: 0;
+}
+
+.course-image-preview:hover {
+    border-color: var(--main-primary);
+    background: var(--background-secondary);
+}
+
+.course-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: var(--border-radius-small);
+}
+
+.course-info-preview {
+    flex: 1;
+}
+
+.course-info-preview h3 {
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.course-info-preview p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Rich editor styling */
+.rich-editor {
+    border: 1px solid var(--element-primary);
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+}
+
+.rich-editor .toolbar {
+    background: var(--background-tertiary);
+    padding: 10px;
+    border-bottom: 1px solid var(--element-primary);
+    display: flex;
+    gap: 8px;
+}
+
+.rich-editor .toolbar button {
+    background: var(--background-secondary);
+    border: 1px solid var(--element-primary);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.rich-editor .toolbar button:hover {
+    background: var(--main-primary);
+    color: white;
+    border-color: var(--main-primary);
+}
+
+.editor-content {
+    min-height: 120px;
+    padding: 15px;
+    background: var(--background-secondary);
+    outline: none;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.editor-content:focus {
+    background: var(--background-secondary);
+}
+
+/* Curators list styling */
+#curators-list {
+    margin-top: 15px;
+}
+
+/* Course settings container specific styling */
+#course-settings-container,
+#course-content-container {
+    padding: 20px;
+    background: var(--background-primary);
+}

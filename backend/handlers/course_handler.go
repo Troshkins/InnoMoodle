@@ -295,3 +295,214 @@ func (h *CourseHandler) GetCourseBlocks(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(blocks)
 }
+
+// Update a block in a course
+func (h *CourseHandler) UpdateCourseBlock(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	blockID, err := strconv.ParseInt(vars["blockId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid block ID", http.StatusBadRequest)
+		return
+	}
+	type reqBody struct {
+		Name string `json:"name"`
+	}
+	var req reqBody
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	block := &models.CourseBlock{ID: blockID, Name: req.Name}
+	if err := h.Repo.UpdateCourseBlock(context.Background(), block); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(block)
+}
+
+// Theme handlers
+func (h *CourseHandler) CreateTheme(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	type reqBody struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Order       int    `json:"order"`
+	}
+	var req reqBody
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	theme := &models.Theme{
+		Title:       req.Title,
+		Description: req.Description,
+		CourseID:    courseID,
+		Order:       req.Order,
+	}
+	if err := h.Repo.CreateTheme(context.Background(), theme); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(theme)
+}
+
+func (h *CourseHandler) GetThemes(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	courseID, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid course ID", http.StatusBadRequest)
+		return
+	}
+	themes, err := h.Repo.GetThemesByCourseID(context.Background(), courseID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(themes)
+}
+
+func (h *CourseHandler) UpdateTheme(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	themeID, err := strconv.ParseInt(vars["themeId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid theme ID", http.StatusBadRequest)
+		return
+	}
+	type reqBody struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+	}
+	var req reqBody
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	theme := &models.Theme{
+		ID:          themeID,
+		Title:       req.Title,
+		Description: req.Description,
+	}
+	if err := h.Repo.UpdateTheme(context.Background(), theme); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(theme)
+}
+
+func (h *CourseHandler) DeleteTheme(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	themeID, err := strconv.ParseInt(vars["themeId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid theme ID", http.StatusBadRequest)
+		return
+	}
+	if err := h.Repo.DeleteTheme(context.Background(), themeID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Assignment handlers
+func (h *CourseHandler) CreateAssignment(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	themeID, err := strconv.ParseInt(vars["themeId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid theme ID", http.StatusBadRequest)
+		return
+	}
+	type reqBody struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Type        string `json:"type"`
+		Order       int    `json:"order"`
+	}
+	var req reqBody
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	assignment := &models.Assignment{
+		Title:       req.Title,
+		Description: req.Description,
+		Type:        req.Type,
+		ThemeID:     themeID,
+		Order:       req.Order,
+	}
+	if err := h.Repo.CreateAssignment(context.Background(), assignment); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(assignment)
+}
+
+func (h *CourseHandler) GetAssignments(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	themeID, err := strconv.ParseInt(vars["themeId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid theme ID", http.StatusBadRequest)
+		return
+	}
+	assignments, err := h.Repo.GetAssignmentsByThemeID(context.Background(), themeID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(assignments)
+}
+
+func (h *CourseHandler) UpdateAssignment(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	assignmentID, err := strconv.ParseInt(vars["assignmentId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid assignment ID", http.StatusBadRequest)
+		return
+	}
+	type reqBody struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Type        string `json:"type"`
+	}
+	var req reqBody
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+	assignment := &models.Assignment{
+		ID:          assignmentID,
+		Title:       req.Title,
+		Description: req.Description,
+		Type:        req.Type,
+	}
+	if err := h.Repo.UpdateAssignment(context.Background(), assignment); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(assignment)
+}
+
+func (h *CourseHandler) DeleteAssignment(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	assignmentID, err := strconv.ParseInt(vars["assignmentId"], 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid assignment ID", http.StatusBadRequest)
+		return
+	}
+	if err := h.Repo.DeleteAssignment(context.Background(), assignmentID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

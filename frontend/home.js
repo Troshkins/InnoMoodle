@@ -2255,21 +2255,74 @@ const initUserCoursesPage = async () => {
 };
 
 // Инициализация страницы деталей курса
-const initCourseDetailPage = () => {
+const initCourseDetailPage = async () => {
+    console.log('initCourseDetailPage called');
+
     const courseId = localStorage.getItem('currentCourse');
+    console.log('Course ID from localStorage:', courseId);
+
     const courses = JSON.parse(localStorage.getItem('courses')) || [];
+    console.log('Courses from localStorage:', courses);
+
     const course = courses.find(c => c.id == courseId);
+    console.log('Found course:', course);
 
     if (!course) {
+        console.log('Course not found, redirecting to user_courses');
         loadContent('user_courses');
         return;
     }
 
-    // Определяем роль пользователя в курсе
-    const userEmail = JSON.parse(localStorage.getItem('userProfile')).email;
+        // Определяем роль пользователя в курсе
+    let userProfileStr = localStorage.getItem('userProfile');
+    console.log('User profile string from localStorage:', userProfileStr);
+
+    let userProfile;
+
+    if (!userProfileStr) {
+        console.log('User profile not found in localStorage, trying to get from API...');
+        try {
+            // Try to get user profile from API
+            const profile = await api.getCurrentUserProfile();
+            userProfile = profile;
+            localStorage.setItem('userProfile', JSON.stringify(profile));
+            console.log('Got user profile from API:', profile);
+        } catch (err) {
+            console.error('Failed to get user profile from API:', err);
+            loadContent('user_courses');
+            return;
+        }
+    } else {
+        try {
+            userProfile = JSON.parse(userProfileStr);
+            console.log('Parsed user profile:', userProfile);
+        } catch (err) {
+            console.error('Error parsing user profile:', err);
+            loadContent('user_courses');
+            return;
+        }
+    }
+
+    if (!userProfile || !userProfile.email) {
+        console.error('Invalid user profile or missing email');
+        loadContent('user_courses');
+        return;
+    }
+
+    const userEmail = userProfile.email;
+    console.log('User email:', userEmail);
+
     const emails = JSON.parse(localStorage.getItem('emails')) || [];
+    console.log('Emails from localStorage:', emails);
+
     const user = emails.find(e => e.email === userEmail);
-    const isTeacher = course.teachers?.includes(user.id);
+    console.log('Found user in emails:', user);
+
+    // Determine user roles properly (handle both English and Russian role names)
+    const isAdmin = userProfile.role === 'admin' || userProfile.role === 'админ';
+    const isTeacher = user && course.teachers?.includes(user.id);
+    const canEditCourse = isAdmin || isTeacher;
+    console.log('User roles - Admin:', isAdmin, 'Teacher:', isTeacher, 'Can edit:', canEditCourse, 'User role:', userProfile.role);
 
     // Настраиваем course bar
     const courseBar = document.getElementById('course-bar');
@@ -2281,16 +2334,16 @@ const initCourseDetailPage = () => {
         { id: 'stats', text: 'Статистика' }
     ];
 
-    // Для студента убираем вкладку настроек
-    if (!isTeacher) {
-        tabs.splice(1, 1); // Удаляем вкладку настроек
-        tabs[1].text = 'Успеваемость'; // Переименовываем статистику
+    // For students, remove settings tab
+    if (!canEditCourse) {
+        tabs.splice(1, 1); // Remove settings tab
+        tabs[1].text = 'Успеваемость'; // Rename stats to performance
     }
 
     tabs.forEach((tab, index) => {
         const btn = document.createElement('button');
         btn.className = 'course-bar-btn';
-        if (index === (isTeacher ? 1 : 0)) btn.classList.add('active');
+        if (index === (canEditCourse ? 1 : 0)) btn.classList.add('active');
         btn.dataset.tab = tab.id;
         btn.textContent = tab.text;
         courseBar.appendChild(btn);
@@ -2330,6 +2383,8 @@ const initCourseDetailPage = () => {
         // Добавляем разделы для контента курса
         // Fetch and display blocks
         api.getCourseBlocks(courseId).then(blocks => {
+            // Handle null response
+            blocks = blocks || [];
             // Add each block as a sidebar item
             blocks.forEach(block => {
                 const item = document.createElement('div');
@@ -2345,11 +2400,16 @@ const initCourseDetailPage = () => {
             });
 
             // Render blocks in main content area
-            renderBlocksList(blocks, isTeacher);
+            renderBlocksList(blocks, isTeacher, isAdmin);
+        }).catch(err => {
+            console.error('Error loading blocks:', err);
+            // Render empty blocks list
+            renderBlocksList([], isTeacher, isAdmin);
         });
 
-        // Если пользователь преподаватель, показываем кнопку добавить блок (оставим в сайдбаре)
+        // Show different content based on user role
         if (isTeacher) {
+            // Teachers can add blocks and create content
             const addBlockBtn = document.createElement('button');
             addBlockBtn.className = 'btn btn-primary';
             addBlockBtn.textContent = 'Добавить блок';
@@ -2366,42 +2426,92 @@ const initCourseDetailPage = () => {
                 }
             };
             courseSidebar.appendChild(addBlockBtn);
+        } else if (isAdmin) {
+            // Admins can only manage course metadata
+            const adminInfo = document.createElement('div');
+            adminInfo.className = 'admin-info';
+            adminInfo.innerHTML = `
+                <div style="padding: 12px; background: #f0f8ff; border-radius: 8px; margin: 12px 0; font-size: 12px; color: #666;">
+                    <strong>Режим администратора</strong><br>
+                    Вы можете редактировать настройки курса, но не можете создавать контент.
+                </div>
+            `;
+            courseSidebar.appendChild(adminInfo);
         }
 
         // Загружаем контент курса
         loadContent('course_content');
 
         // Helper to render blocks in main content
-        function renderBlocksList(blocks, isTeacher) {
+        function renderBlocksList(blocks, isTeacher, isAdmin) {
             const content = document.getElementById('course-content');
             content.innerHTML = '<h2>Блоки курса</h2>';
             const list = document.createElement('ul');
             list.style.listStyle = 'none';
             list.style.padding = '0';
-            blocks.forEach(block => {
-                const li = document.createElement('li');
-                li.className = 'block-list-item';
-                li.textContent = block.name;
-                li.style.cursor = 'pointer';
-                li.onclick = () => renderBlockContent(block);
-                list.appendChild(li);
-            });
+            let editingBlockId = null;
+            function renderList() {
+                list.innerHTML = '';
+                blocks.forEach(block => {
+                    const li = document.createElement('li');
+                    li.className = 'block-list-item';
+                    if (editingBlockId === block.id) {
+                        // Edit mode
+                        li.innerHTML = `
+                            <input class=\"form-input\" id=\"edit-block-name-${block.id}\" value=\"${block.name}\" style=\"margin-right:8px;max-width:220px;\" />
+                            <button class=\"btn btn-primary\" id=\"save-block-btn-${block.id}\">Сохранить</button>
+                            <button class=\"btn btn-secondary\" id=\"cancel-block-btn-${block.id}\">Отмена</button>
+                        `;
+                        li.querySelector(`#save-block-btn-${block.id}`).onclick = async () => {
+                            const newName = li.querySelector(`#edit-block-name-${block.id}`).value.trim();
+                            if (!newName) return alert('Введите название блока');
+                            try {
+                                await api.updateCourseBlock(block.id, newName);
+                                block.name = newName;
+                                editingBlockId = null;
+                                renderList();
+                            } catch (err) {
+                                alert('Ошибка при сохранении блока');
+                            }
+                        };
+                        li.querySelector(`#cancel-block-btn-${block.id}`).onclick = () => {
+                            editingBlockId = null;
+                            renderList();
+                        };
+                    } else {
+                        // View mode
+                        li.textContent = block.name;
+                        li.style.cursor = (isTeacher && !isAdmin) ? 'pointer' : 'default';
+                        if (isTeacher && !isAdmin) {
+                            li.onclick = () => {
+                                editingBlockId = block.id;
+                                renderList();
+                            };
+                        }
+                    }
+                    list.appendChild(li);
+                });
+            }
+            renderList();
             content.appendChild(list);
-            if (isTeacher) {
+            if (isTeacher && !isAdmin) {
                 const addDiv = document.createElement('div');
                 addDiv.style.marginTop = '20px';
                 addDiv.innerHTML = `
-                    <input id="new-block-name" class="form-input" placeholder="Название нового блока" style="margin-right:8px;max-width:220px;" />
-                    <button class="btn btn-primary" id="add-block-btn">Добавить блок</button>
+                    <input id=\"new-block-name\" class=\"form-input\" placeholder=\"Название нового блока\" style=\"margin-right:8px;max-width:220px;\" />
+                    <button class=\"btn btn-primary\" id=\"add-block-btn\">Добавить блок</button>
                 `;
                 content.appendChild(addDiv);
                 document.getElementById('add-block-btn').onclick = async () => {
                     const blockName = document.getElementById('new-block-name').value.trim();
                     if (!blockName) return alert('Введите название блока');
                     try {
-                        await api.createCourseBlock(courseId, blockName);
-                        alert('Блок добавлен!');
-                        loadContent('course_detail');
+                        const newBlock = await api.createCourseBlock(courseId, blockName);
+                        const blockObj = newBlock || { id: Date.now(), name: blockName };
+                        blocks.push(blockObj);
+                        document.getElementById('new-block-name').value = '';
+                        editingBlockId = blockObj.id; // Immediately open in edit mode
+                        renderList();
                     } catch (err) {
                         alert('Ошибка при добавлении блока');
                     }
@@ -2516,7 +2626,7 @@ const initCourseSettings = () => {
 };
 
 // Инициализация страницы контента курса
-const initCourseContent = () => {
+const initCourseContent = async () => {
     const courseId = localStorage.getItem('currentCourse');
     const courses = JSON.parse(localStorage.getItem('courses')) || [];
     const course = courses.find(c => c.id == courseId);
@@ -2533,27 +2643,84 @@ const initCourseContent = () => {
         document.getElementById('course-main-image').src = course.image;
     }
 
-    // Обработчик создания темы
-    document.getElementById('create-theme')?.addEventListener('click', () => {
-        if (!course.themes) course.themes = [];
+    // Load themes from backend
+    let themes = [];
+    try {
+        const themesResponse = await api.getThemes(courseId);
+        themes = themesResponse || []; // Handle null response
+    } catch (err) {
+        console.error('Error loading themes:', err);
+        themes = [];
+    }
 
-        course.themes.push({
-            id: Date.now(),
+    // Add save button for teachers (not admins)
+    const userProfileStr = localStorage.getItem('userProfile');
+    let isTeacher = false;
+    let isAdmin = false;
+
+    if (userProfileStr) {
+        try {
+            const userProfile = JSON.parse(userProfileStr);
+            isTeacher = userProfile.role === 'teacher' || userProfile.role === 'преподаватель';
+            isAdmin = userProfile.role === 'admin' || userProfile.role === 'админ';
+        } catch (err) {
+            console.error('Error parsing user profile:', err);
+        }
+    }
+
+    if (isTeacher && !isAdmin) {
+        const saveButton = document.createElement('button');
+        saveButton.className = 'save-button';
+        saveButton.innerHTML = '💾 Сохранить изменения';
+        saveButton.onclick = async () => {
+            saveButton.disabled = true;
+            saveButton.innerHTML = '⏳ Сохранение...';
+            try {
+                await saveCourseContent(courseId, themes);
+                saveButton.innerHTML = '✅ Сохранено!';
+                setTimeout(() => {
+                    saveButton.innerHTML = '💾 Сохранить изменения';
+                    saveButton.disabled = false;
+                }, 2000);
+            } catch (err) {
+                saveButton.innerHTML = '❌ Ошибка';
+                setTimeout(() => {
+                    saveButton.innerHTML = '💾 Сохранить изменения';
+                    saveButton.disabled = false;
+                }, 2000);
+            }
+        };
+
+        const themesContainer = document.getElementById('themes-container');
+        themesContainer.parentNode.insertBefore(saveButton, themesContainer);
+    }
+
+    // Обработчик создания темы (only for teachers, not admins)
+    if (isTeacher && !isAdmin) {
+        document.getElementById('create-theme')?.addEventListener('click', async () => {
+        const newTheme = {
             title: 'Новая тема',
             description: '',
-            assignments: []
-        });
+            order: themes.length
+        };
 
-        localStorage.setItem('courses', JSON.stringify(courses));
-        initCourseContent(); // Перезагружаем контент
+        try {
+            const createdTheme = await api.createTheme(courseId, newTheme);
+            themes.push(createdTheme);
+            initCourseContent(); // Перезагружаем контент
+        } catch (err) {
+            alert('Ошибка при создании темы');
+            console.error('Error creating theme:', err);
+        }
     });
+    }
 
     // Отображаем темы
     const container = document.getElementById('themes-container');
     container.innerHTML = '';
 
-    if (course.themes && course.themes.length > 0) {
-        course.themes.forEach(theme => {
+    if (themes && themes.length > 0) {
+        themes.forEach(theme => {
             const themeElement = document.createElement('div');
             themeElement.className = 'theme-card';
             themeElement.innerHTML = `
@@ -2567,7 +2734,7 @@ const initCourseContent = () => {
                 </div>
                 <div class="form-group">
                     <label>Описание темы</label>
-                    <textarea class="form-input theme-description" rows="3">${theme.description}</textarea>
+                    <textarea class="form-input theme-description" rows="3">${theme.description || ''}</textarea>
                 </div>
                 <div class="theme-content">
                     <h4>Задания и тесты</h4>
@@ -2576,102 +2743,158 @@ const initCourseContent = () => {
                 </div>
             `;
 
-            // Обработчики для темы
-            themeElement.querySelector('.theme-name').addEventListener('change', (e) => {
-                theme.title = e.target.value;
-                localStorage.setItem('courses', JSON.stringify(courses));
-            });
+            // Обработчики для темы (only for teachers, not admins)
+            if (isTeacher && !isAdmin) {
+                themeElement.querySelector('.theme-name').addEventListener('change', (e) => {
+                    theme.title = e.target.value;
+                });
 
-            themeElement.querySelector('.theme-description').addEventListener('change', (e) => {
-                theme.description = e.target.value;
-                localStorage.setItem('courses', JSON.stringify(courses));
-            });
+                themeElement.querySelector('.theme-description').addEventListener('change', (e) => {
+                    theme.description = e.target.value;
+                });
 
-            themeElement.querySelector('.delete-theme').addEventListener('click', () => {
-                course.themes = course.themes.filter(t => t.id !== theme.id);
-                localStorage.setItem('courses', JSON.stringify(courses));
-                initCourseContent();
-            });
+                themeElement.querySelector('.delete-theme').addEventListener('click', async () => {
+                    try {
+                        await api.deleteTheme(theme.id);
+                        themes = themes.filter(t => t.id !== theme.id);
+                        initCourseContent();
+                    } catch (err) {
+                        alert('Ошибка при удалении темы');
+                        console.error('Error deleting theme:', err);
+                    }
+                });
 
-            // Обработчик добавления задания
-            themeElement.querySelector('.add-assignment').addEventListener('click', () => {
-                if (!theme.assignments) theme.assignments = [];
-
-                theme.assignments.push({
-                    id: Date.now(),
+                // Обработчик добавления задания
+                themeElement.querySelector('.add-assignment').addEventListener('click', async () => {
+                const newAssignment = {
                     title: 'Новое задание',
                     type: 'assignment',
                     description: '',
-                    files: []
-                });
+                    order: 0
+                };
 
-                localStorage.setItem('courses', JSON.stringify(courses));
-                initCourseContent();
+                try {
+                    const createdAssignment = await api.createAssignment(theme.id, newAssignment);
+                    if (!theme.assignments) theme.assignments = [];
+                    theme.assignments.push(createdAssignment);
+                    initCourseContent();
+                } catch (err) {
+                    alert('Ошибка при создании задания');
+                    console.error('Error creating assignment:', err);
+                }
             });
+
+            // Load assignments for this theme
+            const loadAssignments = async () => {
+                try {
+                    theme.assignments = await api.getAssignments(theme.id);
+                } catch (err) {
+                    console.error('Error loading assignments:', err);
+                    theme.assignments = [];
+                }
+            };
+            loadAssignments();
 
             // Отображаем задания
             const assignmentsContainer = themeElement.querySelector('.assignments-container');
-            if (theme.assignments && theme.assignments.length > 0) {
-                theme.assignments.forEach(assignment => {
-                    const assignmentElement = document.createElement('div');
-                    assignmentElement.className = 'assignment-item';
-                    assignmentElement.innerHTML = `
-                        <div class="assignment-header">
-                            <div class="assignment-title">${assignment.title}</div>
-                            <button class="btn btn-danger delete-assignment">Удалить</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Тип</label>
-                            <div class="assignment-type">
-                                <button class="type-btn ${assignment.type === 'assignment' ? 'active' : ''}" data-type="assignment">Задание</button>
-                                <button class="type-btn ${assignment.type === 'quiz' ? 'active' : ''}" data-type="quiz">Тест</button>
-                            </div>
-                        </div>
-                        <div class="assignment-content">
-                            <div class="form-group">
-                                <label>Название</label>
-                                <input class="form-input assignment-title" type="text" value="${assignment.title}">
+            const renderAssignments = () => {
+                assignmentsContainer.innerHTML = '';
+                if (theme.assignments && theme.assignments.length > 0) {
+                    theme.assignments.forEach(assignment => {
+                        const assignmentElement = document.createElement('div');
+                        assignmentElement.className = 'assignment-item';
+                        assignmentElement.innerHTML = `
+                            <div class="assignment-header">
+                                <div class="assignment-title">${assignment.title}</div>
+                                <button class="btn btn-danger delete-assignment">Удалить</button>
                             </div>
                             <div class="form-group">
-                                <label>Описание</label>
-                                <textarea class="form-input assignment-description" rows="2">${assignment.description || ''}</textarea>
+                                <label>Тип</label>
+                                <div class="assignment-type">
+                                    <button class="type-btn ${assignment.type === 'assignment' ? 'active' : ''}" data-type="assignment">Задание</button>
+                                    <button class="type-btn ${assignment.type === 'quiz' ? 'active' : ''}" data-type="quiz">Тест</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                            <div class="assignment-content">
+                                <div class="form-group">
+                                    <label>Название</label>
+                                    <input class="form-input assignment-title" type="text" value="${assignment.title}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Описание</label>
+                                    <textarea class="form-input assignment-description" rows="2">${assignment.description || ''}</textarea>
+                                </div>
+                            </div>
+                        `;
 
-                    // Обработчики для задания
-                    assignmentElement.querySelector('.assignment-title').addEventListener('change', (e) => {
-                        assignment.title = e.target.value;
-                        localStorage.setItem('courses', JSON.stringify(courses));
-                    });
-
-                    assignmentElement.querySelector('.assignment-description').addEventListener('change', (e) => {
-                        assignment.description = e.target.value;
-                        localStorage.setItem('courses', JSON.stringify(courses));
-                    });
-
-                    assignmentElement.querySelector('.delete-assignment').addEventListener('click', () => {
-                        theme.assignments = theme.assignments.filter(a => a.id !== assignment.id);
-                        localStorage.setItem('courses', JSON.stringify(courses));
-                        initCourseContent();
-                    });
-
-                    // Обработчики изменения типа
-                    assignmentElement.querySelectorAll('.type-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            assignment.type = btn.dataset.type;
-                            assignmentElement.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                            btn.classList.add('active');
-                            localStorage.setItem('courses', JSON.stringify(courses));
+                        // Обработчики для задания
+                        assignmentElement.querySelector('.assignment-title').addEventListener('change', (e) => {
+                            assignment.title = e.target.value;
                         });
-                    });
 
-                    assignmentsContainer.appendChild(assignmentElement);
-                });
-            }
+                        assignmentElement.querySelector('.assignment-description').addEventListener('change', (e) => {
+                            assignment.description = e.target.value;
+                        });
+
+                        assignmentElement.querySelector('.delete-assignment').addEventListener('click', async () => {
+                            try {
+                                await api.deleteAssignment(assignment.id);
+                                theme.assignments = theme.assignments.filter(a => a.id !== assignment.id);
+                                renderAssignments();
+                            } catch (err) {
+                                alert('Ошибка при удалении задания');
+                                console.error('Error deleting assignment:', err);
+                            }
+                        });
+
+                        // Обработчики изменения типа
+                        assignmentElement.querySelectorAll('.type-btn').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                assignment.type = btn.dataset.type;
+                                assignmentElement.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                            });
+                        });
+
+                        assignmentsContainer.appendChild(assignmentElement);
+                    });
+                }
+            };
+
+            // Render assignments after loading
+            setTimeout(renderAssignments, 100);
 
             container.appendChild(themeElement);
+        }
         });
+    }
+};
+
+// Function to save course content
+const saveCourseContent = async (courseId, themes) => {
+    try {
+        // Save each theme
+        for (const theme of themes) {
+            await api.updateTheme(theme.id, {
+                title: theme.title,
+                description: theme.description
+            });
+
+            // Save each assignment in the theme
+            if (theme.assignments) {
+                for (const assignment of theme.assignments) {
+                    await api.updateAssignment(assignment.id, {
+                        title: assignment.title,
+                        description: assignment.description,
+                        type: assignment.type
+                    });
+                }
+            }
+        }
+        alert('Изменения сохранены успешно!');
+    } catch (err) {
+        alert('Ошибка при сохранении изменений');
+        console.error('Error saving course content:', err);
     }
 };
 
@@ -2748,7 +2971,28 @@ const initQuizzesPage = async () => {
 // Инициализация страницы успеваемости
 const initPerformancePage = () => {
     const tbody = document.getElementById('performance-table-body');
-    const userEmail = JSON.parse(localStorage.getItem('userProfile')).email;
+
+    const userProfileStr = localStorage.getItem('userProfile');
+    if (!userProfileStr) {
+        tbody.innerHTML = '<tr><td colspan="2">Ошибка: профиль пользователя не найден</td></tr>';
+        return;
+    }
+
+    let userProfile;
+    try {
+        userProfile = JSON.parse(userProfileStr);
+    } catch (err) {
+        console.error('Error parsing user profile:', err);
+        tbody.innerHTML = '<tr><td colspan="2">Ошибка: неверный формат профиля</td></tr>';
+        return;
+    }
+
+    if (!userProfile || !userProfile.email) {
+        tbody.innerHTML = '<tr><td colspan="2">Ошибка: email не найден в профиле</td></tr>';
+        return;
+    }
+
+    const userEmail = userProfile.email;
     const courses = JSON.parse(localStorage.getItem('courses')) || [];
     const groups = JSON.parse(localStorage.getItem('groups')) || [];
     const emails = JSON.parse(localStorage.getItem('emails')) || [];

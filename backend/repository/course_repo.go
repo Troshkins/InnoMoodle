@@ -97,6 +97,16 @@ func (r *CourseRepository) GetCourseBlockByID(ctx context.Context, id int64) (*m
 	return block, err
 }
 
+func (r *CourseRepository) UpdateCourseBlock(ctx context.Context, block *models.CourseBlock) error {
+	query := `
+		UPDATE "Moodle".course_blocks
+		SET name = $1, updated_at = NOW()
+		WHERE id = $2
+	`
+	_, err := r.Exec(ctx, query, block.Name, block.ID)
+	return err
+}
+
 func (r *CourseRepository) CreateAnnouncement(ctx context.Context, announcement *models.Announcement) error {
 	query := `
 		INSERT INTO "Moodle".announcements (name, info, block_id)
@@ -181,4 +191,82 @@ func (r *CourseRepository) GetCourseBlocks(ctx context.Context, courseID int64) 
 // GetDB returns the database connection for use in other repositories
 func (r *CourseRepository) GetDB() *sqlx.DB {
     return r.BaseRepository.db
+}
+
+// Theme methods
+func (r *CourseRepository) CreateTheme(ctx context.Context, theme *models.Theme) error {
+	query := `
+		INSERT INTO "Moodle".themes (title, description, course_id, "order")
+		VALUES ($1, $2, $3, $4)
+		RETURNING id
+	`
+	return r.db.QueryRowContext(ctx, query,
+		theme.Title, theme.Description, theme.CourseID, theme.Order).Scan(&theme.ID)
+}
+
+func (r *CourseRepository) GetThemesByCourseID(ctx context.Context, courseID int64) ([]*models.Theme, error) {
+	query := `
+		SELECT id, title, description, course_id, "order", created_at, updated_at
+		FROM "Moodle".themes
+		WHERE course_id = $1
+		ORDER BY "order", id
+	`
+	var themes []*models.Theme
+	err := r.Select(ctx, &themes, query, courseID)
+	return themes, err
+}
+
+func (r *CourseRepository) UpdateTheme(ctx context.Context, theme *models.Theme) error {
+	query := `
+		UPDATE "Moodle".themes
+		SET title = $1, description = $2, updated_at = NOW()
+		WHERE id = $3
+	`
+	_, err := r.Exec(ctx, query, theme.Title, theme.Description, theme.ID)
+	return err
+}
+
+func (r *CourseRepository) DeleteTheme(ctx context.Context, themeID int64) error {
+	query := `DELETE FROM "Moodle".themes WHERE id = $1`
+	_, err := r.Exec(ctx, query, themeID)
+	return err
+}
+
+// Assignment methods
+func (r *CourseRepository) CreateAssignment(ctx context.Context, assignment *models.Assignment) error {
+	query := `
+		INSERT INTO "Moodle".assignments (title, description, type, theme_id, "order")
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id
+	`
+	return r.db.QueryRowContext(ctx, query,
+		assignment.Title, assignment.Description, assignment.Type, assignment.ThemeID, assignment.Order).Scan(&assignment.ID)
+}
+
+func (r *CourseRepository) GetAssignmentsByThemeID(ctx context.Context, themeID int64) ([]*models.Assignment, error) {
+	query := `
+		SELECT id, title, description, type, theme_id, "order", created_at, updated_at
+		FROM "Moodle".assignments
+		WHERE theme_id = $1
+		ORDER BY "order", id
+	`
+	var assignments []*models.Assignment
+	err := r.Select(ctx, &assignments, query, themeID)
+	return assignments, err
+}
+
+func (r *CourseRepository) UpdateAssignment(ctx context.Context, assignment *models.Assignment) error {
+	query := `
+		UPDATE "Moodle".assignments
+		SET title = $1, description = $2, type = $3, updated_at = NOW()
+		WHERE id = $4
+	`
+	_, err := r.Exec(ctx, query, assignment.Title, assignment.Description, assignment.Type, assignment.ID)
+	return err
+}
+
+func (r *CourseRepository) DeleteAssignment(ctx context.Context, assignmentID int64) error {
+	query := `DELETE FROM "Moodle".assignments WHERE id = $1`
+	_, err := r.Exec(ctx, query, assignmentID)
+	return err
 }

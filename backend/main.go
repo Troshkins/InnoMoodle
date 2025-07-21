@@ -114,6 +114,19 @@ func main() {
 	// Course block endpoint
 	protected.HandleFunc("/courses/{id:[0-9]+}/blocks", courseHandler.CreateCourseBlock).Methods("POST")
 	protected.HandleFunc("/courses/{id:[0-9]+}/blocks", courseHandler.GetCourseBlocks).Methods("GET")
+	protected.HandleFunc("/blocks/{blockId:[0-9]+}", courseHandler.UpdateCourseBlock).Methods("PUT")
+
+	// Course theme endpoints
+	protected.HandleFunc("/courses/{id:[0-9]+}/themes", courseHandler.CreateTheme).Methods("POST")
+	protected.HandleFunc("/courses/{id:[0-9]+}/themes", courseHandler.GetThemes).Methods("GET")
+	protected.HandleFunc("/themes/{themeId:[0-9]+}", courseHandler.UpdateTheme).Methods("PUT")
+	protected.HandleFunc("/themes/{themeId:[0-9]+}", courseHandler.DeleteTheme).Methods("DELETE")
+
+	// Course assignment endpoints
+	protected.HandleFunc("/themes/{themeId:[0-9]+}/assignments", courseHandler.CreateAssignment).Methods("POST")
+	protected.HandleFunc("/themes/{themeId:[0-9]+}/assignments", courseHandler.GetAssignments).Methods("GET")
+	protected.HandleFunc("/assignments/{assignmentId:[0-9]+}", courseHandler.UpdateAssignment).Methods("PUT")
+	protected.HandleFunc("/assignments/{assignmentId:[0-9]+}", courseHandler.DeleteAssignment).Methods("DELETE")
 
 	// Quiz endpoints
 	protected.HandleFunc("/quizzes", quizHandler.CreateQuiz).Methods("POST")

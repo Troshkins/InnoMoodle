@@ -434,25 +434,26 @@ a {
 </template>
 
 <template id="course_settings-template">
-    <div class="settings-section">
-        <h2>О курсе</h2>
-        <div class="form-group">
-            <label>Полное название курса</label>
-            <input class="form-input" type="text" id="course-full-name">
+    <div class="list-container" id="course-settings-container">
+        <div class="settings-section">
+            <h2>О курсе</h2>
+            <div class="form-group">
+                <label>Полное название курса</label>
+                <input class="form-input" type="text" id="course-full-name">
+            </div>
+            <div class="form-group">
+                <label>Краткое название курса</label>
+                <input class="form-input" type="text" id="course-short-name">
+            </div>
+            <div class="form-group">
+                <label>Ссылка на чат курса</label>
+                <input class="form-input" type="url" id="course-chat-link">
+            </div>
+            <div class="form-group">
+                <label>Ссылка на материалы курса</label>
+                <input class="form-input" type="url" id="course-materials-link">
+            </div>
         </div>
-        <div class="form-group">
-            <label>Краткое название курса</label>
-            <input class="form-input" type="text" id="course-short-name">
-        </div>
-        <div class="form-group">
-            <label>Ссылка на чат курса</label>
-            <input class="form-input" type="url" id="course-chat-link">
-        </div>
-        <div class="form-group">
-            <label>Ссылка на материалы курса</label>
-            <input class="form-input" type="url" id="course-materials-link">
-        </div>
-    </div>
 
     <div class="settings-section">
         <h2>Описание</h2>
@@ -564,26 +565,29 @@ a {
             </select>
         </div>
     </div>
+    </div>
 </template>
 
 <template id="course_content-template">
-    <div class="settings-section">
-        <h2>Общее</h2>
-        <div class="course-preview">
-            <div class="course-image-preview">
-                <img id="course-main-image" src="" alt="Изображение курса">
-            </div>
-            <div class="course-info-preview">
-                <h3 id="course-main-name">Название курса</h3>
-                <p id="course-main-description">Описание курса</p>
+    <div class="list-container" id="course-content-container">
+        <div class="settings-section">
+            <h2>Общее</h2>
+            <div class="course-preview">
+                <div class="course-image-preview">
+                    <img id="course-main-image" src="" alt="Изображение курса">
+                </div>
+                <div class="course-info-preview">
+                    <h3 id="course-main-name">Название курса</h3>
+                    <p id="course-main-description">Описание курса</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="settings-section">
-        <h2>Темы</h2>
-        <button class="btn btn-primary" id="create-theme">Создать тему</button>
-        <div id="themes-container"></div>
+        <div class="settings-section">
+            <h2>Темы</h2>
+            <button class="btn btn-primary" id="create-theme">Создать тему</button>
+            <div id="themes-container"></div>
+        </div>
     </div>
 </template>
 

@@ -239,6 +239,45 @@ CREATE TABLE "Moodle".pdf (
     filling_id bigint NOT NULL
 );
 
+-- Themes table for course content organization
+CREATE TABLE "Moodle".themes (
+    id          bigint NOT NULL,
+    title       text   NOT NULL,
+    description text,
+    course_id   bigint NOT NULL,
+    "order"     integer DEFAULT 0 NOT NULL,
+    created_at  timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at  timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+ALTER TABLE "Moodle".themes
+  ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "Moodle".themes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    CACHE 1
+  );
+
+-- Assignments table for course assignments and quizzes
+CREATE TABLE "Moodle".assignments (
+    id          bigint NOT NULL,
+    title       text   NOT NULL,
+    description text,
+    type        text   DEFAULT 'assignment' NOT NULL,
+    theme_id    bigint NOT NULL,
+    "order"     integer DEFAULT 0 NOT NULL,
+    created_at  timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at  timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+ALTER TABLE "Moodle".assignments
+  ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME "Moodle".assignments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    CACHE 1
+  );
+
 -- Primary key constraints
 
 ALTER TABLE ONLY "Moodle".admins            ADD CONSTRAINT admins_pkey PRIMARY KEY (id);
@@ -254,6 +293,8 @@ ALTER TABLE ONLY "Moodle".tasks             ADD CONSTRAINT tasks_pkey PRIMARY KE
 ALTER TABLE ONLY "Moodle".one_ans_task      ADD CONSTRAINT one_ans_task_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY "Moodle".multiple_ans_task ADD CONSTRAINT multiple_ans_task_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY "Moodle".open_ans_task     ADD CONSTRAINT open_ans_task_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY "Moodle".themes            ADD CONSTRAINT themes_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY "Moodle".assignments       ADD CONSTRAINT assignments_pkey PRIMARY KEY (id);
 
 -- Foreign key constraints
 
@@ -302,6 +343,12 @@ ALTER TABLE ONLY "Moodle".multiple_ans_task
 ALTER TABLE ONLY "Moodle".open_ans_task
   ADD CONSTRAINT open_ans_task_task_fkey FOREIGN KEY (task_id) REFERENCES "Moodle".tasks(id) NOT VALID;
 
+ALTER TABLE ONLY "Moodle".themes
+  ADD CONSTRAINT themes_course_fkey FOREIGN KEY (course_id) REFERENCES "Moodle".courses(id) NOT VALID;
+
+ALTER TABLE ONLY "Moodle".assignments
+  ADD CONSTRAINT assignments_theme_fkey FOREIGN KEY (theme_id) REFERENCES "Moodle".themes(id) NOT VALID;
+
 -- Indexes for better performance
 
 CREATE INDEX idx_users_email ON "Moodle".users(email);
@@ -318,6 +365,10 @@ CREATE INDEX idx_course_teacher_course_id ON "Moodle".course_teacher(course_id);
 CREATE INDEX idx_course_teacher_teacher_id ON "Moodle".course_teacher(teacher_id);
 CREATE INDEX idx_group_student_group_id ON "Moodle".group_student(group_id);
 CREATE INDEX idx_group_student_student_id ON "Moodle".group_student(student_id);
+CREATE INDEX idx_themes_course_id ON "Moodle".themes(course_id);
+CREATE INDEX idx_themes_order ON "Moodle".themes("order");
+CREATE INDEX idx_assignments_theme_id ON "Moodle".assignments(theme_id);
+CREATE INDEX idx_assignments_order ON "Moodle".assignments("order");
 
 -- Unique constraints to prevent duplicate entries
 CREATE UNIQUE INDEX idx_group_student_unique ON "Moodle".group_student(group_id, student_id);
@@ -357,6 +408,10 @@ ALTER TABLE "Moodle".quizzes
 ALTER TABLE "Moodle".study_groups
   ADD CONSTRAINT study_groups_status_check
   CHECK (status IN ('active', 'inactive', 'archived'));
+
+ALTER TABLE "Moodle".assignments
+  ADD CONSTRAINT assignments_type_check
+  CHECK (type IN ('assignment', 'quiz'));
 
 -- Fix user roles: only 'user' and 'admin' allowed
 ALTER TABLE "Moodle".users ALTER COLUMN role SET DEFAULT 'user';
