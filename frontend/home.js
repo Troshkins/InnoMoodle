@@ -817,7 +817,25 @@ const initCoursesPage = async () => {
             `;
             card.addEventListener('click', () => {
                 localStorage.setItem('currentCourse', course.id);
-                loadContent('course_detail');
+                const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+                const isAdmin = getCurrentRole() === 'admin';
+                const isTeacher = Array.isArray(course.teachers) && userProfile && course.teachers.includes(userProfile.id);
+                if (isAdmin) {
+                    loadContent('course_editing');
+                } else if (isTeacher) {
+                    // Render course_settings-template directly for teachers
+                    const mainContent = document.getElementById('main-content');
+                    mainContent.innerHTML = '';
+                    const template = document.getElementById('course_settings-template');
+                    if (template) {
+                        mainContent.appendChild(template.content.cloneNode(true));
+                        setTimeout(() => {
+                            if (typeof window.initCourseSettings === 'function') window.initCourseSettings();
+                        }, 0);
+                    }
+                } else {
+                    loadContent('course_content');
+                }
             });
             container.appendChild(card);
         });
@@ -2219,34 +2237,62 @@ const initEmailAddPage = () => {
 
 const initUserCoursesPage = async () => {
     try {
-    const container = document.getElementById('user-courses-container');
+        const container = document.getElementById('user-courses-container');
         const userProfile = await api.getCurrentUserProfile();
         localStorage.setItem('userProfile', JSON.stringify(userProfile)); // <-- Store in localStorage
         const userEmail = userProfile.email;
 
-        const userCourses = await api.getUserCourses(userEmail);
+        let userCourses = await api.getUserCourses(userEmail);
+        // Fetch teachers for each course and add as 'teachers' array
+        userCourses = await Promise.all(userCourses.map(async (course) => {
+            try {
+                const teachers = await api.getCourseTeachers(course.id);
+                course.teachers = Array.isArray(teachers) ? teachers.map(t => t.id) : [];
+            } catch (err) {
+                course.teachers = [];
+            }
+            return course;
+        }));
         localStorage.setItem('courses', JSON.stringify(userCourses)); // <-- Store in localStorage
 
         if (!userCourses || userCourses.length === 0) {
-        container.innerHTML = '<div class="empty-message">Курсы вам пока не доступны :(</div>';
-        return;
-    }
+            container.innerHTML = '<div class="empty-message">Курсы вам пока не доступны :(</div>';
+            return;
+        }
 
-    // Отображаем курсы пользователя
-    userCourses.forEach(course => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="card__body">
-                    <h2 class="card__title">${course.name}</h2>
-            </div>
-        `;
-        card.addEventListener('click', () => {
-            localStorage.setItem('currentCourse', course.id);
-            loadContent('course_detail');
+        // Отображаем курсы пользователя
+        userCourses.forEach(course => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card__body">
+                        <h2 class="card__title">${course.name}</h2>
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                localStorage.setItem('currentCourse', course.id);
+                const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+                const isAdmin = getCurrentRole() === 'admin';
+                const isTeacher = Array.isArray(course.teachers) && userProfile && course.teachers.includes(userProfile.id);
+                if (isAdmin) {
+                    loadContent('course_editing');
+                } else if (isTeacher) {
+                    // Render course_settings-template directly for teachers
+                    const mainContent = document.getElementById('main-content');
+                    mainContent.innerHTML = '';
+                    const template = document.getElementById('course_settings-template');
+                    if (template) {
+                        mainContent.appendChild(template.content.cloneNode(true));
+                        setTimeout(() => {
+                            if (typeof window.initCourseSettings === 'function') window.initCourseSettings();
+                        }, 0);
+                    }
+                } else {
+                    loadContent('course_content');
+                }
+            });
+            container.appendChild(card);
         });
-        container.appendChild(card);
-    });
     } catch (error) {
         console.error('Error loading user courses:', error);
         document.getElementById('user-courses-container').innerHTML =
@@ -2320,7 +2366,8 @@ const initCourseDetailPage = async () => {
 
     // Determine user roles properly (handle both English and Russian role names)
     const isAdmin = userProfile.role === 'admin' || userProfile.role === 'админ';
-    const isTeacher = user && course.teachers?.includes(user.id);
+    // FIX: Check if user is a teacher by ID, not by emails array
+    const isTeacher = Array.isArray(course.teachers) && course.teachers.includes(userProfile.id);
     const canEditCourse = isAdmin || isTeacher;
     console.log('User roles - Admin:', isAdmin, 'Teacher:', isTeacher, 'Can edit:', canEditCourse, 'User role:', userProfile.role);
 
@@ -2334,20 +2381,59 @@ const initCourseDetailPage = async () => {
         { id: 'stats', text: 'Статистика' }
     ];
 
-    // For students, remove settings tab
     if (!canEditCourse) {
-        tabs.splice(1, 1); // Remove settings tab
-        tabs[1].text = 'Успеваемость'; // Rename stats to performance
+        tabs.splice(1, 1);
+        tabs[1].text = 'Успеваемость';
     }
+
+    let defaultActiveTab = 0;
+    if (canEditCourse) defaultActiveTab = 1;
 
     tabs.forEach((tab, index) => {
         const btn = document.createElement('button');
         btn.className = 'course-bar-btn';
-        if (index === (canEditCourse ? 1 : 0)) btn.classList.add('active');
+        if (index === defaultActiveTab) btn.classList.add('active');
         btn.dataset.tab = tab.id;
         btn.textContent = tab.text;
+        btn.addEventListener('click', () => {
+            // Remove active from all
+            courseBar.querySelectorAll('.course-bar-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTabContent(tab.id);
+        });
         courseBar.appendChild(btn);
     });
+
+    // Render tab content into #course-content
+    function renderTabContent(tabId) {
+        const courseContent = document.getElementById('course-content');
+        if (!courseContent) return;
+        courseContent.innerHTML = '';
+        let templateId = '';
+        let initFn = null;
+        if (tabId === 'settings') {
+            templateId = 'course_settings-template';
+            initFn = window.initCourseSettings;
+        } else if (tabId === 'course') {
+            templateId = 'course_content-template';
+            initFn = window.initCourseContent;
+        } else if (tabId === 'stats') {
+            // You may want to add a stats template and init function
+            templateId = 'performance-template';
+            initFn = window.initPerformancePage;
+        }
+        if (templateId) {
+            const template = document.getElementById(templateId);
+            if (template) {
+                courseContent.appendChild(template.content.cloneNode(true));
+                if (typeof initFn === 'function') {
+                    setTimeout(() => initFn(), 0);
+                }
+            }
+        }
+    }
+    // Render default tab content on page load
+    renderTabContent(tabs[defaultActiveTab].id);
 
     // Настраиваем сайдбар
     const courseSidebar = document.getElementById('course-sidebar');

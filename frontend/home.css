@@ -598,6 +598,9 @@ body {
     background-color: var(--background-secondary);
     border-radius: var(--border-radius-medium);
     padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding-right: 8px; /* for scrollbar */
 }
 
 .editor .form-group {
