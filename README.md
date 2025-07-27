@@ -1,14 +1,12 @@
 # InnoMoodle
 
-## Header
-
 ![logo](frontend/assets/logo.png)
 
 Moodle but he's stronger, he's smarter.
 
-[Deployed Product](https://troshkins.github.io/InnoMoodle/)
+[Deployed Product](http://193.148.59.45:8080/)
 
-![Demo](docs/demos/demo2.mov)
+![Demo Video](docs/demos/demo2.mov)
 
 ## About
 
@@ -19,34 +17,16 @@ InnoMoodle is a learning management system designed to replace the university’
 ### Project Objectives:
 
 1. Seamless Migration: Safely migrate existing courses, user accounts, and content from the legacy system to InnoMoodle with minimal downtime.
-2. Enhanced User Experience:
-
-   * Redesign the interface to be more intuitive and visually appealing.
-   * Implement responsive layouts for optimal use on desktops, tablets, and smartphones.
-3. Instructor-Centric Tools:
-
-   * Simplify the course creation workflow with guided wizards and drag‑and‑drop functionality.
-   * Enable bulk upload of resources, automated grading setup, and customizable course templates.
-4. Improved Engagement:
-
-   * Introduce interactive elements such as in‑line quizzes, discussion badges, and real‑time notifications.
-   * Provide analytics dashboards for instructors to monitor student participation and performance.
-5. Accessibility & Compliance:
-
-   * Support multilingual content and right‑to‑left languages as needed.
-6. Scalability & Security:
-
-   * Build on a modular architecture that can scale to accommodate future growth in user base and functionality.
-   * Implement robust authentication, role‑based permissions, and data encryption to protect user privacy.
-7. Integration & Extensibility:
-
-   * Provide APIs for seamless integration with campus systems.
-   * Offer a plugin framework to allow rapid development of new features by third‑party developers.
-
+2. Enhanced User Experience
+3. Instructor-Centric Tools
+4. Improved Engagement
+5. Accessibility & Compliance
+6. Scalability & Security
+7. Integration & Extensibility
 ## Project context diagram
 ![Diagram](https://github.com/Troshkins/InnoMoodle/blob/main/docs/ProjContextDiagram.pdf)
 ## Roadmap
-[Roadmap](https://docs.google.com/document/d/1xYH7P_ANho2j-ttWLbBRVQI7kzSm05P7zhwPIVlu2hk/edit?usp=sharing)
+[Roadmap](https://docs.google.com/spreadsheets/d/1S57L4N_ecyXp19cwjlobZJZQs6WOP7KI8R7cf5FZ6OM/edit?gid=1707224305#gid=1707224305)
 
 ## Usage
 
